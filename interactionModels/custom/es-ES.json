@@ -1,0 +1,50 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "informatica virgen de gracia",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "cancelar",
+            "cancela"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "informacion",
+            "que haces",
+            "ayuda"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "salir",
+            "sal",
+            "para"
+          ]
+        },
+        {
+          "name": "HolaInformaticaIntent",
+          "slots": [],
+          "samples": [
+            "hola",
+            "como estas",
+            "di hola",
+            "informatica"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": [
+            "pantalla"
+          ]
+        }
+      ],
+      "types": []
+    }
+  },
+  "version": "8"
+}
