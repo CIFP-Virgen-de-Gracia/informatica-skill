@@ -10,6 +10,7 @@ Es importante que gereneréis bien la clave de la API de Google Maps
 
 * 06/04/2020. Inicio de la Skill y Configuración. Presentación
 * 07/04/2020. Manejo de diálogos
+* 14/04/2020. Launch, Inicio, Creador. Interfaces y Entonaciones
 
 
 ## Acerca de

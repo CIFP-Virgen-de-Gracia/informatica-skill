@@ -3,22 +3,80 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:us-east-1:427984422218:function:a4f66b33-d699-4b14-a562-b30eefd62eda:Release_0"
+          "uri": "arn:aws:lambda:us-east-1:427984422218:function:c66d8c36-513c-4c9b-89b9-0962ac849d65:Release_0"
         },
-        "interfaces": []
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL",
+            "supportedViewports": [
+              {
+                "mode": "HUB",
+                "shape": "ROUND",
+                "minWidth": 480,
+                "maxWidth": 480,
+                "minHeight": 480,
+                "maxHeight": 480
+              },
+              {
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "minWidth": 1024,
+                "maxWidth": 1024,
+                "minHeight": 600,
+                "maxHeight": 600
+              },
+              {
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "minWidth": 1280,
+                "maxWidth": 1280,
+                "minHeight": 800,
+                "maxHeight": 800
+              },
+              {
+                "mode": "TV",
+                "shape": "RECTANGLE",
+                "minWidth": 960,
+                "maxWidth": 960,
+                "minHeight": 540,
+                "maxHeight": 540
+              },
+              {
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "minWidth": 960,
+                "maxWidth": 960,
+                "minHeight": 480,
+                "maxHeight": 480
+              }
+            ]
+          }
+        ]
       }
     },
     "manifestVersion": "1.0",
+    "permissions": [
+      {
+        "name": "alexa::profile:given_name:read"
+      },
+      {
+        "name": "alexa::alerts:reminders:skill:readwrite"
+      }
+    ],
     "publishingInformation": {
       "locales": {
         "es-ES": {
           "name": "Informatica Virgen de Gracia",
-          "summary": "Sample Short Description",
-          "description": "Sample Full Description",
+          "summary": "Skill del Departamento de Informática del CIFP Virgen de Gracia",
+          "description": "Skill del Departamento de Informática del CIFP Virgen de Gracia de Puertollano (Ciudad Real)",
           "examplePhrases": [
-            "Alexa open hello world",
-            "hello",
-            "help"
+            "Alexa abre informatica virgen de gracia",
+            "estudios",
+            "ciclos",
+            "mis módulos",
+            "registrar tarea",
+            "mi desarrollador",
+            "ayuda"
           ],
           "keywords": []
         }
