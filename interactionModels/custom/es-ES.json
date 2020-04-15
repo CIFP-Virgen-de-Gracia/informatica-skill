@@ -360,6 +360,57 @@
             "correo electronico",
             "email"
           ]
+        },
+        {
+          "name": "RegistrarCursoIntent",
+          "slots": [
+            {
+              "name": "curso",
+              "type": "TipoCurso",
+              "samples": [
+                "{ciclo} {curso}",
+                "{curso} {ciclo}",
+                "{curso}",
+                "estudio {curso} {ciclo}",
+                "curso {curso} {ciclo}",
+                "mi curso es {curso}",
+                "mi curso  {curso}",
+                "el curso {curso} de {ciclo}",
+                "{curso} de {ciclo}"
+              ]
+            },
+            {
+              "name": "ciclo",
+              "type": "TipoCiclo",
+              "samples": [
+                "hago {ciclo}",
+                "estudio {ciclo}",
+                "estudio {curso} {ciclo}",
+                "es {ciclo}",
+                "{curso} de {ciclo}",
+                "{ciclo} {curso}",
+                "{curso} {ciclo}",
+                "mi ciclo es {ciclo}",
+                "{ciclo}",
+                "curso {ciclo}"
+              ]
+            }
+          ],
+          "samples": [
+            "registrar",
+            "registrar curso",
+            "{ciclo}",
+            "{curso}",
+            "hago {curso} {ciclo}",
+            "{ciclo} {curso}",
+            "{curso} {ciclo}",
+            "estudio {curso} {ciclo}",
+            "mi curso es {curso} de {ciclo}",
+            "recuerda lo que hago",
+            "recuerda mi curso",
+            "memoriza mi curso",
+            "registra mi curso"
+          ]
         }
       ],
       "types": [
@@ -370,8 +421,7 @@
               "name": {
                 "value": "diciembre",
                 "synonyms": [
-                  "duodécimo mes del año",
-                  "duodécimo"
+                  "duodécimo mes del año"
                 ]
               }
             },
@@ -380,8 +430,7 @@
               "name": {
                 "value": "noviembre",
                 "synonyms": [
-                  "undécimo mes del año",
-                  "undécimo"
+                  "undécimo mes del año"
                 ]
               }
             },
@@ -390,8 +439,7 @@
               "name": {
                 "value": "octubre",
                 "synonyms": [
-                  "décimo mes del año",
-                  "décimo"
+                  "décimo mes del año"
                 ]
               }
             },
@@ -400,8 +448,7 @@
               "name": {
                 "value": "septiembre",
                 "synonyms": [
-                  "noveno mes del año",
-                  "noveno"
+                  "noveno mes del año"
                 ]
               }
             },
@@ -410,8 +457,7 @@
               "name": {
                 "value": "agosto",
                 "synonyms": [
-                  "octavo mes del año",
-                  "octavo"
+                  "octavo mes del año"
                 ]
               }
             },
@@ -420,8 +466,7 @@
               "name": {
                 "value": "julio",
                 "synonyms": [
-                  "séptimo mes del año",
-                  "séptimo"
+                  "séptimo mes del año"
                 ]
               }
             },
@@ -430,8 +475,7 @@
               "name": {
                 "value": "junio",
                 "synonyms": [
-                  "sexto mes del año",
-                  "sexto"
+                  "sexto mes del año"
                 ]
               }
             },
@@ -440,8 +484,7 @@
               "name": {
                 "value": "mayo",
                 "synonyms": [
-                  "quinto mes del año",
-                  "quinto"
+                  "quinto mes del año"
                 ]
               }
             },
@@ -450,8 +493,7 @@
               "name": {
                 "value": "abril",
                 "synonyms": [
-                  "cuarto mes del año",
-                  "cuarto"
+                  "cuarto mes del año"
                 ]
               }
             },
@@ -460,8 +502,7 @@
               "name": {
                 "value": "marzo",
                 "synonyms": [
-                  "tercer mes del año",
-                  "tercero"
+                  "tercer mes del año"
                 ]
               }
             },
@@ -470,8 +511,7 @@
               "name": {
                 "value": "febrero",
                 "synonyms": [
-                  "segundo mes del año",
-                  "segundo"
+                  "segundo mes del año"
                 ]
               }
             },
@@ -480,13 +520,85 @@
               "name": {
                 "value": "enero",
                 "synonyms": [
-                  "primero",
                   "primer mes del año"
                 ]
               }
             }
           ],
           "name": "TipoMes"
+        },
+        {
+          "values": [
+            {
+              "id": "SMR",
+              "name": {
+                "value": "SMR",
+                "synonyms": [
+                  "fp en sistemas microinformático y redes",
+                  "ciclo formativo de grado medio en sistemas microinformáticos y redes ",
+                  "sistemas microinformaticos y redes"
+                ]
+              }
+            },
+            {
+              "id": "ASIR",
+              "name": {
+                "value": "ASIR",
+                "synonyms": [
+                  "Administración de Sistemas Informáticos en Red",
+                  "ciclo de grado superior en Administración de Sistemas Informáticos en Red",
+                  "fp en Administración de Sistemas Informáticos en Red"
+                ]
+              }
+            },
+            {
+              "id": "DAW",
+              "name": {
+                "value": "DAW",
+                "synonyms": [
+                  "ciclo de grado superior en desarrollo de aplicaciones web",
+                  "fp en desarrollo de aplicaciones web",
+                  "desarrollo de aplicaciones web"
+                ]
+              }
+            },
+            {
+              "id": "DAM",
+              "name": {
+                "value": "DAM",
+                "synonyms": [
+                  "ciclo de grado superior en desarrollo de aplicaciones multiplataforma",
+                  "fp en desarrollo de aplicaciones multiplataforma",
+                  "desarrollo de aplicaciones multiplataforma"
+                ]
+              }
+            }
+          ],
+          "name": "TipoCiclo"
+        },
+        {
+          "values": [
+            {
+              "id": "2",
+              "name": {
+                "value": "segundo",
+                "synonyms": [
+                  "segundo"
+                ]
+              }
+            },
+            {
+              "id": "1",
+              "name": {
+                "value": "primero",
+                "synonyms": [
+                  "primero",
+                  "primer"
+                ]
+              }
+            }
+          ],
+          "name": "TipoCurso"
         }
       ]
     },
@@ -574,6 +686,45 @@
                 "confirmation": "Confirm.Slot.705255679801.1547662204502",
                 "elicitation": "Elicit.Slot.337360238844.1191309658875"
               }
+            }
+          ]
+        },
+        {
+          "name": "RegistrarCursoIntent",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.967541175702"
+          },
+          "slots": [
+            {
+              "name": "curso",
+              "type": "TipoCurso",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.967541175702.1509743388607"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1054205811100.515424852945.887251191463"
+                }
+              ]
+            },
+            {
+              "name": "ciclo",
+              "type": "TipoCiclo",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.967541175702.1480683076139"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.967541175702.1480683076139.894194163220"
+                }
+              ]
             }
           ]
         }
@@ -761,8 +912,117 @@
             "value": "Estás seguro que quieres enviar el mensaje {mensaje}"
           }
         ]
+      },
+      {
+        "id": "Confirm.Intent.967541175702",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Quieres que recuerde que estudias {curso} de {ciclo} ?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Recordare que estudias {curso} de {ciclo} . ¿Vale?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Entonces estudias {curso} de {ciclo} . ¿Es correcto?"
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Estás seguro que quieres registrar {curso} de {ciclo} ?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.967541175702.1509743388607",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Tu curso es?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Ya sé tu que es {ciclo} , ahora necesito saber el curso"
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Puedes decirme el curso?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Me has dicho que tu cicloe es {ciclo} pero no el curso"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un curso, primero o segundo"
+          },
+          {
+            "type": "PlainText",
+            "value": "Vale, pero dime el curso"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.967541175702.1480683076139.894194163220",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Dime un ciclo como Sistemas microinforático y redes, administración de Sistemas Informáticos en red, desarrollo de aplicaciones multiplataforma o desarrollo de aplicaciones web"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un ciclo válido, como SMR, ASIR, DAM o DAW"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.967541175702.1480683076139",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "me has dicho que tu curso es {curso} , ahora necesito saber el ciclo entre ASIR, DAM, DAW y SMR"
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Puedes decirme el ciclo?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Vale, ya se tu curso que es {curso} , ahora necesito saber tu ciclo"
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Qué ciclo?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Necesito saber el ciclo"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el ciclo, entre ASIR, SMR, DAM y DAW"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el ciclo entre administración de sistemas informáticos y redes, sistemas microinformáticos y red, desarrollo de aplicaciones web y desarrollo de aplicaciones multiplataforma"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.1054205811100.515424852945.887251191463",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Necesito saber tu curso. ¿Es primero o segundo?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un curso entre primero y segundo"
+          }
+        ]
       }
     ]
   },
-  "version": "25"
+  "version": "32"
 }

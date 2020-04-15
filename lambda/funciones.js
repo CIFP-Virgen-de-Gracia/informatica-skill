@@ -14,6 +14,18 @@ module.exports = {
        return  meses.indexOf( mesNombre) + 1;
     },
     
+    // Dado un ciclo devuelve sus siglas
+    getCicloID(ciclo) {
+        if(ciclo === 'desarrollo de apliaciones multiplataforma' || ciclo ==='dam')
+            return 'DAM';
+        else if(ciclo === 'desarrollo de apliaciones web' || ciclo ==='daw')
+            return 'DAW';
+        else if(ciclo === 'administracion de sistemas informaticos y redes' || ciclo ==='asir')
+            return 'ASIR';
+        else if(ciclo === 'sistemas microinformaticos y redes' || ciclo ==='smr')
+            return 'SMR';
+    },
+    
     // Devuelve los datos del cumpleaños dado una fecha
     getDatosCumple(dia, mes, anno, timezone) {
         const hoy = moment().tz(timezone).startOf('day');

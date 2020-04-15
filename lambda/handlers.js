@@ -90,7 +90,7 @@ const InicioIntentHandler = {
         // Para manejar la sesion
         const sessionAttributes = attributesManager.getSessionAttributes();
         // Cargamos los atrinbutos de sesion 
-       const nombre = sessionAttributes['nombre'] || '';
+        const nombre = sessionAttributes['nombre'] || '';
         const curso = sessionAttributes['curso'] || '';
         const ciclo = sessionAttributes['ciclo'] || '';
     
@@ -275,6 +275,51 @@ const ContactoIntentHandler = {
             
     }
     
+};
+
+
+// REGISTRAR CURSO - INTENCION
+const RegistrarCursoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RegistrarCursoIntent';
+    },
+    //Proceso
+    handle(handlerInput) {
+        // Recogemos los la entrada entrada - handler Input
+        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        // Atributos de sesiónconst 
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        
+        // Creamos mensaje
+        let mensajeHablado = handlerInput.t('REJECTED_MSG');
+        //Tomamos los slots y los almacenamos en variables
+        
+        // Sacamos el mes, podíamos hacerlo como const mesSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id; //MM
+        
+        const ciclo = Alexa.getSlotValue(requestEnvelope, 'ciclo');
+        const curso = Alexa.getSlotValue(requestEnvelope, 'curso');
+        
+        // Si existen
+        if (ciclo && curso) {
+            // Almacenamos en la sesión
+            sessionAttributes['ciclo'] = func.getCicloID(ciclo);
+            sessionAttributes['curso'] = curso; 
+            
+            // Una vez tengamos los dias volvemos a inicio
+            return InicioIntentHandler.handle(handlerInput);
+            
+        }
+    // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .speak(handlerInput.t('REJECTED_MSG'))
+            .withSimpleCard("Dpto. Informatica", handlerInput.t('REJECTED_MSG'))
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
 };
 
 // REGISTRAR CUMPLEAÑOS - INTENCION
@@ -868,6 +913,7 @@ module.exports = {
     InicioIntentHandler,
     CreadorIntentHandler,
     ContactoIntentHandler,
+    RegistrarCursoIntentHandler,
     RegistrarCumpleIntentHandler,
     DiasParaCumpleIntentHandler,
     RecordatorioTareaIntentHandler,

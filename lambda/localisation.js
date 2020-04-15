@@ -29,6 +29,7 @@ module.exports = {
             UNSUPPORTED_DEVICE_MSG: 'Este dispositivo no soporta la operación que estás intentando realizar. ',
             CANCEL_MSG: 'Vale {{nombre}}. Lo cancelamos. ',
             
+            
             // Ayuda y refuerzo de cada intent
             HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
             POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
@@ -59,6 +60,10 @@ module.exports = {
             CONTACT_TELF: 'Telf.: 926 42 62 50',
             CONTACT_EMAIL: 'informatica@cifpvirgendegracia.com',
             
+            // Registrar curso
+            REJECTED_MSG: 'No pasa nada. Por favor dime el ciclo y el curso y lo corregimos. ',
+
+            
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,
             DEVELOPER_INFINITO: `<say-as interpret-as="interjection">hasta el infinito y más allá</say-as>`,
@@ -70,7 +75,7 @@ module.exports = {
            
             
             
-            REJECTED_MSG: 'No pasa nada. Por favor dime la fecha otra vez y lo corregimos. ',
+           
             DAYS_LEFT_MSG: 'Queda {{count}} día ',
             DAYS_LEFT_MSG_plural: 'Quedan {{count}} días ',
             WILL_TURN_MSG: 'para que cumplas {{count}} año. ',

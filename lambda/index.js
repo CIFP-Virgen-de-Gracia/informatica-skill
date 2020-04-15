@@ -14,6 +14,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         handlers.InicioIntentHandler,
         handlers.ContactoIntentHandler,
         handlers.CreadorIntentHandler,
+        handlers.RegistrarCursoIntentHandler,
         handlers.RegistrarCumpleIntentHandler,
         handlers.DiasParaCumpleIntentHandler,
         handlers.RecordatorioTareaIntentHandler,
@@ -37,5 +38,5 @@ exports.handler = Alexa.SkillBuilders.custom()
         interceptors.SaveAttributesResponseInterceptor)
     .withPersistenceAdapter(util.getPersistenceAdapter()) // indicamos las persistencia
     .withApiClient(new Alexa.DefaultApiClient()) // indicamos que vamos a usar una API
-    .withCustomUserAgent('sample/informatica-virgen/mod1')
+    .withCustomUserAgent('sample/informatica-virgen/mod2')
     .lambda();

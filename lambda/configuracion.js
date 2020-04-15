@@ -1,6 +1,6 @@
 module.exports = {
     // Especificamos que atributos queremos que sea salvados de sesión a base de datos
-    ATRIBUTOS_PERSISTENTES: ['nombre', 'ciclo', 'curso', 'cursoNombre', 'cicloNombre', 'sessionCounter', 'recordatorioID', 'dia', 'mesID', 'mesNombre', 'anno'],
+    ATRIBUTOS_PERSISTENTES: ['nombre', 'ciclo', 'curso', 'sessionCounter', 'recordatorioID', 'dia', 'mesID', 'mesNombre', 'anno'],
     
     //PERMISOS por ejemplo para acceder al nombre: de lectura
     PERMISO_NOMBRE_USUARIO: ['alexa::profile:given_name:read'],
