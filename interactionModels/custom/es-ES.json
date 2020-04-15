@@ -164,7 +164,7 @@
           ]
         },
         {
-          "name": "RecordatorioCumpleIntent",
+          "name": "RecordatorioTareaIntent",
           "slots": [
             {
               "name": "mensaje",
@@ -181,14 +181,14 @@
             "configura un recordatorio",
             "pon un recordatorio",
             "crea un recordatorio",
-            "recordatorio para mi cumpleaños",
-            "configura un recordatorio para mi cumpleaños",
-            "pon un recordatorio para mi cumpleaños",
-            "crea un recordatorio para mi cumpleaños",
-            "recordatorio para mi cumple",
-            "configura un recordatorio para mi cumple",
-            "pon un recordatorio para mi cumple",
-            "crea un recordatorio para mi cumple",
+            "recordatorio para mi tarea",
+            "configura un recordatorio para mi tarea",
+            "pon un recordatorio para mi tarea",
+            "crea un recordatorio para mi tarea",
+            "recordatorio para mi tarea",
+            "configura un recordatorio para mi tarea",
+            "pon un recordatorio para mi tarea",
+            "crea un recordatorio para mi tarea",
             "recordatorio con el texto {mensaje}",
             "configura un recordatorio con el texto {mensaje}",
             "pon un recordatorio con el texto {mensaje}",
@@ -245,6 +245,8 @@
           "name": "CreadorIntent",
           "slots": [],
           "samples": [
+            "mi padre",
+            "mi papa",
             "saber sobre mi",
             "quien me ha programado",
             "quien me ha desarrolado",
@@ -271,6 +273,92 @@
             "iniciar",
             "comenzar",
             "ir a inicio"
+          ]
+        },
+        {
+          "name": "ContactoIntent",
+          "slots": [],
+          "samples": [
+            "contactar informatica",
+            "cotacto informatica",
+            "contacto de informatica",
+            "contactar con departamento",
+            "contacto del departamento",
+            "saber más",
+            "conocer",
+            "conoceros",
+            "contactar",
+            "contacto",
+            "cómo localizarnos",
+            "dónde estamos",
+            "dónde estáis",
+            "acerca de"
+          ]
+        },
+        {
+          "name": "DireccionIntent",
+          "slots": [],
+          "samples": [
+            "direccion informatica",
+            "direccion de informatica",
+            "ir a departamento",
+            "direccion departamento",
+            "direccion del departamento",
+            "contactar en persona",
+            "direccion de contacto",
+            "localizacion",
+            "ciudad",
+            "poblacion",
+            "cómo llegar",
+            "donde estáis",
+            "direccion",
+            "dame la direccion"
+          ]
+        },
+        {
+          "name": "TelefonoIntent",
+          "slots": [],
+          "samples": [
+            "telefono de informatica",
+            "telefono informatica",
+            "telefono departamento",
+            "telefono de departamento",
+            "contactar por telefono",
+            "como hablarte",
+            "hablarte",
+            "movil",
+            "el móvil",
+            "el telefono",
+            "llamarte",
+            "como llamar",
+            "dime el telefono",
+            "dame el telefono",
+            "telefono"
+          ]
+        },
+        {
+          "name": "CorreoIntent",
+          "slots": [],
+          "samples": [
+            "email informatica",
+            "email de informatica",
+            "dame el email de informatica",
+            "dame el correo de informatica",
+            "corre informatica",
+            "corre de informatica",
+            "correo departamento",
+            "correo de departamento",
+            "contactar por correo",
+            "contactar por email",
+            "escribirte",
+            "dame el correo electronico",
+            "dame el correo",
+            "dime el correo electronico",
+            "dime el correo",
+            "dame el email",
+            "dime el email",
+            "correo electronico",
+            "email"
           ]
         }
       ],
@@ -471,7 +559,7 @@
           ]
         },
         {
-          "name": "RecordatorioCumpleIntent",
+          "name": "RecordatorioTareaIntent",
           "confirmationRequired": true,
           "prompts": {
             "confirmation": "Confirm.Intent.1563814284178"
@@ -676,5 +764,5 @@
       }
     ]
   },
-  "version": "20"
+  "version": "25"
 }

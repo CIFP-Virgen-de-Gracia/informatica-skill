@@ -22,6 +22,8 @@ const LaunchRequestHandler = {
          
         // Cargamos los atrinbutos de sesion 
         const nombre = sessionAttributes['nombre'] || '';
+        const curso = sessionAttributes['curso'] || '';
+        const ciclo = sessionAttributes['ciclo'] || '';
         const sessionCounter = sessionAttributes['sessionCounter']; // Contador de sesiones
         
         // Variable de mensaje
@@ -41,7 +43,7 @@ const LaunchRequestHandler = {
                 handlerInput.responseBuilder.addDirective({
                         type: 'Alexa.Presentation.APL.RenderDocument',
                         version: '1.1',
-                        document: configuracion.APL.launchDoc,
+                        document: configuracion.APL.launchIU,
                         datasources: {
                             launchData: {
                                 type: 'object',
@@ -51,6 +53,7 @@ const LaunchRequestHandler = {
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
                                     logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
                                     logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    cursoText:curso + ' ' + ciclo,
                                     backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
                                     backgroundOpacity: "0.5"
                                 },
@@ -63,7 +66,6 @@ const LaunchRequestHandler = {
                     });
             
             }
-        
         
         // Mostramos las cosas 
         return handlerInput.responseBuilder
@@ -88,10 +90,11 @@ const InicioIntentHandler = {
         // Para manejar la sesion
         const sessionAttributes = attributesManager.getSessionAttributes();
         // Cargamos los atrinbutos de sesion 
-        const nombre = sessionAttributes['nombre'] || '';
+       const nombre = sessionAttributes['nombre'] || '';
+        const curso = sessionAttributes['curso'] || '';
+        const ciclo = sessionAttributes['ciclo'] || '';
     
         let mensajeHablado = handlerInput.t('POST_START_HELP_MSG');
-        
         
         // Pintamos la pantalla 
             if(util.supportsAPL(handlerInput)) {
@@ -100,7 +103,7 @@ const InicioIntentHandler = {
                 handlerInput.responseBuilder.addDirective({
                         type: 'Alexa.Presentation.APL.RenderDocument',
                         version: '1.1',
-                        document: configuracion.APL.launchDoc,
+                        document: configuracion.APL.launchIU,
                         datasources: {
                             launchData: {
                                 type: 'object',
@@ -110,6 +113,7 @@ const InicioIntentHandler = {
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
                                     logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
                                     logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    cursoText:curso + ' ' + ciclo,
                                     backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
                                     backgroundOpacity: "0.5"
                                 },
@@ -158,7 +162,7 @@ const CreadorIntentHandler = {
             handlerInput.responseBuilder.addDirective({
                     type: 'Alexa.Presentation.APL.RenderDocument',
                     version: '1.1',
-                    document: configuracion.APL.creatorDoc,
+                    document: configuracion.APL.creatorIU,
                     datasources: {
                         launchData: {
                             type: 'object',
@@ -186,7 +190,6 @@ const CreadorIntentHandler = {
         
         return handlerInput.responseBuilder
             .speak(mensajeHablado)
-            .withSimpleCard("Mi Creador:", mensajeHablado + handlerInput.t('DEVELOPER_TWITTER_MSG'), util.getS3PreSignedUrl('Media/jlgs.jpg'))
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
             
@@ -194,8 +197,85 @@ const CreadorIntentHandler = {
     
 };
 
+// CONTACTO - INTENCION
+const ContactoIntentHandler = {
+    canHandle(handlerInput) {
+         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'ContactoIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'DireccionIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'TelefonoIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'CorreoIntent');
+    },
+            
+    handle(handlerInput) {
+        // Recogemos el tipo
+        const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
+        let mensajeHablado = ''
+        
+        // Según el tipo construimos el mensaje
+        switch (intentTipo) {
+            case 'ContactoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG') + handlerInput.t('CONTACT_TELF_MSG') + handlerInput.t('CONTACT_MAIL_MSG');
+                break;
+            case 'DireccionIntent':
+                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG');
+                break;
+            case 'TelefonoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_TELF_MSG');
+                break;
+            case 'CorreoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_MAIL_MSG');
+                break;
+            default:
+                mensajeHablado = intentTipo;
+            break;
+        }
 
-
+        mensajeHablado += handlerInput.t('POST_CONTACT_HELP_MSG');
+        
+        // Pintamos la pantalla 
+        if(util.supportsAPL(handlerInput)) {
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                    type: 'Alexa.Presentation.APL.RenderDocument',
+                    version: '1.1',
+                    document: configuracion.APL.contactIU,
+                    datasources: {
+                        launchData: {
+                            type: 'object',
+                            properties: {
+                                headerTitle: handlerInput.t('CONTACT_HEADER_MSG'),
+                                mainText:handlerInput.t('CONTACT_MSG'),
+                                direCalle: handlerInput.t('CONTACT_CALLE'),
+                                direPoblacion: handlerInput.t('CONTACT_POBLACION'),
+                                telefono:  handlerInput.t('CONTACT_TELF'),
+                                email:  handlerInput.t('CONTACT_EMAIL'),
+                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundOpacity: "0.5"
+                            },
+                            transformers: [{
+                                inputPath: 'hintString',
+                                transformer: 'textToHint',
+                            }]
+                        }
+                    }
+                });
+        
+        }
+        
+        // Mostramos las cosas 
+        
+        return handlerInput.responseBuilder
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+            
+    }
+    
+};
 
 // REGISTRAR CUMPLEAÑOS - INTENCION
 const RegistrarCumpleIntentHandler = {
@@ -373,10 +453,10 @@ const DiasParaCumpleIntentHandler = {
 };
 
 // RECORDATORIO PARA CUMPLE -INTENT
-const RecordatorioCumpleIntentHandler = {
+const RecordatorioTareaIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RecordatorioCumpleIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RecordatorioTareaIntent';
     },
     async handle(handlerInput) {
         const {attributesManager, serviceClientFactory, requestEnvelope} = handlerInput;
@@ -622,33 +702,6 @@ const FamososCumpleIntentHandler = {
                 }
             });
             
-            /*
-            if (util.supportsAPL(handlerInput) && textoRespuesta) { // si no hay texto de respuesta es que no hay nada que decir
-            const {Viewport} = handlerInput.requestEnvelope.context;
-            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-            handlerInput.responseBuilder.addDirective({
-                type: 'Alexa.Presentation.APL.RenderDocument',
-                version: '1.1',
-                document: configuracion.APL.launchDoc,
-                datasources: {
-                    launchData: {
-                        type: 'object',
-                        properties: {
-                            headerTitle: handlerInput.t('LAUNCH_HEADER_MSG'),
-                            mainText: func.convertirCumplesResponse(handlerInput, respuesta, true, timezone).split(": ")[1],
-                            hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                            logoImage: Viewport.pixelWidth > 480 ? util.getS3PreSignedUrl('Media/full_icon_512.png') : util.getS3PreSignedUrl('Media/full_icon_108.png'),
-                            backgroundImage: util.getS3PreSignedUrl('Media/lights_'+resolution+'.png'),
-                            backgroundOpacity: "0.5"
-                        },
-                        transformers: [{
-                            inputPath: 'hintString',
-                            transformer: 'textToHint',
-                        }]
-                    }
-                }
-            });
-            */
              // Agregar tarjeta de inicio a la respuesta
             // Si estás usando una habilidad alojada de Alexa, las imágenes a continuación caducarán
             // y no se pudo mostrar en la tarjeta. Debes reemplazarlos con imágenes estáticas
@@ -723,15 +776,21 @@ const CancelAndStopIntentHandler = {
         // Para decir su nombre
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const nombre = sessionAttributes['nombre'] || '';
+        
+        const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
+        
+        //if(intentTipo==='AMAZON.CancelIntent')
+        //    return InicioIntentHandler.handle(handlerInput);
+        
         const mensajeHablado = handlerInput.t('GOODBYE_MSG', {nombre: nombre});
-
+    
         // Preparamos la salida
-        return handlerInput.responseBuilder
-             .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-    }
+            return handlerInput.responseBuilder
+                 //.withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                .speak(mensajeHablado)
+                //.reprompt(handlerInput.t('REPROMPT_MSG'))
+                .getResponse();
+             }
 };
 
 
@@ -808,9 +867,10 @@ module.exports = {
     LaunchRequestHandler,
     InicioIntentHandler,
     CreadorIntentHandler,
+    ContactoIntentHandler,
     RegistrarCumpleIntentHandler,
     DiasParaCumpleIntentHandler,
-    RecordatorioCumpleIntentHandler,
+    RecordatorioTareaIntentHandler,
     FamososCumpleIntentHandler,
     TouchIntentHandler,
     HelpIntentHandler,

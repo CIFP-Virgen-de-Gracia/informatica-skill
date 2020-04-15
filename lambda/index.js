@@ -11,11 +11,12 @@ const handlers = require('./handlers'); // Handelers
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         handlers.LaunchRequestHandler,
-        handlers.CreadorIntentHandler,
         handlers.InicioIntentHandler,
+        handlers.ContactoIntentHandler,
+        handlers.CreadorIntentHandler,
         handlers.RegistrarCumpleIntentHandler,
         handlers.DiasParaCumpleIntentHandler,
-        handlers.RecordatorioCumpleIntentHandler,
+        handlers.RecordatorioTareaIntentHandler,
         handlers.FamososCumpleIntentHandler,
         handlers.TouchIntentHandler,
         handlers.HelpIntentHandler,

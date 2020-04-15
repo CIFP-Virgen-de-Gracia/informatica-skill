@@ -12,10 +12,10 @@ module.exports = {
    MAX_CUMPLES: 5, 
     
     // APL Interfaces, uno por cada fichero de recursos
-    // APL Interfaces, uno por cada fichero de recursos
     APL: {
-        launchDoc: require('./recursos/launchScreen.json'),
-        creatorDoc: require('./recursos/creatorScreen.json'),
-        listDoc: require('./recursos/listScreen.json')
+        launchIU: require('./recursos/interfaz/launchScreen.json'),
+        creatorIU: require('./recursos/interfaz/creatorScreen.json'),
+        contactIU: require('./recursos/interfaz/contactScreen.json'),
+        listDoc: require('./recursos/interfaz/listScreen.json')
     }
 }
