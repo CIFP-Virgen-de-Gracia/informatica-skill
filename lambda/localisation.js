@@ -37,6 +37,9 @@ module.exports = {
             POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, registrar tus datos, cómo contactar o pedir ayuda. ',
             POST_CONTACT_HELP_MSG: 'Puedo repetirte la dirección, el teléfono o email, también puedo darte información de ciclos o módulos, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_LISTAR_CICLOS_HELP_MSG: 'Puedo darte detalles de un ciclo concreto si lo deseas pidiendo información de ciclo y su nombre, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_CICLO_HELP_MSG: 'Si quieres saber sobre otros ciclos, pídemelo. También puedes saber de módulos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_LISTAR_MODULOS_HELP_MSG: 'Puedo darte detalles de un módulo concreto si lo deseas pidiendo información sobre módulos de un ciclo y curso, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_MODULO_HELP_MSG: 'Si quieres saber sobre otros módulos, pídemelo. También puedes saber sobre ciclos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -64,10 +67,16 @@ module.exports = {
             // Registrar curso
             REJECTED_MSG: 'No pasa nada. Por favor dime el ciclo y el curso y lo corregimos. ',
             
-            //Listar ciclo
+            //Listar ciclo y detalles de ciclo
             LISTAR_CICLO_MSG: '{{nombre}}. Nuestras titulaciones y ciclos son: ', 
             LISTAR_CICLO_HEADER_MSG: 'Titulaciones',
             LISTAR_CICLO_TEXT_MSG: 'Nuestros ciclos, ¿Te interesa alguno?',
+            
+             //Listar modulos y detalles de modulo
+            LISTAR_MODULOS_MSG: '{{nombre}}. Los módulos de {{curso}} de {{ciclo}} son: ', 
+            LISTAR_MODULOS_MAIN_MSG: 'Módulos de {{curso}} de {{ciclo}}',
+            LISTAR_MODULOS_HEADER_MSG: 'Modulos',
+            LISTAR_MODULOS_TEXT_MSG: 'Nuestros módulos, ¿Te interesa alguno?',
             
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,

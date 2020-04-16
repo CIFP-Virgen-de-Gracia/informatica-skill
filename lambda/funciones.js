@@ -8,6 +8,70 @@ const configuracion = require('./configuracion');
 
 module.exports = {
     
+    // Obtiene los detalles de un módulo
+    getDetallesModulo(moduloNombre){
+        let salida;
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        moduloNombre = moduloNombre+'.'.toLowerCase().trim(); // Porque en el fichero tiene un espacio. Lo sé es algo cutre, pero esto lo haremos con servcios.
+        console.log("Consultando modulo: " + moduloNombre);
+        // Recorro todos los ciclos
+        for (var ciclo in ciclos) {
+            let miCiclo = ciclos[ciclo];
+            // Filtro por el mío
+                console.log(miCiclo.id);
+                 //recorro todos los cursos
+                for (var curso in miCiclo.cursos) {
+                    let miCurso = miCiclo.cursos[curso];
+                        console.log(miCurso.descripcion);
+                        //recorro los módulos
+                        for(var modulo in miCurso.modulos){
+                            let miModulo = miCurso.modulos[modulo];
+                            console.log(miModulo.nombre);
+                            if(miModulo.nombre.toLowerCase().trim() === moduloNombre) {
+                                // Si es mi modulo 
+                                console.log(miModulo.id);
+                                console.log(miModulo.nombre);
+                                salida = miModulo;
+                            }
+                        }
+
+                }
+        }
+        return salida;
+    },
+    
+    //obtiene la lista de nombres de modulos
+    getListaNombreModulos(cicloNombre, cursoNumero){
+        let listaModulos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        let idCiclo = module.exports.getCicloID(cicloNombre);
+        console.log("listando todos modulos de curso " + cursoNumero + " del ciclo " + idCiclo);
+        // Recorro todos los ciclos
+        for (var ciclo in ciclos) {
+            let miCiclo = ciclos[ciclo];
+            // Filtro por el mío
+            if(miCiclo.id === idCiclo) {
+                console.log(miCiclo.id);
+                 //recorro todos los cursos
+                for (var curso in miCiclo.cursos) {
+                    let miCurso = miCiclo.cursos[curso];
+                    // filtro el mío
+                    if(miCurso.numero === cursoNumero){
+                        console.log(miCurso.descripcion);
+                        //recorro los módulos
+                        for(var modulo in miCurso.modulos){
+                            let miModulo = miCurso.modulos[modulo];
+                            console.log(miModulo.nombre);
+                            listaModulos+= miModulo.nombre;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return listaModulos;
+    },
+    
     // Obtiene los detalles de un ciclos
     getDetallesCiclo(cicloNombre){
         let salida;

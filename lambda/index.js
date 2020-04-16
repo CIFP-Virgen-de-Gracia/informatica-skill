@@ -18,6 +18,8 @@ exports.handler = Alexa.SkillBuilders.custom()
         handlers.RegistrarCursoIntentHandler,
         handlers.ListarCiclosIntentHandler,
         handlers.InfoCicloIntentHandler,
+        handlers.ListarModulosIntentHandler,
+        handlers.InfoModuloIntentHandler,
         handlers.HelpIntentHandler,
         handlers.CancelAndStopIntentHandler,
         handlers.FallbackIntentHandler,

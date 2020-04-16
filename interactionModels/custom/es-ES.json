@@ -68,6 +68,7 @@
           "name": "ContactoIntent",
           "slots": [],
           "samples": [
+            "dime el contacto",
             "contactar informatica",
             "cotacto informatica",
             "contacto de informatica",
@@ -119,7 +120,7 @@
             "el móvil",
             "el telefono",
             "llamarte",
-            "como llamar",
+            "cómo llamar",
             "dime el telefono",
             "dame el telefono",
             "telefono"
@@ -187,9 +188,9 @@
           ],
           "samples": [
             "registrar lo que estudio",
-            "recuerda",
+            "recuerdar curso",
             "recuerda lo que estudio",
-            "registrar",
+            "registrar mis estudios",
             "registrar curso",
             "{ciclo}",
             "{curso}",
@@ -216,7 +217,7 @@
             "que ciclos hay",
             "decirme los ciclos",
             "listar ciclos",
-            "titulaciones",
+            "listrar titulaciones",
             "ciclos",
             "los ciclos",
             "qué puedo estudiar",
@@ -250,122 +251,79 @@
             "información de un ciclo",
             "información de ciclo"
           ]
+        },
+        {
+          "name": "ListarModulosIntent",
+          "slots": [
+            {
+              "name": "ciclo",
+              "type": "TipoCiclo",
+              "samples": [
+                "{ciclo} {curso}",
+                "{curso} {ciclo}",
+                "{curso} de {ciclo}",
+                "ciclo de {ciclo}",
+                "el ciclo de {ciclo}",
+                "{ciclo}"
+              ]
+            },
+            {
+              "name": "curso",
+              "type": "TipoCurso",
+              "samples": [
+                "hago {curso} de {ciclo}",
+                "estoy en {curso}",
+                "{curso}",
+                "mi curso es {curso}"
+              ]
+            }
+          ],
+          "samples": [
+            "listar módulos",
+            "asignaturas de {ciclo} de {curso}",
+            "asignaturas de {curso}",
+            "asignaturas de {ciclo}",
+            "módulos de {curso}",
+            "módulos de {ciclo} de {curso}",
+            "módulos de {ciclo}",
+            "dime los módulos de {ciclo}",
+            "qué módulos hay",
+            "háblame de los módulos",
+            "dime los módulos que hay",
+            "los módulos",
+            "lista de módulos",
+            "dime los módulos"
+          ]
+        },
+        {
+          "name": "InfoModuloIntent",
+          "slots": [
+            {
+              "name": "modulo",
+              "type": "TipoModulo",
+              "samples": [
+                "es {modulo}",
+                "el módulo es {modulo}",
+                "{modulo}"
+              ]
+            }
+          ],
+          "samples": [
+            "quiero saber más del módulo {modulo}",
+            "quiero saber más del modulo",
+            "infomarción del módulo ",
+            "info de un módulo",
+            "más información de un módulo",
+            "puedes indicarme más información del modúlo {modulo}",
+            "dame información del modulo {modulo}",
+            "información de módulo",
+            "detalle de módulo {modulo}",
+            "detalles de módulo",
+            "información de módulo {modulo}"
+          ]
         }
       ],
       "types": [
-        {
-          "values": [
-            {
-              "id": "12",
-              "name": {
-                "value": "diciembre",
-                "synonyms": [
-                  "duodécimo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "11",
-              "name": {
-                "value": "noviembre",
-                "synonyms": [
-                  "undécimo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "10",
-              "name": {
-                "value": "octubre",
-                "synonyms": [
-                  "décimo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "09",
-              "name": {
-                "value": "septiembre",
-                "synonyms": [
-                  "noveno mes del año"
-                ]
-              }
-            },
-            {
-              "id": "08",
-              "name": {
-                "value": "agosto",
-                "synonyms": [
-                  "octavo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "07",
-              "name": {
-                "value": "julio",
-                "synonyms": [
-                  "séptimo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "06",
-              "name": {
-                "value": "junio",
-                "synonyms": [
-                  "sexto mes del año"
-                ]
-              }
-            },
-            {
-              "id": "05",
-              "name": {
-                "value": "mayo",
-                "synonyms": [
-                  "quinto mes del año"
-                ]
-              }
-            },
-            {
-              "id": "04",
-              "name": {
-                "value": "abril",
-                "synonyms": [
-                  "cuarto mes del año"
-                ]
-              }
-            },
-            {
-              "id": "03",
-              "name": {
-                "value": "marzo",
-                "synonyms": [
-                  "tercer mes del año"
-                ]
-              }
-            },
-            {
-              "id": "02",
-              "name": {
-                "value": "febrero",
-                "synonyms": [
-                  "segundo mes del año"
-                ]
-              }
-            },
-            {
-              "id": "01",
-              "name": {
-                "value": "enero",
-                "synonyms": [
-                  "primer mes del año"
-                ]
-              }
-            }
-          ],
-          "name": "TipoMes"
-        },
         {
           "values": [
             {
@@ -434,6 +392,166 @@
             }
           ],
           "name": "TipoCurso"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "Servicios en red"
+              }
+            },
+            {
+              "name": {
+                "value": "Seguridad informática"
+              }
+            },
+            {
+              "name": {
+                "value": "Sistemas operativos en red"
+              }
+            },
+            {
+              "name": {
+                "value": "Aplicaciones ofimáticas"
+              }
+            },
+            {
+              "name": {
+                "value": "Aplicaciones Web"
+              }
+            },
+            {
+              "name": {
+                "value": "Redes locales"
+              }
+            },
+            {
+              "name": {
+                "value": "Sistemas operativos monopuesto"
+              }
+            },
+            {
+              "name": {
+                "value": "Montaje y mantenimiento de equipo"
+              }
+            },
+            {
+              "name": {
+                "value": "Seguridad y alta disponibilidad"
+              }
+            },
+            {
+              "name": {
+                "value": "Administración de sistemas gestores de bases de datos"
+              }
+            },
+            {
+              "name": {
+                "value": "Implantación de aplicaciones web"
+              }
+            },
+            {
+              "name": {
+                "value": "Servicios de red e Internet"
+              }
+            },
+            {
+              "name": {
+                "value": "Administración de sistemas operativos"
+              }
+            },
+            {
+              "name": {
+                "value": "Gestión de bases de datos"
+              }
+            },
+            {
+              "name": {
+                "value": "Fundamentos de hardware"
+              }
+            },
+            {
+              "name": {
+                "value": "Planificación y administración de redes"
+              }
+            },
+            {
+              "name": {
+                "value": "Implantación de sistemas operativos"
+              }
+            },
+            {
+              "name": {
+                "value": "Diseño de interfaces web"
+              }
+            },
+            {
+              "name": {
+                "value": "Despliegue de aplicaciones web"
+              }
+            },
+            {
+              "name": {
+                "value": "Desarrollo web en entorno servidor"
+              }
+            },
+            {
+              "name": {
+                "value": "Desarrollo web en entorno cliente"
+              }
+            },
+            {
+              "name": {
+                "value": "Sistemas de gestión empresarial"
+              }
+            },
+            {
+              "name": {
+                "value": "Programación de servicios y procesos"
+              }
+            },
+            {
+              "name": {
+                "value": "Programación multimedia y dispositivos móviles"
+              }
+            },
+            {
+              "name": {
+                "value": "Desarrollo de interfaces"
+              }
+            },
+            {
+              "name": {
+                "value": "Acceso a datos"
+              }
+            },
+            {
+              "name": {
+                "value": "Entornos de desarrollo"
+              }
+            },
+            {
+              "name": {
+                "value": "Lenguajes de marcas y sistemas de gestión de información"
+              }
+            },
+            {
+              "name": {
+                "value": "Programación"
+              }
+            },
+            {
+              "name": {
+                "value": "Base de datos"
+              }
+            },
+            {
+              "name": {
+                "value": "Sistemas informáticos"
+              }
+            }
+          ],
+          "name": "TipoModulo"
         }
       ]
     },
@@ -495,6 +613,65 @@
                 {
                   "type": "hasEntityResolutionMatch",
                   "prompt": "Slot.Validation.114084120640.185616914097.1065201695351"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ListarModulosIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "ciclo",
+              "type": "TipoCiclo",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.434940544712.1429158591847"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.434940544712.1429158591847.1122171574944"
+                }
+              ]
+            },
+            {
+              "name": "curso",
+              "type": "TipoCurso",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.434940544712.151685139786"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.434940544712.151685139786.1522317571418"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "InfoModuloIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "modulo",
+              "type": "TipoModulo",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.321194274225.227591250148"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.321194274225.227591250148.1146962495131"
                 }
               ]
             }
@@ -753,7 +930,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "me has dicho que tu curso es {curso} , ahora necesito saber el ciclo entre ASIR, DAM, DAW y SMR"
+            "value": "Me has dicho que tu curso es {curso} , ahora necesito saber el ciclo entre ASIR, DAM, DAW y SMR"
           },
           {
             "type": "PlainText",
@@ -831,8 +1008,114 @@
             "value": "Dime un ciclo como Sistemas microinformático y redes, administración de Sistemas Informáticos en red, desarrollo de aplicaciones multiplataforma o desarrollo de aplicaciones web"
           }
         ]
+      },
+      {
+        "id": "Slot.Validation.434940544712.1429158591847.1122171574944",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Vale, pero necesito saber eun ciclo válido como ASIR, DAM, DAW o SMR"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un ciclo como ASIR, DAM, DAW o SMR"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.434940544712.1429158591847",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Ok, ya sé el curso, necesito saber el ciclo."
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el ciclo para decirte los módulos."
+          },
+          {
+            "type": "PlainText",
+            "value": "Me has dicho que estás en {curso} . Por favor, dime el ciclo."
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un ciclo."
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.434940544712.151685139786.1522317571418",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Los cursos pueden ser primero o segundo"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime un curso válido, como primero o segundo"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.434940544712.151685139786",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Genial, estás cursando {ciclo} , dime el curso, por favor"
+          },
+          {
+            "type": "PlainText",
+            "value": "Me has dicho que quieres saber los módulos del ciclo {ciclo} , ahora necesito saber el curso"
+          },
+          {
+            "type": "PlainText",
+            "value": "Vale, dime el curso"
+          },
+          {
+            "type": "PlainText",
+            "value": "Necesito saber el curso"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.321194274225.227591250148",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Serías tan amable de indicarme el módulo?"
+          },
+          {
+            "type": "PlainText",
+            "value": "ok, dime el módulo"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el módulo"
+          },
+          {
+            "type": "PlainText",
+            "value": "Por favor, dime el módulo"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.321194274225.227591250148.1146962495131",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "No encuetro el módulo, quizás no haya entendido bien el nombre."
+          },
+          {
+            "type": "PlainText",
+            "value": "No encuetro ese módulo, asegúrate que lo has dicho bien. Solicita un listado de módulos por ciclo y curso"
+          },
+          {
+            "type": "PlainText",
+            "value": "No me suena ese módulo, si quieres solicita el listado de módulos de un ciclo por curso y te los digo"
+          }
+        ]
       }
     ]
   },
-  "version": "39"
+  "version": "45"
 }

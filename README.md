@@ -1,5 +1,6 @@
 # Informatica-Skill
-Proceso de creación de una skill para Alexa
+Proceso de creación de una skill para Alexa. Es un ejemplo didático y no es técnico al 100%.
+Para ello sería interesante haber usado bases de datos o servicios webs para hacer búsquedas más potentes y no ficheros. Pero lo importante es conocer el proceso y se propondrá como ampliación otras tecnologías como las mencionadas.
 
 App con un poco de todo
 * Alexa Developer Doc: https://developer.amazon.com/es/documentation/
@@ -12,7 +13,7 @@ Es importante que gereneréis bien la clave de la API de Google Maps
 * 07/04/2020. Manejo de diálogos
 * 14/04/2020. Launch, Inicio, Creador. Interfaces y Entonaciones
 * 15/04/2020. Contacto. Registrar estudios
-* 16/04/2020. Datos de Ciclos y modulos. Curriculo. Listar ciclos y detalles de ciclos. Media
+* 16/04/2020. Datos de Ciclos y modulos. Curriculo. Listar ciclos y detalles de ciclos. Listar Módulos y detalles de módulos. Media
 
 
 ## Acerca de

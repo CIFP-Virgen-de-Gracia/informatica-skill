@@ -12,16 +12,16 @@ module.exports = {
                     {
                         id: '1',
                         descripcion: 'primero',
-                        numero: '1º.',
+                        numero: '1.º',
                         modulos: [
                             {
                                 id: 'SI',
-                                nombre: 'Sistemas informáticos',
+                                nombre: 'Sistemas informáticos. ',
                                 descripcion: 'Aprenderás a configurar sistemas operativos como Windows y Linux y redes de comunicación. ' 
                             },
                             {
                                 id: 'BD',
-                                nombre: 'Base de datos. ',
+                                nombre: 'Bases de datos. ',
                                 descripcion: 'Crearás y consultarás información contenida en bases de datos. ' 
                             },
                             {
@@ -44,7 +44,7 @@ module.exports = {
                     {
                         id: '2',
                         descripcion: 'segundo',
-                        numero: '2º.',
+                        numero: '2.º',
                         modulos: [
                             {
                                 id: 'AD',
@@ -86,16 +86,16 @@ module.exports = {
                     {
                         id: '1',
                         descripcion: 'primero',
-                        numero: '1º.',
+                        numero: '1.º',
                         modulos: [
                             {
                                 id: 'SI',
-                                nombre: 'Sistemas informáticos',
+                                nombre: 'Sistemas informáticos. ',
                                 descripcion: 'Aprenderás a configurar sistemas operativos como Windows y Linux y redes de comunicación. ' 
                             },
                             {
                                 id: 'BD',
-                                nombre: 'Base de datos. ',
+                                nombre: 'Bases de datos. ',
                                 descripcion: 'Crearás y consultarás información contenida en bases de datos. ' 
                             },
                             {
@@ -118,7 +118,7 @@ module.exports = {
                     {
                         id: '2',
                         descripcion: 'segundo',
-                        numero: '2º.',
+                        numero: '2.º',
                         modulos: [
                             {
                                 id: 'DC',
@@ -127,7 +127,7 @@ module.exports = {
                             }, 
                             {
                                 id: 'DS',
-                                nombre: 'Desarrollo web en entorno cliente. ',
+                                nombre: 'Desarrollo web en entorno servidor. ',
                                 descripcion: 'Desarrollo de web desde la perpectiva back-end. ' 
                             },
                             {
@@ -155,7 +155,7 @@ module.exports = {
                     {
                         id: '1',
                         descripcion: 'primero',
-                        numero: '1º.',
+                        numero: '1.º',
                         modulos: [
                             {
                                 id: 'IS',
@@ -187,7 +187,7 @@ module.exports = {
                     {
                         id: '2',
                         descripcion: 'segundo',
-                        numero: '2º.',
+                        numero: '2.º',
                         modulos: [
                             {
                                 id: 'AS',
@@ -229,7 +229,7 @@ module.exports = {
                     {
                         id: '1',
                         descripcion: 'primero',
-                        numero: '1º.',
+                        numero: '1.º',
                         modulos: [
                             {
                                 id: 'MM',
@@ -256,7 +256,7 @@ module.exports = {
                     {
                         id: '2',
                         descripcion: 'segundo',
-                        numero: '2º.',
+                        numero: '2.º',
                         modulos: [
                             {
                                 id: 'AO',
