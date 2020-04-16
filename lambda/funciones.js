@@ -4,9 +4,66 @@
 const moment = require('moment-timezone'); // manejo de fechas con TimeZone
 const util = require('./util'); // Utilidades
 const axios = require('axios'); // servicios HTTP y REST 
-
+const configuracion = require('./configuracion');
 
 module.exports = {
+    
+    // Obtiene los detalles de un ciclos
+    getDetallesCiclo(cicloNombre){
+        let salida;
+        let id = module.exports.getCicloID(cicloNombre);
+        salida = id;
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        for (var ciclo in ciclos) {
+            if(ciclos[ciclo].id === id) {
+                console.log(ciclos[ciclo].id);
+                console.log(ciclos[ciclo].nombre);
+                salida = ciclos[ciclo];
+            }
+        }
+        return salida;
+    },
+    
+    
+    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
+    getListaNombreCiclos(){
+        let listaCiclos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        console.log("listando todos los ciclos Ciclos");
+        for (var ciclo in ciclos) {
+            console.log(ciclos[ciclo].id);
+            listaCiclos += ciclos[ciclo].nombre;
+        }
+        return listaCiclos;
+    },
+    
+    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
+    getListaIDCiclos(){
+        let listaCiclos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        console.log("listando todos los ciclos Ciclos");
+        for (var ciclo in ciclos) {
+            console.log(ciclos[ciclo].id);
+            listaCiclos += ciclos[ciclo].id + ' ';
+        }
+        return listaCiclos;
+    },
+    
+    
+    
+     // Dado un ciclo devuelve sus siglas
+    getCicloID(ciclo) {
+        // Primero quitamos los acentos
+        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
+        if(ciclo === 'desarrollo de aplicaciones multiplataforma' || ciclo ==='dam')
+            return 'DAM';
+        else if(ciclo === 'desarrollo de aplicaciones web' || ciclo ==='daw')
+            return 'DAW';
+        else if(ciclo === 'administracion de sistemas informaticos y redes' || ciclo ==='asir')
+            return 'ASIR';
+        else if(ciclo === 'sistemas microinformaticos y redes' || ciclo ==='smr')
+            return 'SMR';
+    },
     
     // Dado un nombre de un mes devuelve su número
     getIDMes(mesNombre) {
@@ -14,17 +71,7 @@ module.exports = {
        return  meses.indexOf( mesNombre) + 1;
     },
     
-    // Dado un ciclo devuelve sus siglas
-    getCicloID(ciclo) {
-        if(ciclo === 'desarrollo de apliaciones multiplataforma' || ciclo ==='dam')
-            return 'DAM';
-        else if(ciclo === 'desarrollo de apliaciones web' || ciclo ==='daw')
-            return 'DAW';
-        else if(ciclo === 'administracion de sistemas informaticos y redes' || ciclo ==='asir')
-            return 'ASIR';
-        else if(ciclo === 'sistemas microinformaticos y redes' || ciclo ==='smr')
-            return 'SMR';
-    },
+   
     
     // Devuelve los datos del cumpleaños dado una fecha
     getDatosCumple(dia, mes, anno, timezone) {

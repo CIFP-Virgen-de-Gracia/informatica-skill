@@ -12,6 +12,7 @@ Es importante que gereneréis bien la clave de la API de Google Maps
 * 07/04/2020. Manejo de diálogos
 * 14/04/2020. Launch, Inicio, Creador. Interfaces y Entonaciones
 * 15/04/2020. Contacto. Registrar estudios
+* 16/04/2020. Datos de Ciclos y modulos. Curriculo. Listar ciclos y detalles de ciclos. Media
 
 
 ## Acerca de

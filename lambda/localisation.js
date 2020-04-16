@@ -31,11 +31,12 @@ module.exports = {
             
             
             // Ayuda y refuerzo de cada intent
-            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
-            POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
-            POST_DEVELOPER_HELP_MSG: 'Ahora que ya sabes quien es, puedes preguntarme por nuestros ciclos, módulos, cómo contactar, o puedes pedir ayuda. ¿Qué quieres hacer? ',
-            POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, cómo contactar o pedir ayuda. ',
-            POST_CONTACT_HELP_MSG: 'Puedo repetirte la dirección, el teléfono o email, también puedo darte información de ciclos o módulos, o puedes pedir ayuda. ¿Qué quieres hacer?. ',
+            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, registrar tu curso, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
+            POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo, registrar tus estudios o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
+            POST_DEVELOPER_HELP_MSG: 'Ahora que ya sabes quien es, puedes preguntarme por nuestros ciclos, módulos, registrar tu curso, cómo contactar, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, registrar tus datos, cómo contactar o pedir ayuda. ',
+            POST_CONTACT_HELP_MSG: 'Puedo repetirte la dirección, el teléfono o email, también puedo darte información de ciclos o módulos, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_LISTAR_CICLOS_HELP_MSG: 'Puedo darte detalles de un ciclo concreto si lo deseas pidiendo información de ciclo y su nombre, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -62,7 +63,11 @@ module.exports = {
             
             // Registrar curso
             REJECTED_MSG: 'No pasa nada. Por favor dime el ciclo y el curso y lo corregimos. ',
-
+            
+            //Listar ciclo
+            LISTAR_CICLO_MSG: '{{nombre}}. Nuestras titulaciones y ciclos son: ', 
+            LISTAR_CICLO_HEADER_MSG: 'Titulaciones',
+            LISTAR_CICLO_TEXT_MSG: 'Nuestros ciclos, ¿Te interesa alguno?',
             
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,

@@ -17,5 +17,10 @@ module.exports = {
         creatorIU: require('./recursos/interfaz/creatorScreen.json'),
         contactIU: require('./recursos/interfaz/contactScreen.json'),
         listDoc: require('./recursos/interfaz/listScreen.json')
+    },
+    
+    // Datos con los que trabajar 
+    DATA: {
+        curriculo: require('./recursos/datos/curriculo')
     }
 }

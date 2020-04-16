@@ -4,6 +4,7 @@ const Alexa = require('ask-sdk-core'); // Librería de Alexa
 const util = require('./util'); // Utilidades
 const interceptors = require('./interceptors'); // Interceptores
 const handlers = require('./handlers'); // Handelers
+const configuracion = require('./configuracion');
 
 
 // Este controlador (handler) actúa como el punto de entrada para la skill, enrutando todas las solicitudes y respuestas
@@ -15,11 +16,8 @@ exports.handler = Alexa.SkillBuilders.custom()
         handlers.ContactoIntentHandler,
         handlers.CreadorIntentHandler,
         handlers.RegistrarCursoIntentHandler,
-        handlers.RegistrarCumpleIntentHandler,
-        handlers.DiasParaCumpleIntentHandler,
-        handlers.RecordatorioTareaIntentHandler,
-        handlers.FamososCumpleIntentHandler,
-        handlers.TouchIntentHandler,
+        handlers.ListarCiclosIntentHandler,
+        handlers.InfoCicloIntentHandler,
         handlers.HelpIntentHandler,
         handlers.CancelAndStopIntentHandler,
         handlers.FallbackIntentHandler,
@@ -38,5 +36,5 @@ exports.handler = Alexa.SkillBuilders.custom()
         interceptors.SaveAttributesResponseInterceptor)
     .withPersistenceAdapter(util.getPersistenceAdapter()) // indicamos las persistencia
     .withApiClient(new Alexa.DefaultApiClient()) // indicamos que vamos a usar una API
-    .withCustomUserAgent('sample/informatica-virgen/mod2')
+    .withCustomUserAgent('sample/informatica-virgen/mod4')
     .lambda();
