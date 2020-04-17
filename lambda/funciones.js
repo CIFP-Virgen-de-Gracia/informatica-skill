@@ -77,6 +77,7 @@ module.exports = {
         let salida;
         let id = module.exports.getCicloID(cicloNombre);
         salida = id;
+        console.log("Detalle ciclo id: " + id);
         const ciclos = configuracion.DATA.curriculo.ciclos;
         for (var ciclo in ciclos) {
             if(ciclos[ciclo].id === id) {
@@ -113,12 +114,22 @@ module.exports = {
         return listaCiclos;
     },
     
-    
+    // Dado el ID de un ciclo devuelve su nombre 
+    getCicloNombre(cicloID){
+       if(cicloID ==='DAM')
+            return 'Desarrollo de Aplicaciones Multiplataforma';
+        else if(cicloID === 'DAW')
+            return 'Desarrollo de Aplicaciones Web';
+        else if(cicloID === 'ASIR')
+            return 'Administración de Sistemas Informáticos y Redes';
+        else if(cicloID === 'SMR')
+            return 'Sistemas Microinformáticos y Redes';
+    },
     
      // Dado un ciclo devuelve sus siglas
     getCicloID(ciclo) {
         // Primero quitamos los acentos
-        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
+        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
         if(ciclo === 'desarrollo de aplicaciones multiplataforma' || ciclo ==='dam')
             return 'DAM';
         else if(ciclo === 'desarrollo de aplicaciones web' || ciclo ==='daw')

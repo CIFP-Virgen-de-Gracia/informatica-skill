@@ -7,6 +7,91 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
 const moment = require('moment-timezone'); // Para manejar fechas
 
 
+// MIS ESTUDIOS  - INTENCION
+const MiMatriculaIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MiMatriculaIntent';
+    },
+    //Proceso
+    handle(handlerInput) {
+        // Recogemos los la entrada entrada - handler Input
+        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        // Obtenemos los datos que tenemos 
+        const nombre = sessionAttributes['nombre'] || '';
+        const curso = sessionAttributes['curso'] || '';
+        const ciclo = sessionAttributes['ciclo'] || '';
+        
+        // Creamos mensaje
+        let mensajeHablado ='';
+
+        // Si no sabemos su nombre, ciclo y curso
+        if (nombre && curso && ciclo){
+            // Obtenemos el detalle del ciclo.
+            let nombreCiclo = func.getCicloNombre(ciclo);
+            let detalleCiclo = func.getDetallesCiclo(nombreCiclo);
+            let detalleModulos = func.getListaNombreModulos(detalleCiclo.id, curso);
+            
+            mensajeHablado += handlerInput.t('MATRICULA_MSG', {nombre: nombre, curso:curso, ciclo:nombreCiclo});
+            mensajeHablado += detalleModulos;
+            
+             // Pintamos la pantalla 
+            if(util.supportsAPL(handlerInput)) {
+                const {Viewport} = handlerInput.requestEnvelope.context;
+                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+                handlerInput.responseBuilder.addDirective({
+                        type: 'Alexa.Presentation.APL.RenderDocument',
+                        version: '1.1',
+                        document: configuracion.APL.launchIU,
+                        datasources: {
+                            launchData: {
+                                type: 'object',
+                                properties: {
+                                    headerTitle: handlerInput.t('MATRICULA_HEADER_MSG'),
+                                    mainText: detalleCiclo.nombre,
+                                    hintString: handlerInput.t('MATRICULA_HEADER_MSG'),
+                                    logoImage: util.getS3PreSignedUrl('Media/'+ detalleCiclo.imagen),
+                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    cursoText: curso +' '+ detalleCiclo.id,
+                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundOpacity: "0.5"
+                                },
+                                transformers: [{
+                                    inputPath: 'hintString',
+                                    transformer: 'textToHint',
+                                }]
+                            }
+                        }
+                    });
+            
+            }
+            
+        }
+        // Si no
+        else{
+            if(!nombre){
+                 mensajeHablado = handlerInput.t('MISSING_NAME_MSG');
+            }else{
+                  mensajeHablado = handlerInput.t('MISSINGN_MODULOS_MSG');
+            }
+        }
+        
+        mensajeHablado += handlerInput.t('POST_DETALLE_CICLO_HELP_MSG');
+        
+       
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
+
 // INFO CICLO - INTENCION
 const InfoModuloIntentHandler = {
     canHandle(handlerInput) {
@@ -679,6 +764,7 @@ module.exports = {
     InfoCicloIntentHandler,
     ListarModulosIntentHandler,
     InfoModuloIntentHandler,
+    MiMatriculaIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,

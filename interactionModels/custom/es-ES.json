@@ -321,6 +321,28 @@
             "detalles de módulo",
             "información de módulo {modulo}"
           ]
+        },
+        {
+          "name": "MiMatriculaIntent",
+          "slots": [],
+          "samples": [
+            "lo que estudio",
+            "lo que hago",
+            "detalle de mi matrícula",
+            "detalle de mis módulos",
+            "detalles de mi ciclo",
+            "información de matrícula",
+            "matrícula",
+            "mi matrícula",
+            "información de mis estudios",
+            "hablame de mi módulos",
+            "dime mis módulos",
+            "dime mis ciclo",
+            "mis módulos",
+            "mi ciclo",
+            "mi expediente",
+            "mis estudios"
+          ]
         }
       ],
       "types": [
@@ -1117,5 +1139,5 @@
       }
     ]
   },
-  "version": "45"
+  "version": "47"
 }

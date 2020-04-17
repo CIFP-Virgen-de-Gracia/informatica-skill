@@ -31,7 +31,7 @@ module.exports = {
             
             
             // Ayuda y refuerzo de cada intent
-            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, registrar tu curso, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
+            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, registrar tu curso, hablarte de tu matrícula, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
             POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo, registrar tus estudios o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
             POST_DEVELOPER_HELP_MSG: 'Ahora que ya sabes quien es, puedes preguntarme por nuestros ciclos, módulos, registrar tu curso, cómo contactar, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, registrar tus datos, cómo contactar o pedir ayuda. ',
@@ -40,12 +40,13 @@ module.exports = {
             POST_DETALLE_CICLO_HELP_MSG: 'Si quieres saber sobre otros ciclos, pídemelo. También puedes saber de módulos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_LISTAR_MODULOS_HELP_MSG: 'Puedo darte detalles de un módulo concreto si lo deseas pidiendo información sobre módulos de un ciclo y curso, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_DETALLE_MODULO_HELP_MSG: 'Si quieres saber sobre otros módulos, pídemelo. También puedes saber sobre ciclos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos o pedir ayuda. ¿Qué quieres hacer? ',
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
             NO_TIMEZONE_MSG: 'No he podido determinar tu zona horaria. Verifica la configuración de tu dispositivo, abre otraa vez la skill e inténtalo otra vez. ',
             MISSING_PERMISSION_MSG: 'Parece que no has autorizado el envío de recordatorios. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
-             
+            MISSINGN_MODULOS_MSG: '$t(DOUBT_SPEECHCON). No sé ni tu ciclo ni tu modulo. Lo mejor es que me pidas que registre tu información para que te pueda hablar de ella. ', 
             
             // Creador
             DEVELOPER_HEADER_MSG: 'Mi Creador',
@@ -77,6 +78,10 @@ module.exports = {
             LISTAR_MODULOS_MAIN_MSG: 'Módulos de {{curso}} de {{ciclo}}',
             LISTAR_MODULOS_HEADER_MSG: 'Modulos',
             LISTAR_MODULOS_TEXT_MSG: 'Nuestros módulos, ¿Te interesa alguno?',
+            
+            //Patricula 
+            MATRICULA_HEADER_MSG: 'Matricula',
+            MATRICULA_MSG: '{{nombre}}, estás matriculado en {{curso}} del ciclo de {{ciclo}}. Los módulos que cursas son: ',
             
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,
