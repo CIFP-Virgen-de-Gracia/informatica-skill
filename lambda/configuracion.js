@@ -13,10 +13,10 @@ module.exports = {
     
     // APL Interfaces, uno por cada fichero de recursos
     APL: {
-        launchIU: require('./recursos/interfaz/launchScreen.json'),
-        creatorIU: require('./recursos/interfaz/creatorScreen.json'),
-        contactIU: require('./recursos/interfaz/contactScreen.json'),
-        listDoc: require('./recursos/interfaz/listScreen.json')
+        launchIU: require('./recursos/interfaz/launchScreen.json'),         // Lanzaminrto
+        creatorIU: require('./recursos/interfaz/creatorScreen.json'),       // Mi Creador
+        contactIU: require('./recursos/interfaz/contactScreen.json'),       // Contacto    
+        listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json') // Lista de lenguajes de programacion
     },
     
     // Datos con los que trabajar 

@@ -50,13 +50,47 @@ const FamososIntentHandler = {
         
         let mensajeHablado = 'Famosos'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
         let mensajeEscrito = mensajeHablado;
-        // Si tenemos respuesta hacemos lo siguiente
+        
+         // Si tenemos respuesta hacemos lo siguiente
         if (sal.voz) {
             mensajeHablado = sal.voz;
             mensajeEscrito = sal.texto;
         }
         mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
-
+        // Creamos la pantalla APL// 
+       if (util.supportsAPL(handlerInput) && sal.voz) { 
+             mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
+            // Para saber la resolución
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                type: 'Alexa.Presentation.APL.RenderDocument',
+                version: '1.1',
+                document: configuracion.APL.listProgrammingIU, // Cargamos la interfaz de listas
+                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
+                datasources: {
+                    listData: {
+                        type: 'object',
+                        properties: {
+                            config: {
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
+                            },
+                            list: {
+                                // Le añadimos como items, el json adjunto
+                                listItems: respuesta.results.bindings 
+                            }
+                        },
+                        transformers: [{
+                            inputPath: 'config.hintText',
+                            transformer: 'textToHint'
+                        }]
+                    }
+                }
+            });
+       }
         
         // Devolvemos la salida
        return handlerInput.responseBuilder
@@ -68,6 +102,55 @@ const FamososIntentHandler = {
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
         
+    }
+};
+
+
+// HANDLER DE DE EVENTO TOUCH
+const TouchIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'Alexa.Presentation.APL.UserEvent'; // Los datos que nos vienen del evento
+    },
+    handle(handlerInput) {
+        const {request} = handlerInput.requestEnvelope; // Datos de entrada
+        
+        //Tipo de intent, esto lo hacemos ya que el evento Touch o más bien Alexa.Presentation.APL.UserEvent se disparará siempre que lo tengamos
+        // así que lo filtrammos 
+        
+        
+        let tipo = request.arguments[0];
+        // Datos del lenguaje 
+        
+        // Variables a usar
+        let mensajeHablado ='';
+        let mensajeEscrito ='';
+        let encabezado = '';
+        
+        // Si es la lista de ListProgramming, Famosos
+        if(tipo === 'Famosos'){
+            // Cogemos el objeto y parseamos el JSON a Objeto JS
+             let lenguaje = request.arguments[1];
+             try { lenguaje = JSON.parse(lenguaje); } catch (e) {}
+                console.log('Evento Touch argumentos: ' + JSON.stringify(lenguaje));
+            // Construimos el mensaje de salida 
+            // Fijate que podemos coger sus atributos directamente del objeto aunque podríamos parametrizarlo de distinta manera pasando varios y no del tirón
+            mensajeHablado = handlerInput.t('LIST_PROGRAMMING_DETAIL_MSG', {lenguaje: lenguaje});
+            mensajeEscrito = mensajeHablado;
+            encabezado =  handlerInput.t('PROGRAMMING_HEADER_MSG');
+        }
+        
+        // Siempre decimos 
+        mensajeHablado += handlerInput.t('POST_TOUCH_HELP_MSG');
+        
+        // Devolvermos la salida
+        return handlerInput.responseBuilder
+            .withStandardCard(
+                encabezado,
+                mensajeEscrito,
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
     }
 };
 
@@ -1007,6 +1090,7 @@ module.exports = {
     MiMatriculaIntentHandler,
     RecordatorioIntentHandler,
     FamososIntentHandler,
+    TouchIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,

@@ -9,11 +9,11 @@ const configuracion = require('./configuracion');
 module.exports = {
     
     // Esto es un ejemplo de consumo de un servico web, de la misma manera que consumo esto puedo consumir cualquier cosa tipo REST/WEB con JSON y AXIOS
-    // Me traigo una lista de creadores de lenguajes de programación, con su año e imagen
+    // Me traigo una lista de creadores de lenguajes de programación, con su año e imagen de ordenación aleatoria
     // Dame el lenguajem programado por con su imagen y año de creacion :)
     getCreadoresLenguajesProgramacion(limite){
         const endpoint = 'https://query.wikidata.org/sparql';
-        // Lista de lenguajes y personas que lo han creado con su 
+        // Lista de lenguajes y personas que lo han creado con su foto y año, la ordenación aleatoria
         const consultaSparql =
         `SELECT DISTINCT ?langLabel ?langDate ?humanLabel ?picture WHERE {
             ?lang (wdt:P31/(wdt:P279*)) wd:Q9143.
@@ -29,6 +29,7 @@ module.exports = {
             SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
             OPTIONAL { ?lang wdt:P571 ?langDate. }
         }
+        ORDER BY RAND()
         LIMIT ${limite}`;
         const url = endpoint + '?query=' + encodeURIComponent(consultaSparql);
         console.log(url); // por si queremos verla en el explorador
@@ -79,14 +80,15 @@ module.exports = {
             textoEscrito += lenguaje.langLabel.value + ', ' + lenguaje.humanLabel.value;
             
             // si tiene fecha de creación almacenada...
-            if (timezone && lenguaje.langDate.value && lenguaje.hasOwnProperty('langDate')) {
+            console.log(lenguaje.hasOwnProperty('langDate'));
+            if (lenguaje.hasOwnProperty('langDate')) {
                 textoSalida += handlerInput.t('PROGRAMMING_AT_MSG');
                 // Convertimos la fecha 
                 const momento = moment(lenguaje.langDate.value).tz(timezone);
                 console.log('año: ' + momento.year());
                 textoSalida += momento.year();
                 textoEscrito += ' en ' + momento.year();
-
+                lenguaje.langDate.value = momento.year(); // Ponemos el año en la propiedad
             }
             // Juntamos más
             if (index === Object.keys(resultados).length - 2){

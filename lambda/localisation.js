@@ -44,6 +44,8 @@ module.exports = {
             POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos, recordar tus tareas o exámenes o pedir ayuda. ¿Qué quieres hacer? ',
             POST_REMINDER_HELP_MSG: 'Puedes añadir nuevos recordatorios, consultar información de ciclos o módulos o pedir ayuda para conocer más opciones. ¿Qué quieres hacer ahora? ',
             POST_PROGRAMMING_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos, módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
+            POST_PROGRAMMING_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizás quieras saber sobre módulos, o recordar algo. ¿Qué otra cosa te gustaría hacer? ',
+            POST_TOUCH_HELP_MSG: 'Intenta tocar en otras fotos para obtenr más información. Sino, puedes volver al inicio o pedir ayuda. ¿Qué quieres hacer?' ,
             
             
             // Falta de datos y permisos 
@@ -95,23 +97,15 @@ module.exports = {
            
             // Listado de programadores y lenguajes famosos
             PROGRESSIVE_PROGRAMMING_MSG: 'Déjame que busque algo de información sobre lenguajes y sus creadores, {{nombre}}. ',
-            PROGRAMMING_HEADER_MSG: 'Lenguajes de programación',
+            PROGRAMMING_HEADER_MSG: 'Lenguajes de programacion',
             PROGRAMMING_MSG: 'He encontrado para ti esta información: ',
             PROGRAMMING_NAME_MSG: '<lang xml:lang="en-US">{{lenguaje}}</lang> ', // Pongo acento ingles 
             PROGRAMMING_CREATOR_MSG: ' cuyo creador es: <lang xml:lang="en-US">{{creador}}</lang>', // Pongo acento ingles
-            
             CONJUNCTION_MSG: ' y ',
             PROGRAMMING_AT_MSG: ' en ',
-            TURNING_YO_MSG_plural: ' cumple {{count}} años ',
             ALSO_PROGRAMMING_MSG: 'Los lenguajes que he seleccionado son: ',
+            LIST_PROGRAMMING_DETAIL_MSG: `El lenguaje <lang xml:lang="en-US">{{lenguaje.langLabel.value}}</lang> ha sido creado por <lang xml:lang="en-US">{{lenguaje.humanLabel.value}}</lang>. {{lenguaje.langDate.value}}  . `,
            
-            
-            
-            POST_CELEBRITIES_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizá quieres preguntar cuantos días quedan para tu cumpleaños. ¿Qué otra cosa te gustaría hacer? ',
-            
-            
-            
-            
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,
             DEVELOPER_INFINITO: `<say-as interpret-as="interjection">hasta el infinito y más allá</say-as>`,
@@ -120,34 +114,6 @@ module.exports = {
             POSITIVE_SOUND: `<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_02'/>`,
             GREETING_SPEECHCON: `<say-as interpret-as="interjection">¡Felicidades!</say-as>`,
             
-           
-            
-            
-           
-            DAYS_LEFT_MSG: 'Queda {{count}} día ',
-            DAYS_LEFT_MSG_plural: 'Quedan {{count}} días ',
-            WILL_TURN_MSG: 'para que cumplas {{count}} año. ',
-            WILL_TURN_MSG_plural: 'para que cumplas {{count}} años. ',
-            GREET_MSG: '$t(POSITIVE_SOUND) $t(GREETING_SPEECHCON) ¡Hoy es tu cumpleaños {{nombre}}!. ',
-            FELICITACION_MSG: '¡Felicidades! ¡Hoy es tu cumpleaños {{nombre}}!. ',
-            NOW_TURN_MSG: '¡Hoy cumples {{count}} año! ',
-            NOW_TURN_MSG_plural: '¡Hoy cumples {{count}} años! ',
-            
-            
-            MISSINGN_MSG: '$t(DOUBT_SPEECHCON). Parece que aun no me has dicho tu fecha de cumpleaños. ',
-           
-         
-           
-            
-           
-            
-           
-            LIST_HEADER_MSG: 'Cumpleaños de Hoy',
-            LIST_HINT_MSG: '¿quién cumple años hoy?',
-            LIST_YO_ABBREV_MSG: '{{count}} año',
-            LIST_YO_ABBREV_MSG_plural: '{{count}} años',
-            LIST_PERSON_DETAIL_MSG: `{{person.humanLabel.value}} nació hace {{person.date_of_birth.value}} en <lang xml:lang="en-US">{{person.place_of_birthLabel.value}}</lang>. `,
-            POST_TOUCH_HELP_MSG: `Intenta tocar en otras fotos para obtenr más información. Sino, puedes ver cuántos días quedan para tu cumpleaños o crear un recordatorio para no olvidarlo. ¿Qué quieres hacer?`
         }
     }
 }
