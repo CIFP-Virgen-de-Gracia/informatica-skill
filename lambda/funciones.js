@@ -8,6 +8,102 @@ const configuracion = require('./configuracion');
 
 module.exports = {
     
+    // Esto es un ejemplo de consumo de un servico web, de la misma manera que consumo esto puedo consumir cualquier cosa tipo REST/WEB con JSON y AXIOS
+    // Me traigo una lista de creadores de lenguajes de programación, con su año e imagen
+    // Dame el lenguajem programado por con su imagen y año de creacion :)
+    getCreadoresLenguajesProgramacion(limite){
+        const endpoint = 'https://query.wikidata.org/sparql';
+        // Lista de lenguajes y personas que lo han creado con su 
+        const consultaSparql =
+        `SELECT DISTINCT ?langLabel ?langDate ?humanLabel ?picture WHERE {
+            ?lang (wdt:P31/(wdt:P279*)) wd:Q9143.
+            ?human wdt:P31 wd:Q5;
+            wdt:P18 ?picture.
+            { ?lang wdt:P287 ?human. }
+            UNION
+            { ?lang wdt:P170 ?human. }
+            UNION
+            { ?lang wdt:P943 ?human. }
+            UNION
+            { ?lang wdt:P178 ?human. }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+            OPTIONAL { ?lang wdt:P571 ?langDate. }
+        }
+        LIMIT ${limite}`;
+        const url = endpoint + '?query=' + encodeURIComponent(consultaSparql);
+        console.log(url); // por si queremos verla en el explorador
+        // Configuración de acceso al servicoo y tiempos de respuesta
+        var config = {
+            timeout: 6500, // timeout api 8 seg timeout, se puede cambiar en  axios.defaults.timeout
+            headers: {'Accept': 'application/sparql-results+json'} // Queremos JSON
+        };
+        
+        // aqui hacemos la función asíncrona para obtener la respuesta de JSON mediante GET
+        async function getJsonResponse(url, config){
+            const res = await axios.get(url, config);
+            return res.data;
+        }
+        
+        // Devolvermos la respuesta encapsulada en un JSON
+        return getJsonResponse(url, config).then((result) => {
+            return result;
+        }).catch((error) => {
+            return null;
+        });
+    },
+    
+    // Convertimos las respuesta de famosos en texto hablado
+   convertirFamososResponse(handlerInput, response, timezone){
+        let textoSalida = '';
+        let textoEscrito = '';
+        let salida;
+        // Si la llamada API falla, simplemente no agregamos los famosos a la respuesta
+        if (!response || !response.results || !response.results.bindings || !Object.keys(response.results.bindings).length > 0)
+            return {
+                voz: '',
+                texto: ''
+            };
+        
+        const resultados = response.results.bindings; // Obtenemos el JSON segun la respuesta de Wikidata esta en result.bindigs
+        console.log('Resultados: ' + JSON.stringify(resultados));
+        
+        //Texto de salida
+        textoSalida += handlerInput.t('ALSO_PROGRAMMING_MSG');
+        textoEscrito += handlerInput.t('ALSO_PROGRAMMING_MSG');
+        
+        // Recorremos los resultados y lo almacenamos en el objeto lenguaje (lenguaje de programación)
+        // La idea es dedir, Lenguae X creado por Y en Z. (X: Nombre del lenguaje, Y: Creador, Z: año)
+        resultados.forEach((lenguaje, index) => {
+            textoSalida += handlerInput.t('PROGRAMMING_NAME_MSG', {lenguaje: lenguaje.langLabel.value});
+            textoSalida += handlerInput.t('PROGRAMMING_CREATOR_MSG', {creador: lenguaje.humanLabel.value});
+            textoEscrito += lenguaje.langLabel.value + ', ' + lenguaje.humanLabel.value;
+            
+            // si tiene fecha de creación almacenada...
+            if (timezone && lenguaje.langDate.value && lenguaje.hasOwnProperty('langDate')) {
+                textoSalida += handlerInput.t('PROGRAMMING_AT_MSG');
+                // Convertimos la fecha 
+                const momento = moment(lenguaje.langDate.value).tz(timezone);
+                console.log('año: ' + momento.year());
+                textoSalida += momento.year();
+                textoEscrito += ' en ' + momento.year();
+
+            }
+            // Juntamos más
+            if (index === Object.keys(resultados).length - 2){
+                textoSalida += handlerInput.t('CONJUNCTION_MSG');
+                textoEscrito += handlerInput.t('CONJUNCTION_MSG');
+            }
+            else {
+               textoSalida += '. ';
+               textoEscrito += '. ';
+            }
+        });
+       return {
+                voz: textoSalida,
+                texto: textoEscrito
+            };
+    },
+    
     // Obtiene los detalles de un módulo
     getDetallesModulo(moduloNombre){
         let salida;
@@ -168,45 +264,8 @@ module.exports = {
     },
    
     
-    // Obtiene cumpleaños famosos usando un servicio web, en este caso de la wikipedia usando de lenguaje de consulta sparql
-    getCumpleFamosos(dia, mes, limite){
-        const endpoint = 'https://query.wikidata.org/sparql';
-        // Lista de actores con fotos y fecha de nacimiento para un día y mes determinados
-        const consultaSparql =
-        `SELECT DISTINCT ?human ?humanLabel ?picture ?date_of_birth ?place_of_birthLabel WHERE {
-        ?human wdt:P31 wd:Q5;
-            wdt:P106 wd:Q33999;
-            wdt:P18 ?picture.
-        FILTER((DATATYPE(?date_of_birth)) = xsd:dateTime)
-        FILTER((MONTH(?date_of_birth)) = ${mes})
-        FILTER((DAY(?date_of_birth)) = ${dia})
-        FILTER (bound(?place_of_birth))
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-        OPTIONAL { ?human wdt:P569 ?date_of_birth. }
-        OPTIONAL { ?human wdt:P19 ?place_of_birth. }
-        }
-        LIMIT ${limite}`;
-        const url = endpoint + '?query=' + encodeURIComponent(consultaSparql);
-        console.log(url); // por si queremos verla en el explorador
-
-        var config = {
-            timeout: 6500, // timeout api 8 seg timeout, se puede cambiar en  axios.defaults.timeout
-            headers: {'Accept': 'application/sparql-results+json'} // Queremos JSON
-        };
-        
-        // aqui hacemos la función asíncrona para obtener la respuesta de JSON
-        async function getJsonResponse(url, config){
-            const res = await axios.get(url, config);
-            return res.data;
-        }
-        
-        // Devolvermos la respuesta 
-        return getJsonResponse(url, config).then((result) => {
-            return result;
-        }).catch((error) => {
-            return null;
-        });
-    },
+    // Obtiene una lista de creadores de lenguajes de programacion, es un ejemplo de consumo de servico web con Axios
+    
     
     // Convertimos las respuesta de cumples en texto hablado
     convertirCumplesResponse(handlerInput, response, conEdad, timezone){

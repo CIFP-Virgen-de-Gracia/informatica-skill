@@ -8,8 +8,8 @@ module.exports = {
     // Permisos para recordatorios
     PERMISO_RECORDATORIO: ['alexa::alerts:reminders:skill:readwrite'],
     
-    // número máximo de cumpleaños a consultar de famosos por el servicio
-   MAX_CUMPLES: 5, 
+    // número máximo de famosos a consultar en el servicio
+   MAX_FAMOSOS: 5, 
     
     // APL Interfaces, uno por cada fichero de recursos
     APL: {

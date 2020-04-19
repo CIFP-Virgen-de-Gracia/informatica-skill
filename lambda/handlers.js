@@ -7,6 +7,70 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
 const moment = require('moment-timezone'); // Para manejar fechas
 
 
+// CREADORES DE LENGUAJES FAMOSOS 
+const FamososIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'FamososIntent';
+    },
+    // Como vamos a acceder a una API externa lo hacemos async 
+    async handle(handlerInput) {
+         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        // Obtenemos nombre y el timezone
+        const nombre = sessionAttributes['nombre'] || '';
+        let timezone = sessionAttributes['timezone'];
+         // Obtenemos el TimeZone
+        if (!timezone){
+           //timezone = 'Europe/Rome'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
+        
+        // Vamos con el servicio
+        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
+        try {
+            // llame al servicio de respuesta progresiva
+            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_PROGRAMMING_MSG', {nombre: nombre}));
+        } catch (error) {
+            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
+            console.log("Error de respuesta progresiva : " + error);
+        }
+        
+        // ahora buscaremos en la api externa 
+        const respuesta = await func.getCreadoresLenguajesProgramacion(configuracion.MAX_FAMOSOS);
+        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
+        
+        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
+        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
+        // convertimos la respuesta API a texto que Alexa puede leer
+        const sal = func.convertirFamososResponse(handlerInput, respuesta, timezone);
+        
+        let mensajeHablado = 'Famosos'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
+        let mensajeEscrito = mensajeHablado;
+        // Si tenemos respuesta hacemos lo siguiente
+        if (sal.voz) {
+            mensajeHablado = sal.voz;
+            mensajeEscrito = sal.texto;
+        }
+        mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
+
+        
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                mensajeEscrito,
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+        
+    }
+};
+
 // RECORDATORIO  - INTENCION
 const RecordatorioIntentHandler = {
     canHandle(handlerInput) {
@@ -90,7 +154,7 @@ const RecordatorioIntentHandler = {
                     break;
                 //case 405: METHOD_NOT_ALLOWED, please contact the Alexa team
                 default:
-                    mensajeHablado += handlerInput.t('REMINDER_ERROR_MSG') + ' El error es: ' + error.message +'. ';
+                    mensajeHablado += handlerInput.t('REMINDER_ERROR_MSG'); // + ' El error es: ' + error.message +'. ';
             }
             mensajeHablado += handlerInput.t('REPROMPT_MSG');
         }
@@ -255,6 +319,7 @@ const InfoModuloIntentHandler = {
         // Obtenemos el modulo
         const modulo = Alexa.getSlotValue(requestEnvelope, 'modulo');
         const detalle = func.getDetallesModulo(modulo);
+        
         // Creamos mensaje
         let mensajeHablado = detalle.nombre + detalle.descripcion;
         mensajeHablado += handlerInput.t('POST_DETALLE_MODULO_HELP_MSG');
@@ -522,7 +587,6 @@ const LaunchRequestHandler = {
          
          // Si no existe el nombre
         mensajeHablado +=  nombre ==='' ? handlerInput.t('MISSING_NAME_MSG'):'';
-        
         mensajeHablado += handlerInput.t('POST_SAY_HELP_MSG');
         // Pintamos la pantalla 
             if(util.supportsAPL(handlerInput)) {
@@ -942,6 +1006,7 @@ module.exports = {
     InfoModuloIntentHandler,
     MiMatriculaIntentHandler,
     RecordatorioIntentHandler,
+    FamososIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,

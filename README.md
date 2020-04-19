@@ -20,6 +20,7 @@ Para ello sería interesante haber usado bases de datos o servicios webs para ha
 * 16/04/2020. Datos de Ciclos y modulos. Curriculo. Listar ciclos y detalles de ciclos. Listar Módulos y detalles de módulos. Media
 * 17/04/2020. Mi Matrícula o datos de de lo que estoy matriculado.
 * 18/04/2020. Añadir recordatorios para tareas, examenes o práticas.
+* 19/04/2020. Consulta de servicio Lenguajes Famosos en Wikidata y resouesta progresiva.
 
 ## Acerca de
 José Luis González Sánchez: [@joseluisgonsan](https://twitter.com/joseluisgonsan). Abril de 2020. En mi cuarentena por Coronavid-19.

@@ -386,6 +386,27 @@
             "recordar ",
             "crea un recordatorio"
           ]
+        },
+        {
+          "name": "FamososIntent",
+          "slots": [],
+          "samples": [
+            "Cosas curiosas de lenguajes de programación",
+            "Dime lenguajes de programación famosos",
+            "Lenguajes famosos",
+            "Programadores famosos",
+            "Personas importantes en lenguajes de programación",
+            "Personas importantes en programación",
+            "Información de lenguajes de programación",
+            "Quién inventó un lenguaje",
+            "Creadores de lenguajes de programación",
+            "Inventores de herramientas de programación",
+            "Inventores de lenguajes",
+            "Lenguajes de programación",
+            "Creadores de lenguajes",
+            "Informáticos famosos",
+            "Dime informáticos famosos"
+          ]
         }
       ],
       "types": [
@@ -1330,5 +1351,5 @@
       }
     ]
   },
-  "version": "51"
+  "version": "53"
 }

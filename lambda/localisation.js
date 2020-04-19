@@ -32,18 +32,18 @@ module.exports = {
             
             
             // Ayuda y refuerzo de cada intent
-            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, registrar tu curso, hablarte de tu matrícula, indicarte cómo contactar o volver a inicio. ¿Qué quieres hacer? ',
-            POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo, registrar tus estudios o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
-            POST_DEVELOPER_HELP_MSG: 'Ahora que ya sabes quien es, puedes preguntarme por nuestros ciclos, módulos, registrar tu curso, cómo contactar, o puedes pedir ayuda. ¿Qué quieres hacer? ',
-            POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, registrar tus datos, cómo contactar o pedir ayuda. ',
-            POST_CONTACT_HELP_MSG: 'Puedo repetirte la dirección, el teléfono o email, también puedo darte información de ciclos o módulos, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            HELP_MSG: 'Puedo indicarte los ciclos que puedes cursar, darte información de un módulo concreto, registrar tu curso, hablarte de tu matrícula, indicarte cómo contactar, crear recordatorios para tus tareas o volver a inicio. ¿Qué quieres hacer? ',
+            POST_SAY_HELP_MSG: 'Si quieres saber los ciclos o titulaciones, información de un módulo, registrar tus estudios, recordatorios o contactar, solo has de pedírmelo o solicitar ayuda. ¿Qué quieres hacer? ',
+            POST_DEVELOPER_HELP_MSG: 'Ahora que ya sabes quien es, puedes preguntarme por nuestros ciclos, módulos, registrar tu curso o recordatorio, cómo contactar, o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_START_HELP_MSG: 'Puedes preguntarme por los ciclos, módulos, registrar tus datos, poner un recordatorio, cómo contactar o pedir ayuda. ',
+            POST_CONTACT_HELP_MSG: 'Puedo repetirte la dirección, el teléfono o email, también puedo darte información de ciclos o módulos, recordar tu curso o tarea, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_LISTAR_CICLOS_HELP_MSG: 'Puedo darte detalles de un ciclo concreto si lo deseas pidiendo información de ciclo y su nombre, o puedes pedir ayuda. ¿Qué quieres hacer? ',
-            POST_DETALLE_CICLO_HELP_MSG: 'Si quieres saber sobre otros ciclos, pídemelo. También puedes saber de módulos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_CICLO_HELP_MSG: 'Si quieres saber sobre otros ciclos, pídemelo. También puedes saber de módulos, formas de contactar, recordar tu curso o tareas o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_LISTAR_MODULOS_HELP_MSG: 'Puedo darte detalles de un módulo concreto si lo deseas pidiendo información sobre módulos de un ciclo y curso, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_DETALLE_MODULO_HELP_MSG: 'Si quieres saber sobre otros módulos, pídemelo. También puedes saber sobre ciclos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
-            POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos o pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos, recordar tus tareas o exámenes o pedir ayuda. ¿Qué quieres hacer? ',
             POST_REMINDER_HELP_MSG: 'Puedes añadir nuevos recordatorios, consultar información de ciclos o módulos o pedir ayuda para conocer más opciones. ¿Qué quieres hacer ahora? ',
-            
+            POST_PROGRAMMING_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos, módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
             
             
             // Falta de datos y permisos 
@@ -93,8 +93,22 @@ module.exports = {
             REMINDER_CREATED_MSG: '{{nombre}} Tu recordatorio se ha creado con éxito. ',
             REMINDER_ERROR_MSG: 'Perdona, ha habido un error al crear el recordatorio. ',
            
+            // Listado de programadores y lenguajes famosos
+            PROGRESSIVE_PROGRAMMING_MSG: 'Déjame que busque algo de información sobre lenguajes y sus creadores, {{nombre}}. ',
+            PROGRAMMING_HEADER_MSG: 'Lenguajes de programación',
+            PROGRAMMING_MSG: 'He encontrado para ti esta información: ',
+            PROGRAMMING_NAME_MSG: '<lang xml:lang="en-US">{{lenguaje}}</lang> ', // Pongo acento ingles 
+            PROGRAMMING_CREATOR_MSG: ' cuyo creador es: <lang xml:lang="en-US">{{creador}}</lang>', // Pongo acento ingles
+            
+            CONJUNCTION_MSG: ' y ',
+            PROGRAMMING_AT_MSG: ' en ',
+            TURNING_YO_MSG_plural: ' cumple {{count}} años ',
+            ALSO_PROGRAMMING_MSG: 'Los lenguajes que he seleccionado son: ',
            
-           
+            
+            
+            POST_CELEBRITIES_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizá quieres preguntar cuantos días quedan para tu cumpleaños. ¿Qué otra cosa te gustaría hacer? ',
+            
             
             
             
@@ -127,15 +141,7 @@ module.exports = {
             
            
             
-            PROGRESSIVE_MSG: 'Déjame ver quién cumple hoy {{nombre}}. ',
-            CONJUNCTION_MSG: ' y ',
-            TURNING_YO_MSG: ' cumple {{count}} años ',
-            TURNING_YO_MSG_plural: ' cumple {{count}} años ',
-            CELEBRITY_BIRTHDAYS_MSG: 'En esta fecha cumplen años: ',
-            ALSO_TODAY_MSG: 'También hoy cumplen: ',
-            POST_CELEBRITIES_HELP_MSG: 'Quizá ahora puedes preguntar por cuántos días quedan hasta tu cumpleaños. Y recuerda que también puedes configurar un recordatorio para no olvidarlo. ¿Qué quieres hacer ahora? ', 
-            POST_CELEBRITIES_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizá quieres preguntar cuantos días quedan para tu cumpleaños. ¿Qué otra cosa te gustaría hacer? ',
-            
+           
             LIST_HEADER_MSG: 'Cumpleaños de Hoy',
             LIST_HINT_MSG: '¿quién cumple años hoy?',
             LIST_YO_ABBREV_MSG: '{{count}} año',
