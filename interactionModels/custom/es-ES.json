@@ -343,6 +343,49 @@
             "mi expediente",
             "mis estudios"
           ]
+        },
+        {
+          "name": "RecordatorioIntent",
+          "slots": [
+            {
+              "name": "fecha",
+              "type": "AMAZON.DATE",
+              "samples": [
+                "fecha {fecha}",
+                "día {fecha}",
+                "{fecha}  a las  {hora}",
+                "{fecha}",
+                "el {fecha}",
+                "El día {fecha}"
+              ]
+            },
+            {
+              "name": "hora",
+              "type": "AMAZON.TIME",
+              "samples": [
+                "hora {hora}",
+                "{hora}",
+                "la hora es {hora}",
+                "A las {hora}"
+              ]
+            },
+            {
+              "name": "texto",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "{texto}",
+                "El asuto es {texto}",
+                "Recuerda {texto}"
+              ]
+            }
+          ],
+          "samples": [
+            "recuerda {texto} ",
+            "crea un recordatorio con texto {texto}",
+            "crea un recordatorio para {fecha}",
+            "recordar ",
+            "crea un recordatorio"
+          ]
         }
       ],
       "types": [
@@ -696,6 +739,49 @@
                   "prompt": "Slot.Validation.321194274225.227591250148.1146962495131"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "RecordatorioIntent",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.505113775095"
+          },
+          "slots": [
+            {
+              "name": "fecha",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.505113775095.969720410592"
+              },
+              "validations": [
+                {
+                  "type": "isGreaterThanOrEqualTo",
+                  "prompt": "Slot.Validation.505113775095.969720410592.1343145909350",
+                  "value": "2020-01-01"
+                }
+              ]
+            },
+            {
+              "name": "hora",
+              "type": "AMAZON.TIME",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.505113775095.1146542886089"
+              }
+            },
+            {
+              "name": "texto",
+              "type": "AMAZON.SearchQuery",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.505113775095.250921672349"
+              }
             }
           ]
         }
@@ -1136,8 +1222,113 @@
             "value": "No me suena ese módulo, si quieres solicita el listado de módulos de un ciclo por curso y te los digo"
           }
         ]
+      },
+      {
+        "id": "Confirm.Intent.505113775095",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Te recordaré el día {fecha} a las {hora} el siguiente recordatorio.  {texto} . ¿Lo confirmas?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Vale, crearé el siguiente recordatorio con mensaje. {texto} .  Para el {fecha} a las {hora} ¿De acuerdo?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.505113775095.969720410592",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Por favor díme la fecha en la que quieres que te lo recuerde"
+          },
+          {
+            "type": "PlainText",
+            "value": "Para recordar {texto} necesito saber la fecha y la hora"
+          },
+          {
+            "type": "PlainText",
+            "value": "Me has dicho la hora , y el asunto , pero necesito saber la fecha"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime la fecha"
+          },
+          {
+            "type": "PlainText",
+            "value": "Vale, necesito saber la fecha"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.505113775095.969720410592.1343145909350",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Por favor dime una fecha válida"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime una fecha válida, si es del pasado poco puedo recordar"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.505113775095.1146542886089",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Por favor díme la hora"
+          },
+          {
+            "type": "PlainText",
+            "value": "Ahora dime la hora"
+          },
+          {
+            "type": "PlainText",
+            "value": "Necesito la hora"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime la hora"
+          },
+          {
+            "type": "PlainText",
+            "value": "Por favor dime la hora"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.505113775095.250921672349",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Dime el asunto o texto que quieres que te recuerde "
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Qué necesitas recordar?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Por favor, dime qué quieres que recuerde"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el asunto"
+          },
+          {
+            "type": "PlainText",
+            "value": "Por favor, dime el asuto"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el texto a recordar"
+          }
+        ]
       }
     ]
   },
-  "version": "47"
+  "version": "51"
 }

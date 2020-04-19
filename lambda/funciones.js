@@ -166,31 +166,7 @@ module.exports = {
             edad: edad //en años
         }
     },
-    
-    // Crear un recordatorio dado el texto, timezone, locale y el contador de días
-    crearRecordatorioCumple(diasParaCumple, timezone, locale, mensaje) {
-        moment.locale(locale);
-        const momento = moment().tz(timezone);
-        let disparadorMomento = momento.startOf('day').add(diasParaCumple, 'days');
-        // Si es el día de nuestro cumple cuando lo creamos lo programamos para el año siguiente
-        if (diasParaCumple === 0) {
-            disparadorMomento = momento.startOf('day').add(1, 'years'); // el mismo día el año siguiente 
-        }
-        console.log('Recordatorio programado: ' +  disparadorMomento.format('YYYY-MM-DDTHH:mm:00.000'));
-        // Devuelvo y creo la creación de recordatorio
-        return util.createReminder(momento, disparadorMomento, timezone, locale, mensaje); // Está en utils
-    }, 
-    
-    // Obtiene la fechaActual en la estructura dia y mes
-     getFechaActual(timezone) {
-        const hoy = moment().tz(timezone).startOf('day');
-
-        return {
-            dia: hoy.date(),
-            mes: hoy.month() + 1,
-            anno: hoy.year()
-        }
-    },
+   
     
     // Obtiene cumpleaños famosos usando un servicio web, en este caso de la wikipedia usando de lenguaje de consulta sparql
     getCumpleFamosos(dia, mes, limite){

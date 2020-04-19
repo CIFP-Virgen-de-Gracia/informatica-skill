@@ -41,6 +41,8 @@ module.exports = {
     
     // FUNCION PARA CREAR UN RECORDATORIO
     createReminder(requestMoment, scheduledMoment, timezone, locale, message) {
+        console.log('createReminder: requestMoment: ' + requestMoment);
+        console.log('createReminder: scheduledMoment: ' + scheduledMoment);
         return {
             requestTime: requestMoment.format('YYYY-MM-DDTHH:mm:00.000'),
             trigger: {

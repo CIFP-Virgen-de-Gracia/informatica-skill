@@ -28,6 +28,7 @@ module.exports = {
             FALLBACK_MSG: 'Lo siento, no se nada sobre eso. Por favor inténtalo otra vez. ',
             UNSUPPORTED_DEVICE_MSG: 'Este dispositivo no soporta la operación que estás intentando realizar. ',
             CANCEL_MSG: 'Vale {{nombre}}. Lo cancelamos. ',
+            API_ERROR_MSG: 'Lo siento, ha habido un problema de acceso a la API externa. Por favor inténtalo otra vez. ',
             
             
             // Ayuda y refuerzo de cada intent
@@ -41,6 +42,9 @@ module.exports = {
             POST_LISTAR_MODULOS_HELP_MSG: 'Puedo darte detalles de un módulo concreto si lo deseas pidiendo información sobre módulos de un ciclo y curso, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_DETALLE_MODULO_HELP_MSG: 'Si quieres saber sobre otros módulos, pídemelo. También puedes saber sobre ciclos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos o pedir ayuda. ¿Qué quieres hacer? ',
+            POST_REMINDER_HELP_MSG: 'Puedes añadir nuevos recordatorios, consultar información de ciclos o módulos o pedir ayuda para conocer más opciones. ¿Qué quieres hacer ahora? ',
+            
+            
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -79,9 +83,20 @@ module.exports = {
             LISTAR_MODULOS_HEADER_MSG: 'Modulos',
             LISTAR_MODULOS_TEXT_MSG: 'Nuestros módulos, ¿Te interesa alguno?',
             
-            //Patricula 
+            //Matricula
             MATRICULA_HEADER_MSG: 'Matricula',
             MATRICULA_MSG: '{{nombre}}, estás matriculado en {{curso}} del ciclo de {{ciclo}}. Los módulos que cursas son: ',
+            
+            // Recordatorio
+            REMINDER_HEADER_MSG: 'Recordatorio',
+            REGISTER_MSG: 'Recordaré lo que me has indicado el {{fecha}} a las {{hora}}. ',
+            REMINDER_CREATED_MSG: '{{nombre}} Tu recordatorio se ha creado con éxito. ',
+            REMINDER_ERROR_MSG: 'Perdona, ha habido un error al crear el recordatorio. ',
+           
+           
+           
+            
+            
             
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,
@@ -111,16 +126,7 @@ module.exports = {
            
             
            
-            REGISTER_MSG: 'Recordaré que tu fecha de cumpleaños es el {{dia}} de {{mes}} de {{anno}}. ',
             
-            REMINDER_CREATED_MSG: '{{nombre}} Tu recordatorio se ha creado con éxito. ',
-            REMINDER_ERROR_MSG: 'Perdona, ha habido un error al crear el recordatorio. ',
-           
-           
-           
-            POST_REMINDER_HELP_MSG: 'Si quieres saber cuando se aactivará tu recordatorio puedes decir, ¿cuánto falta para mi cumpleaños?. ¿Qué quieres hacer ahora? ',
-            
-            API_ERROR_MSG: 'Lo siento, ha habido un problema de acceso a la API externa. Por favor inténtalo otra vez. ',
             PROGRESSIVE_MSG: 'Déjame ver quién cumple hoy {{nombre}}. ',
             CONJUNCTION_MSG: ' y ',
             TURNING_YO_MSG: ' cumple {{count}} años ',

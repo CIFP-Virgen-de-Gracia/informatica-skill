@@ -7,6 +7,151 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
 const moment = require('moment-timezone'); // Para manejar fechas
 
 
+// RECORDATORIO  - INTENCION
+const RecordatorioIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RecordatorioIntent';
+    },
+    //Proceso
+    async handle(handlerInput) {
+      // Recogemos los la entrada entrada - handler Input
+        const {attributesManager, serviceClientFactory, requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        // Obtenemos nombre
+          const nombre = sessionAttributes['nombre'] || '';
+        // Recogemos fecham hora y texto
+        const fecha = Alexa.getSlotValue(requestEnvelope, 'fecha');
+        const hora = Alexa.getSlotValue(requestEnvelope, 'hora');
+        const texto = Alexa.getSlotValue(requestEnvelope, 'texto');
+        
+        // timezone y datos de hora
+        let timezone = sessionAttributes['timezone'];
+        const locale = Alexa.getLocale(requestEnvelope); // Local para fechas
+        const momento = moment().tz(timezone)//; .format('YYYY-MM-DDTHH:mm:00.000'); // Hoy, momento actual
+        const disparador = moment.tz(fecha +' '+hora, timezone);// .format('YYYY-MM-DDTHH:mm:00.000'); // La fecha que queremos
+        
+        // Confirmamos
+        // Si NO esta confirmado
+        if (intent.confirmationStatus !== 'CONFIRMED') {
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('CANCEL_MSG') + handlerInput.t('REPROMPT_MSG'))
+                .reprompt(handlerInput.t('REPROMPT_MSG'))
+                .getResponse();
+        }
+        
+        // Obtenemos el moment-timezone
+        if (!timezone){
+            //timezone = 'Europe/Madrid'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
+      
+        let mensajeHablado = '';
+        let errorFlag = false; // Variable de los errores
+        // Creamos el recordatorio usando la API Remiders
+        // Hay que darle permisos en Build -> Prmissions
+        // o saltara la excepción.
+        try {
+            // Para accedera los permisos
+            const {permissions} = requestEnvelope.context.System.user;
+            
+            if (!(permissions && permissions.consentToken))
+                throw { statusCode: 401, message: 'No tienes permisos disponibles' }; // No tienes permisos o no has inicializado la API
+            
+            // Obtenemos el cliente para manejar recordatorios, por ejemplo para obtener una lista de estos 
+            const recordatorioServiceClient = serviceClientFactory.getReminderManagementServiceClient();
+            // los recordatorios antiguis se conservan durante 3 días después de que 'recuerden' al cliente antes de ser eliminados
+           // Esto es pcional y lo quitaré
+            //const recordatorioList = await recordatorioServiceClient.getReminders();
+            //console.log('Recordatorios actuales: ' + JSON.stringify(recordatorioList));
+            
+            // Creamos el recordatoro, con la fución de utils 
+            const recordatorio = util.createReminder(momento, disparador, timezone, locale, texto); 
+            const recordatorioResponse = await recordatorioServiceClient.createReminder(recordatorio); // la respuesta incluirá un "alertToken" que puede usar para consultar este recordatorio
+            console.log('Recordatorio creado con ID: ' + recordatorioResponse.alertToken);
+            // Textto de respuesta
+            mensajeHablado = handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre});
+            mensajeHablado += handlerInput.t('POST_REMINDER_HELP_MSG');
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            errorFlag = true;
+            switch (error.statusCode) {
+                case 401: // el usuario debe habilitar los permisos para recordatorios, adjuntemos una tarjeta de permisos a la respuesta
+                    handlerInput.responseBuilder.withAskForPermissionsConsentCard(configuracion.PERMISO_RECORDATORIO);
+                    mensajeHablado += handlerInput.t('MISSING_PERMISSION_MSG');
+                    break;
+                case 403: // dispositivos como el simulador no admiten la gestión de recordatorios
+                    mensajeHablado += handlerInput.t('UNSUPPORTED_DEVICE_MSG');
+                    break;
+                //case 405: METHOD_NOT_ALLOWED, please contact the Alexa team
+                default:
+                    mensajeHablado += handlerInput.t('REMINDER_ERROR_MSG') + ' El error es: ' + error.message +'. ';
+            }
+            mensajeHablado += handlerInput.t('REPROMPT_MSG');
+        }
+           // Pintamos la pantalla si no ha habido errores
+        if(!errorFlag) {
+            if (util.supportsAPL(handlerInput)) {
+                const {Viewport} = handlerInput.requestEnvelope.context;
+                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+                handlerInput.responseBuilder.addDirective({
+                    type: 'Alexa.Presentation.APL.RenderDocument',
+                    version: '1.1',
+                    // Preparamos la pantalla a lanzar
+                    document: configuracion.APL.launchDoc,
+                    datasources: {
+                        launchData: {
+                            type: 'object',
+                            // Las propiedades que usa, las cambiamos dinamicamente
+                            properties: {
+                                headerTitle: handlerInput.t('REMINDER_HEADER_MSG'),
+                                mainText: handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
+                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundOpacity: "0.5"
+                            },
+                            transformers: [{
+                                inputPath: 'hintString',
+                                transformer: 'textToHint',
+                            }]
+                        }
+                    }
+                });
+                
+            }
+            // Agregar tarjeta de inicio a la respuesta de tipo standard
+            // Si estás usando una habilidad alojada de Alexa, las imágenes a continuación caducarán
+            // y no se pudo mostrar en la tarjeta. Debes reemplazarlos con imágenes estáticas
+            handlerInput.responseBuilder.withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                mensajeHablado,
+               util.getS3PreSignedUrl('Media/logoPrincipal.png'));
+        }else{
+            handlerInput.responseBuilder.withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'));
+        }
+            
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                 handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
 // MIS ESTUDIOS  - INTENCION
 const MiMatriculaIntentHandler = {
     canHandle(handlerInput) {
@@ -81,10 +226,12 @@ const MiMatriculaIntentHandler = {
         }
         
         mensajeHablado += handlerInput.t('POST_DETALLE_CICLO_HELP_MSG');
-        
-       
         // Devolvemos la salida
        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -145,6 +292,10 @@ const InfoModuloIntentHandler = {
             
         // Devolvemos la salida
        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -176,7 +327,6 @@ const ListarModulosIntentHandler = {
         mensajeHablado += func.getListaNombreModulos(ciclo, curso);
         mensajeHablado += handlerInput.t('POST_LISTAR_MODULOS_HELP_MSG');
         
-        
         // Pintamos la pantalla 
             if(util.supportsAPL(handlerInput)) {
                 const {Viewport} = handlerInput.requestEnvelope.context;
@@ -207,16 +357,18 @@ const ListarModulosIntentHandler = {
                     });
             
             }
-
             
         // Devolvemos la salida
        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
     }
 };
-
 
 // INFO CICLO - INTENCION
 const InfoCicloIntentHandler = {
@@ -271,6 +423,10 @@ const InfoCicloIntentHandler = {
             
         // Devolvemos la salida
        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -331,6 +487,10 @@ const ListarCiclosIntentHandler = {
 
         // Devolvemos la salida
        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -397,6 +557,10 @@ const LaunchRequestHandler = {
         
         // Mostramos las cosas 
         return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -455,6 +619,10 @@ const InicioIntentHandler = {
             }
         
         return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -511,6 +679,10 @@ const CreadorIntentHandler = {
         
         // Mostramos las cosas 
         return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -589,6 +761,10 @@ const ContactoIntentHandler = {
     
         // Mostramos las cosas 
         return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -765,6 +941,7 @@ module.exports = {
     ListarModulosIntentHandler,
     InfoModuloIntentHandler,
     MiMatriculaIntentHandler,
+    RecordatorioIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,
