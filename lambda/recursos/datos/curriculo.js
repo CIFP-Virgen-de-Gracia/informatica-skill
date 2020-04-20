@@ -1,3 +1,5 @@
+// Módulo que contiene los estudios. Lo hacemos así para simular un servicio web donde los obtendríamos.
+
 module.exports = {
     ciclos:
         [

@@ -7,7 +7,43 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
 const moment = require('moment-timezone'); // Para manejar fechas
 
 
-// CREADORES DE LENGUAJES FAMOSOS 
+// CHISTE - INTENT
+const ChisteIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'ChisteIntent';
+    },
+    // Proceso
+    handle(handlerInput) {
+        const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        // Obtenemos nombre y el timezone
+        const nombre = sessionAttributes['nombre'] || '';
+        
+        // Presentamos
+        let mensajeHablado= handlerInput.t('CHISTE_PRESENTATION_MSG', {nombre: nombre});
+        // obtenemos el chistes
+        mensajeHablado += func.getChiste();
+        // Post mensaje
+        mensajeHablado +=  handlerInput.t('CHISTE_SOUND') + handlerInput.t('CHISTE_END_MSG') + handlerInput.t('POST_CHISTE_HELP_MSG');
+        
+        // Devolvemos la salida
+        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('CHISTE_HEADER_MSG:'),
+                mensajeHablado,
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+        
+
+        
+    }
+};
+
+// CREADORES DE LENGUAJES FAMOSOS - INTENT 
 const FamososIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -97,7 +133,7 @@ const FamososIntentHandler = {
             .withStandardCard(
                 handlerInput.t('PROGRAMMING_HEADER_MSG'),
                 mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -106,7 +142,7 @@ const FamososIntentHandler = {
 };
 
 
-// HANDLER DE DE EVENTO TOUCH
+// HANDLER DE DE EVENTO TOUCH - INTENT 
 const TouchIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'Alexa.Presentation.APL.UserEvent'; // Los datos que nos vienen del evento
@@ -147,7 +183,7 @@ const TouchIntentHandler = {
             .withStandardCard(
                 encabezado,
                 mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -284,7 +320,7 @@ const RecordatorioIntentHandler = {
             handlerInput.responseBuilder.withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'));
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'));
         }
             
         // Devolvemos la salida
@@ -292,7 +328,7 @@ const RecordatorioIntentHandler = {
             .withStandardCard(
                  handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -378,7 +414,7 @@ const MiMatriculaIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -443,7 +479,7 @@ const InfoModuloIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -511,7 +547,7 @@ const ListarModulosIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -574,7 +610,7 @@ const InfoCicloIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -638,7 +674,7 @@ const ListarCiclosIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -707,7 +743,7 @@ const LaunchRequestHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -769,7 +805,7 @@ const InicioIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -829,7 +865,7 @@ const CreadorIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -911,7 +947,7 @@ const ContactoIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -956,7 +992,10 @@ const RegistrarCursoIntentHandler = {
     // Devolvemos la salida
        return handlerInput.responseBuilder
             .speak(handlerInput.t('REJECTED_MSG'))
-            .withSimpleCard("Dpto. Informatica", handlerInput.t('REJECTED_MSG'))
+            .withSimpleCard(
+                "Dpto. Informatica", 
+                handlerInput.t('REJECTED_MSG'), 
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
     }
@@ -972,7 +1011,7 @@ const HelpIntentHandler = {
         const mensajeHablado = handlerInput.t('HELP_MSG');
 
         return handlerInput.responseBuilder
-            .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+            .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -993,18 +1032,19 @@ const CancelAndStopIntentHandler = {
         
         const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
         
-        //if(intentTipo==='AMAZON.CancelIntent')
-        //    return InicioIntentHandler.handle(handlerInput);
-        
-        const mensajeHablado = handlerInput.t('GOODBYE_MSG', {nombre: nombre});
+        if(intentTipo==='AMAZON.CancelIntent')
+            return InicioIntentHandler.handle(handlerInput);
+        else{
+            const mensajeHablado = handlerInput.t('GOODBYE_MSG', {nombre: nombre});
     
         // Preparamos la salida
             return handlerInput.responseBuilder
-                 //.withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal.png'))
+                 .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
                 .speak(mensajeHablado)
                 //.reprompt(handlerInput.t('REPROMPT_MSG'))
                 .getResponse();
              }
+    }
 };
 
 
@@ -1020,6 +1060,7 @@ const FallbackIntentHandler = {
         const mensaje = handlerInput.t('FALLBACK_MSG');
 
         return handlerInput.responseBuilder
+            .withStandardCard('Dpto. Informatica',mensaje, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensaje)
             .reprompt(handlerInput.t('HELP_MSG'))
             .getResponse();
@@ -1091,6 +1132,7 @@ module.exports = {
     RecordatorioIntentHandler,
     FamososIntentHandler,
     TouchIntentHandler,
+    ChisteIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,

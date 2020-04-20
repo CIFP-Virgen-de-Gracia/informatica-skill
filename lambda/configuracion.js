@@ -21,6 +21,7 @@ module.exports = {
     
     // Datos con los que trabajar 
     DATA: {
-        curriculo: require('./recursos/datos/curriculo')
+        curriculo: require('./recursos/datos/curriculo'),
+        chistes: require('./recursos/datos/chistes')
     }
 }

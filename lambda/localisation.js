@@ -41,11 +41,12 @@ module.exports = {
             POST_DETALLE_CICLO_HELP_MSG: 'Si quieres saber sobre otros ciclos, pídemelo. También puedes saber de módulos, formas de contactar, recordar tu curso o tareas o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_LISTAR_MODULOS_HELP_MSG: 'Puedo darte detalles de un módulo concreto si lo deseas pidiendo información sobre módulos de un ciclo y curso, o puedes pedir ayuda. ¿Qué quieres hacer? ',
             POST_DETALLE_MODULO_HELP_MSG: 'Si quieres saber sobre otros módulos, pídemelo. También puedes saber sobre ciclos, formas de contactar o puedes pedir ayuda. ¿Qué quieres hacer? ',
-            POST_DETALLE_MATRICULA_HELP_MSG: ' Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos, recordar tus tareas o exámenes o pedir ayuda. ¿Qué quieres hacer? ',
+            POST_DETALLE_MATRICULA_HELP_MSG: 'Ahora que ya sabes algo más de tu matrícula, puedes pedirme otra cosa, como cómo contactar, información de otros ciclos, recordar tus tareas o exámenes o pedir ayuda. ¿Qué quieres hacer? ',
             POST_REMINDER_HELP_MSG: 'Puedes añadir nuevos recordatorios, consultar información de ciclos o módulos o pedir ayuda para conocer más opciones. ¿Qué quieres hacer ahora? ',
             POST_PROGRAMMING_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos, módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
             POST_PROGRAMMING_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizás quieras saber sobre módulos, o recordar algo. ¿Qué otra cosa te gustaría hacer? ',
             POST_TOUCH_HELP_MSG: 'Intenta tocar en otras fotos para obtenr más información. Sino, puedes volver al inicio o pedir ayuda. ¿Qué quieres hacer?' ,
+            POST_CHISTE_HELP_MSG: 'Si quieres otro chiste solo pídelo, si no pídeme información de nuestros estudios, o crea un recordatorio o pídeme ayuda para saber lo que puedo hacer. ¿Qué quieres hacer ahora? ', 
             
             
             // Falta de datos y permisos 
@@ -105,7 +106,14 @@ module.exports = {
             PROGRAMMING_AT_MSG: ' en ',
             ALSO_PROGRAMMING_MSG: 'Los lenguajes que he seleccionado son: ',
             LIST_PROGRAMMING_DETAIL_MSG: `El lenguaje <lang xml:lang="en-US">{{lenguaje.langLabel.value}}</lang> ha sido creado por <lang xml:lang="en-US">{{lenguaje.humanLabel.value}}</lang>. {{lenguaje.langDate.value}}  . `,
-           
+            
+            // Chistes 
+            CHISTE_HEADER_MSG: 'Un Chiste',
+            CHISTE_PRESENTATION_MSG: '$t(DOUBT_SPEECHCON). Aquí va un chiste, {{nombre}}. ',
+            CHISTE_END_MSG: ['¿Te ha gustado? Sí, lo sé, es malo. ', '¡Vaya! hoy estoy que lo bordo. ', '¡Seguro que te has reído!. '],
+            
+            
+            
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,
             DEVELOPER_INFINITO: `<say-as interpret-as="interjection">hasta el infinito y más allá</say-as>`,
@@ -113,6 +121,7 @@ module.exports = {
             DEVELOPER_MOLA: `<say-as interpret-as="interjection">mola</say-as>`,
             POSITIVE_SOUND: `<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_02'/>`,
             GREETING_SPEECHCON: `<say-as interpret-as="interjection">¡Felicidades!</say-as>`,
+            CHISTE_SOUND: `<audio src="soundbank://soundlibrary/musical/amzn_sfx_drum_comedy_02"/>`,
             
         }
     }

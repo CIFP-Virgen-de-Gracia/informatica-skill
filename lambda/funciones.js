@@ -8,6 +8,15 @@ const configuracion = require('./configuracion');
 
 module.exports = {
     
+    // Función que devuelve un chiste al azar de nuestro fichero de chistes
+    getChiste(){
+        const chistes = configuracion.DATA.chistes.chistes; // Vector de chistes
+        let max = chistes.length;
+        let index = Math.floor(Math.random() * max); 
+        let salida = chistes[index].texto +'...   .';
+        return salida;
+    },
+    
     // Esto es un ejemplo de consumo de un servico web, de la misma manera que consumo esto puedo consumir cualquier cosa tipo REST/WEB con JSON y AXIOS
     // Me traigo una lista de creadores de lenguajes de programación, con su año e imagen de ordenación aleatoria
     // Dame el lenguajem programado por con su imagen y año de creacion :)

@@ -407,6 +407,21 @@
             "Informáticos famosos",
             "Dime informáticos famosos"
           ]
+        },
+        {
+          "name": "ChisteIntent",
+          "slots": [],
+          "samples": [
+            "chiste",
+            "otro chiste",
+            "contar chiste",
+            "dime algo divertido",
+            "cuéntame algo divertido",
+            "diviérteme",
+            "dime algo gracioso",
+            "un chiste ",
+            "cuéntame un chiste"
+          ]
         }
       ],
       "types": [
@@ -1351,5 +1366,5 @@
       }
     ]
   },
-  "version": "53"
+  "version": "55"
 }
