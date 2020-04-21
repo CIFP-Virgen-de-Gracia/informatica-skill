@@ -10,6 +10,9 @@ module.exports = {
     
     // número máximo de famosos a consultar en el servicio
    MAX_FAMOSOS: 5, 
+   
+   // número máximo de noticias
+   MAX_NOTICIAS: 5, 
     
     // APL Interfaces, uno por cada fichero de recursos
     APL: {

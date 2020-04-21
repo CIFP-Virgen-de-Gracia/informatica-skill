@@ -422,6 +422,17 @@
             "un chiste ",
             "cuéntame un chiste"
           ]
+        },
+        {
+          "name": "NoticiasIntent",
+          "slots": [],
+          "samples": [
+            "las novedades",
+            "novedades",
+            "dime las noticias",
+            "noticias",
+            "las noticias"
+          ]
         }
       ],
       "types": [
@@ -1366,5 +1377,5 @@
       }
     ]
   },
-  "version": "55"
+  "version": "56"
 }

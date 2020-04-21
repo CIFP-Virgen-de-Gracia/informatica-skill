@@ -8,6 +8,96 @@ const configuracion = require('./configuracion');
 
 module.exports = {
     
+     // Convertimos las noticias en mensajes procesables
+   convertirNoticiasResponse(handlerInput, response, timezone){
+        let textoSalida = '';
+        let textoEscrito = '';
+        let salida;
+        // Si la llamada API falla, simplemente no agregamos los famosos a la respuesta
+        if (!response || response.length === 0)
+            return {
+                voz: '',
+                texto: ''
+            };
+        
+        const noticias = response; // Obtenemos el JSON segun la respuesta de Wikidata esta en result.bindigs
+        console.log('Resultados: ' + JSON.stringify(noticias));
+        
+        //Texto de salida
+        textoSalida += handlerInput.t('ALSO_NEWS_MSG');
+        textoEscrito += handlerInput.t('ALSO_NEWS_MSG');
+        
+        // Recorremos los resultados y lo almacenamos en el objeto lenguaje (lenguaje de programación)
+        // La idea es dedir, Lenguae X creado por Y en Z. (X: Nombre del lenguaje, Y: Creador, Z: año)
+        noticias.forEach((noticia, index) => {
+            textoSalida += handlerInput.t('NEWS_TITTLE_MSG', {titular: noticia.titular});
+            let fecha = moment(noticia.fecha).tz(timezone).locale('es').format('LLLL');
+            textoSalida += handlerInput.t('NEWS_DATE_MSG', {fecha: fecha});
+            //textoSalida += handlerInput.t('NEWS_CONTENT_MSG', {fecha: noticia.fecha});
+            textoEscrito += noticia.titular + ', ' + fecha ;
+            // Juntamos más
+            if (index === Object.keys(noticias).length - 2){
+                textoSalida += handlerInput.t('CONJUNCTION_MSG');
+                textoEscrito += handlerInput.t('CONJUNCTION_MSG');
+            }
+            else {
+               textoSalida += '. ';
+               textoEscrito += '. ';
+            }
+        });
+       // Mi salida;
+       return {
+                voz: textoSalida,
+                texto: textoEscrito
+            };
+    },
+    
+    
+    // Obtiene las noticias de manera asíncrona al llamar a aun await
+    async getNoticias(max, timezone){
+        let noticias = [];
+        let url = 'https://cifpvirgendegracia.com/feed';
+        console.log("Cargando Parseer");
+        let Parser = require('rss-parser');
+        let parser = new Parser({
+            // Renombramos los campos
+            customFields: {
+                item: [
+                     ['content:encoded', 'contenido'],
+                ]
+            }
+        });
+        
+        let feed = await parser.parseURL('https://cifpvirgendegracia.com/feed');
+        console.log(feed.title);
+        
+        feed.items.forEach(
+            item => {
+                var noticia = {
+                    titular: item.title,
+                    fecha: moment(item.isoDate).tz(timezone),
+                    contenido: item.contentSnippet,
+                    imagen: item.contenido.substring(
+                            item.contenido.indexOf("data-orig-file=") + 16, 
+                            item.contenido.indexOf("?fit="))
+                };
+                noticias.push(noticia);
+                /*
+                console.log(item);
+                console.log(item.title); // Titular
+                console.log(moment(item.isoDate).tz(timezone)); // Fecha 
+                console.log(item.contentSnippet); // contenido
+                console.log(item.contenido.substring(
+                            item.contenido.indexOf("data-orig-file=") + 16, 
+                            item.contenido.indexOf("?fit="))
+                            );
+            */
+            
+            }
+        );
+        return noticias.slice(0,max);
+    },
+    
     // Función que devuelve un chiste al azar de nuestro fichero de chistes
     getChiste(){
         const chistes = configuracion.DATA.chistes.chistes; // Vector de chistes
@@ -252,67 +342,4 @@ module.exports = {
        var meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]; 
        return  meses.indexOf( mesNombre) + 1;
     },
-    
-   
-    
-    // Devuelve los datos del cumpleaños dado una fecha
-    getDatosCumple(dia, mes, anno, timezone) {
-        const hoy = moment().tz(timezone).startOf('day');
-        const naciste = moment(`${mes}/${dia}/${anno}`, "MM/DD/YYYY").tz(timezone).startOf('day');
-        const siguienteCumple = moment(`${mes}/${dia}/${hoy.year()}`, "MM/DD/YYYY").tz(timezone).startOf('day');
-        if (hoy.isAfter(siguienteCumple)) {
-            siguienteCumple.add(1, 'years');
-        }
-        const edad = hoy.diff(naciste, 'years');
-        const diasVivo = hoy.diff(naciste, 'days');
-        const diasParaCumple = siguienteCumple.startOf('day').diff(hoy, 'days'); // el mismo dia devuelve cero
-        // Devuelvo esta estructura de datos
-        return {
-            diasVivo: diasVivo, // por si acaso :)
-            diasParaCumple: diasParaCumple,
-            edad: edad //en años
-        }
-    },
-   
-    
-    // Obtiene una lista de creadores de lenguajes de programacion, es un ejemplo de consumo de servico web con Axios
-    
-    
-    // Convertimos las respuesta de cumples en texto hablado
-    convertirCumplesResponse(handlerInput, response, conEdad, timezone){
-        let textoSalida = '';
-        // Si la llamada API falla, simplemente no agregamos los cumpleaños de hoy a la respuesta
-        if (!response || !response.results || !response.results.bindings || !Object.keys(response.results.bindings).length > 0)
-            return textoSalida;
-        
-        const resultados = response.results.bindings;
-        textoSalida += handlerInput.t('ALSO_TODAY_MSG');
-        
-        // Recorremos los resultados y lo almacenamos en el objeto persona 
-        resultados.forEach((persona, index) => {
-            console.log(persona);
-            textoSalida += persona.humanLabel.value;
-            // si tiene la edad de nacimiento...
-            if (conEdad && timezone && persona.date_of_birth.value) {
-                const edad = module.exports.convertirFechaNacimientoEnEdad(persona, timezone);
-                 textoSalida += handlerInput.t('TURNING_YO_MSG', {contador: edad});
-                 persona.date_of_birth.value = handlerInput.t('LIST_YO_ABBREV_MSG', {count: edad});
-            }
-            // Juntamos más
-            if (index === Object.keys(resultados).length - 2)
-                textoSalida += handlerInput.t('CONJUNCTION_MSG');
-            else
-               textoSalida += '. ';
-        });
-
-        return textoSalida;
-    },
-    
-    
-    // Convierte fechas de cumpleaños en años que tiene
-    convertirFechaNacimientoEnEdad(persona, timezone) {
-        const hoy = moment().tz(timezone).startOf('day');
-        const fechaNacimiento = moment(persona.date_of_birth.value).tz(timezone).startOf('day');
-        return hoy.diff(fechaNacimiento, 'years');
-    }
 }

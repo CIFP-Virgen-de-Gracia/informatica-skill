@@ -47,7 +47,7 @@ module.exports = {
             POST_PROGRAMMING_APL_HELP_MSG: 'Puedes intentar tocar las fotos para obtener más información. O quizás quieras saber sobre módulos, o recordar algo. ¿Qué otra cosa te gustaría hacer? ',
             POST_TOUCH_HELP_MSG: 'Intenta tocar en otras fotos para obtenr más información. Sino, puedes volver al inicio o pedir ayuda. ¿Qué quieres hacer?' ,
             POST_CHISTE_HELP_MSG: 'Si quieres otro chiste solo pídelo, si no pídeme información de nuestros estudios, o crea un recordatorio o pídeme ayuda para saber lo que puedo hacer. ¿Qué quieres hacer ahora? ', 
-            
+            POST_NEWS_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos o módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -112,7 +112,13 @@ module.exports = {
             CHISTE_PRESENTATION_MSG: '$t(DOUBT_SPEECHCON). Aquí va un chiste, {{nombre}}. ',
             CHISTE_END_MSG: ['¿Te ha gustado? Sí, lo sé, es malo. ', '¡Vaya! hoy estoy que lo bordo. ', '¡Seguro que te has reído!. '],
             
-            
+            // Noticias
+            PROGRESSIVE_NEWS_MSG: 'Voy a consultar las noticias del centro, {{nombre}}. ',
+            NEWS_HEADER_MSG: 'Noticias',
+            ALSO_NEWS_MSG: 'Las últimas noticias son: ',
+            NEWS_TITTLE_MSG: '{{titular}}. ',
+            NEWS_DATE_MSG :' del {{fecha}}. ',
+            NEWS_CONTENT_MSG: ' {{contenido}}. ',
             
            // Emociones y sonidos
             DOUBT_SPEECHCON: `<say-as interpret-as="interjection">hmm</say-as>`,

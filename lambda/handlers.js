@@ -7,6 +7,108 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
 const moment = require('moment-timezone'); // Para manejar fechas
 
 
+//NOTICIAS - INTENT 
+const NoticiasIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NoticiasIntent';
+    },
+    // Como vamos a acceder a una API externa lo hacemos async 
+    async handle(handlerInput) {
+         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        // Obtenemos nombre y el timezone
+        const nombre = sessionAttributes['nombre'] || '';
+        let timezone = sessionAttributes['timezone'];
+         // Obtenemos el TimeZone
+        if (!timezone){
+           //timezone = 'Europe/Rome'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
+        
+        // Vamos con el servicio
+        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
+        try {
+            // llame al servicio de respuesta progresiva
+            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_NEWS_MSG', {nombre: nombre}));
+        } catch (error) {
+            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
+            console.log("Error de respuesta progresiva : " + error);
+        }
+        
+        // ahora buscaremos en la api externa 
+        console.log("Consultando Noticias");
+        const respuesta = await func.getNoticias(configuracion.MAX_NOTICIAS, timezone);
+        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
+        
+        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
+        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
+        // convertimos la respuesta API a texto que Alexa puede leer
+        console.log("llamando a la funcion");
+        const sal = func.convertirNoticiasResponse(handlerInput, respuesta, timezone);
+        console.log("respuesta de la funcione");
+        
+        let mensajeHablado = 'Noticias'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
+        let mensajeEscrito = mensajeHablado;
+        
+         // Si tenemos respuesta hacemos lo siguiente
+        if (sal.voz) {
+            mensajeHablado = sal.voz;
+            mensajeEscrito = sal.texto;
+        }
+        mensajeHablado += handlerInput.t('POST_NEWS_HELP_MSG');
+        /*
+        // Creamos la pantalla APL// 
+       if (util.supportsAPL(handlerInput) && sal.voz) { 
+             mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
+            // Para saber la resolución
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                type: 'Alexa.Presentation.APL.RenderDocument',
+                version: '1.1',
+                document: configuracion.APL.listProgrammingIU, // Cargamos la interfaz de listas
+                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
+                datasources: {
+                    listData: {
+                        type: 'object',
+                        properties: {
+                            config: {
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
+                            },
+                            list: {
+                                // Le añadimos como items, el json adjunto
+                                listItems: respuesta.results.bindings 
+                            }
+                        },
+                        transformers: [{
+                            inputPath: 'config.hintText',
+                            transformer: 'textToHint'
+                        }]
+                    }
+                }
+            });
+       }
+        */
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('NEWS_HEADER_MSG'),
+                mensajeEscrito,
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+        
+    }
+};
+
 // CHISTE - INTENT
 const ChisteIntentHandler = {
     canHandle(handlerInput) {
@@ -1133,6 +1235,7 @@ module.exports = {
     FamososIntentHandler,
     TouchIntentHandler,
     ChisteIntentHandler,
+    NoticiasIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     FallbackIntentHandler,
