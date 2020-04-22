@@ -31,7 +31,7 @@ module.exports = {
         // La idea es dedir, Lenguae X creado por Y en Z. (X: Nombre del lenguaje, Y: Creador, Z: año)
         noticias.forEach((noticia, index) => {
             textoSalida += handlerInput.t('NEWS_TITTLE_MSG', {titular: noticia.titular});
-            let fecha = moment(noticia.fecha).tz(timezone).locale('es').format('LLLL');
+            let fecha = noticia.fecha; //moment(noticia.fecha).tz(timezone).locale('es').format('LLLL');
             textoSalida += handlerInput.t('NEWS_DATE_MSG', {fecha: fecha});
             //textoSalida += handlerInput.t('NEWS_CONTENT_MSG', {fecha: noticia.fecha});
             textoEscrito += noticia.titular + ', ' + fecha ;
@@ -75,7 +75,7 @@ module.exports = {
             item => {
                 var noticia = {
                     titular: item.title,
-                    fecha: moment(item.isoDate).tz(timezone),
+                    fecha: moment(item.isoDate).tz(timezone).locale('es').format('LLLL'), //moment(item.isoDate).tz(timezone),
                     contenido: item.contentSnippet,
                     imagen: item.contenido.substring(
                             item.contenido.indexOf("data-orig-file=") + 16, 

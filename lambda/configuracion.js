@@ -19,7 +19,8 @@ module.exports = {
         launchIU: require('./recursos/interfaz/launchScreen.json'),         // Lanzaminrto
         creatorIU: require('./recursos/interfaz/creatorScreen.json'),       // Mi Creador
         contactIU: require('./recursos/interfaz/contactScreen.json'),       // Contacto    
-        listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json') // Lista de lenguajes de programacion
+        listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json'), // Lista de lenguajes de programacion
+        listNewsIU: require('./recursos/interfaz/listNewsScreen.json') // Lista de Noticias
     },
     
     // Datos con los que trabajar 

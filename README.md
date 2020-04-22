@@ -23,6 +23,7 @@ Para ello sería interesante haber usado bases de datos o servicios webs para ha
 * 19/04/2020. Consulta de servicio Lenguajes Famosos en Wikidata y respuesta progresiva. Interfaz de usuario de lenguajes famosos en forma de lista y evento Touch.
 * 20/04/2020. Chistes, función para contar un chiste aleatorio desde su repositorio de chistes.
 * 21/04/2020. Consulta de servicio Noticias del RSS del CIFP Virgen de Gracia y detección de elementos para la respuesta progresiva.
+* 21/04/2020. Interfaz de usuario de noticas en forma de lista y evento Touch.
 
 ## Acerca de
 José Luis González Sánchez: [@joseluisgonsan](https://twitter.com/joseluisgonsan). Abril de 2020. En mi cuarentena por Coronavid-19.

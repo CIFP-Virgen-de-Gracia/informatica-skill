@@ -58,19 +58,20 @@ const NoticiasIntentHandler = {
         if (sal.voz) {
             mensajeHablado = sal.voz;
             mensajeEscrito = sal.texto;
+        }else{
+            mensajeHablado += handlerInput.t('POST_NEWS_HELP_MSG');
         }
-        mensajeHablado += handlerInput.t('POST_NEWS_HELP_MSG');
-        /*
         // Creamos la pantalla APL// 
        if (util.supportsAPL(handlerInput) && sal.voz) { 
-             mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
+           // Vamos a covertir la respuesta por su fecha
+             mensajeHablado += handlerInput.t('POST_NEWS_APL_HELP_MSG');
             // Para saber la resolución
             const {Viewport} = handlerInput.requestEnvelope.context;
             const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
             handlerInput.responseBuilder.addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
                 version: '1.1',
-                document: configuracion.APL.listProgrammingIU, // Cargamos la interfaz de listas
+                document: configuracion.APL.listNewsIU, // Cargamos la interfaz de listas
                 // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
                 datasources: {
                     listData: {
@@ -78,13 +79,13 @@ const NoticiasIntentHandler = {
                         properties: {
                             config: {
                                 backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                                title: handlerInput.t('NEWS_HEADER_MSG'),
                                 skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
                                 hintText: handlerInput.t('LAUNCH_HINT_MSG')
                             },
                             list: {
                                 // Le añadimos como items, el json adjunto
-                                listItems: respuesta.results.bindings 
+                                listItems: respuesta
                             }
                         },
                         transformers: [{
@@ -95,7 +96,7 @@ const NoticiasIntentHandler = {
                 }
             });
        }
-        */
+
         // Devolvemos la salida
        return handlerInput.responseBuilder
             .withStandardCard(
@@ -193,8 +194,9 @@ const FamososIntentHandler = {
         if (sal.voz) {
             mensajeHablado = sal.voz;
             mensajeEscrito = sal.texto;
+        }else{
+            mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
         }
-        mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
         // Creamos la pantalla APL// 
        if (util.supportsAPL(handlerInput) && sal.voz) { 
              mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
@@ -254,11 +256,9 @@ const TouchIntentHandler = {
         
         //Tipo de intent, esto lo hacemos ya que el evento Touch o más bien Alexa.Presentation.APL.UserEvent se disparará siempre que lo tengamos
         // así que lo filtrammos 
-        
-        
         let tipo = request.arguments[0];
-        // Datos del lenguaje 
-        
+        // Datos del que recibimos  
+        let datos = request.arguments[1];
         // Variables a usar
         let mensajeHablado ='';
         let mensajeEscrito ='';
@@ -266,8 +266,9 @@ const TouchIntentHandler = {
         
         // Si es la lista de ListProgramming, Famosos
         if(tipo === 'Famosos'){
+            console.log("Evento Famosos");
             // Cogemos el objeto y parseamos el JSON a Objeto JS
-             let lenguaje = request.arguments[1];
+             let lenguaje = datos;
              try { lenguaje = JSON.parse(lenguaje); } catch (e) {}
                 console.log('Evento Touch argumentos: ' + JSON.stringify(lenguaje));
             // Construimos el mensaje de salida 
@@ -275,10 +276,22 @@ const TouchIntentHandler = {
             mensajeHablado = handlerInput.t('LIST_PROGRAMMING_DETAIL_MSG', {lenguaje: lenguaje});
             mensajeEscrito = mensajeHablado;
             encabezado =  handlerInput.t('PROGRAMMING_HEADER_MSG');
+        
+        // Si es una noticia  
+        }else if(tipo === 'Noticias'){
+            console.log("Evento Noticias");
+            // Cogemos el objeto y parseamos el JSON a Objeto JS
+             let noticia = datos;
+             try { noticia = JSON.parse(noticia); } catch (e) {}
+                console.log('Evento Touch argumentos: ' + JSON.stringify(noticia));
+            // Construimos el mensaje de salida 
+            // Fijate que podemos coger sus atributos directamente del objeto aunque podríamos parametrizarlo de distinta manera pasando varios y no del tirón
+            mensajeHablado = handlerInput.t('LIST_NEWS_DETAIL_MSG', {noticia: noticia});
+            mensajeEscrito = mensajeHablado;
+            encabezado =  handlerInput.t('NEWS_HEADER_MSG');
         }
         
-        // Siempre decimos 
-        mensajeHablado += handlerInput.t('POST_TOUCH_HELP_MSG');
+       
         
         // Devolvermos la salida
         return handlerInput.responseBuilder
