@@ -1,7 +1,14 @@
-// CONSTANTES DE LOCALIZACION
-//Creamos un objeto de cadenas de lenguaje que contiene todas nuestras cadenas.
-//Las claves para cada cadena se referenciarán en nuestro código, p. handlerInput.t ('WELCOME_MSG')
-// Frases y entonaciones: https://developer.amazon.com/es-ES/docs/alexa/custom-skills/speechcon-reference-interjections-spanish.html
+/**
+ * CONSTANTES DE LOCALIZACION
+ * Creamos un objeto de cadenas de lenguaje que contiene todas nuestras cadenas.
+ * Las claves para cada cadena se referenciarán en nuestro código, p. handlerInput.t ('WELCOME_MSG')
+ * en base a los interceptores
+ * Frases y entonaciones: https://developer.amazon.com/es-ES/docs/alexa/custom-skills/speechcon-reference-interjections-spanish.html
+ */
+
+ /** *
+ * MODULO A EXPORTAR
+ */
 module.exports = {
     es: {
         translation: {

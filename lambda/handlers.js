@@ -2,10 +2,39 @@
 const Alexa = require('ask-sdk-core');
 const func = require('./funciones'); // Mis funciones y otras cosas usadas aqui: operaciones de fechas, crear recordatorio
 const configuracion = require('./configuracion');// Fichero de configuración de permisos y variables globales
-const interceptors = require('./interceptors'); // Interceptores
+//const interceptors = require('./interceptors'); // Interceptores
 const util = require('./util'); // funciones de utilidad. Aquí está la persistencia, recordatorios,  ahora y se exporta como util. Mirad en = Alexa.SkillBuilders
 const moment = require('moment-timezone'); // Para manejar fechas
 
+// Librería de pruebas 
+const p = require('./prueba'); 
+
+/**
+ * INTENT: PRUEBAS
+ */
+const PruebaIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'PruebaIntent';
+    },
+
+    // Codigo   
+    handle(handlerInput) {
+
+        const mensajeHablado = 'Prueba ' + p.getPruebaMsg();
+        let chistes = configuracion.DATA.chistes;
+        
+        // Nos tragamos el JSON??
+        try { chistes = JSON.parse(chistes); } catch (e) {}
+        console.log('Objetos de chistes: ' + JSON.stringify(chistes));
+
+        return handlerInput.responseBuilder
+            //.withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
 
 //NOTICIAS - INTENT 
 const NoticiasIntentHandler = {
@@ -110,7 +139,9 @@ const NoticiasIntentHandler = {
     }
 };
 
-// CHISTE - INTENT
+/**
+ * INTENT: CHISTE
+ */
 const ChisteIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -126,8 +157,8 @@ const ChisteIntentHandler = {
         
         // Presentamos
         let mensajeHablado= handlerInput.t('CHISTE_PRESENTATION_MSG', {nombre: nombre});
-        // obtenemos el chistes
-        mensajeHablado += func.getChiste();
+        // obtenemos el el chiste y tomamos su texto
+        mensajeHablado += func.getChiste().texto;
         // Post mensaje
         mensajeHablado +=  handlerInput.t('CHISTE_SOUND') + handlerInput.t('CHISTE_END_MSG') + handlerInput.t('POST_CHISTE_HELP_MSG');
         
@@ -1182,9 +1213,15 @@ const FallbackIntentHandler = {
     }
 };
 
-// SessionEndedRequest notifica que una sesión ha finalizado. Este controlador se activará cuando se abra actualmente
-// la sesión se cierra por uno de los siguientes motivos: 1) El usuario dice "salir" o "salir". 2) El usuario no
-// responde o dice algo que no coincide con una intención definida en su modelo de voz. 3) se produce un error
+
+/**
+ * SESION ENDED
+ * SessionEndedRequest notifica que una sesión ha finalizado. Este controlador se activará cuando se abra actualmente
+ * la sesión se cierra por uno de los siguientes motivos: 
+ * 1) El usuario dice "salir" o "salir". 
+ * 2) El usuario no responde o dice algo que no coincide con una intención definida en su modelo de voz. 
+ * 3) se produce un error
+ */
 const SessionEndedRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
@@ -1197,9 +1234,12 @@ const SessionEndedRequestHandler = {
 };
 
 
-// Intent reflector se utiliza para probar y depurar modelos de interacción.
-// Simplemente repetirá la intención que dijo el usuario. Puedes crear manejadores personalizados para tus intentos
-// definiéndolos arriba, luego también agregándolos a la cadena de manejador de solicitudes a continuación
+/**
+ * INTENT: REFLECTOR
+ * Intent reflector se utiliza para probar y depurar modelos de interacción.
+ * Simplemente repetirá la intención que dijo el usuario. Puedes crear manejadores personalizados para tus intentos definiéndolos arriba, 
+ * luego también agregándolos a la cadena de manejador de solicitudes a continuación
+ */
 const IntentReflectorHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
@@ -1215,9 +1255,13 @@ const IntentReflectorHandler = {
     }
 };
 
-// Generic error para capturar cualquier errores de sintaxis o errores de enrutamiento. Si recibes un error
-// indicando que no se encuentra la cadena del controlador de solicitudes, no ha implementado un controlador para
-// la intención invocada o incluida en el generador de habilidades a continuación
+
+/**
+ * ERROR HANDLE
+ * Generic error para capturar cualquier errores de sintaxis o errores de enrutamiento. Si recibes un error
+ * indicando que no se encuentra la cadena del controlador de solicitudes, no ha implementado un controlador para
+ * la intención invocada o incluida en el generador de habilidades a continuación
+ */
 const ErrorHandler = {
     canHandle() {
         return true;
@@ -1233,8 +1277,15 @@ const ErrorHandler = {
     }
 };
 
+
+/**
+ * EXPORTACIÓN DE MODULOS
+ */
 module.exports = {
     LaunchRequestHandler,
+    // Handler de prueba
+    PruebaIntentHandler,
+    //Funcinalidad
     InicioIntentHandler,
     CreadorIntentHandler,
     ContactoIntentHandler,

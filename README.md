@@ -2,8 +2,14 @@
 Proceso de creación de una skill para Alexa del Dpto. de Informática del CIFP Virgen de Gracia de Puertollano (Ciudad Real). 
 
 ### Acerca de
-Es un ejemplo didático y no es la mejor solución técnica al 100%. Por varios motivos, pero si es muy útil para su uso docente y sobre todo para conocer el proceso de creación de una Skill de Amazón Alexa.
-Para ello sería interesante haber usado bases de datos o servicios webs para hacer búsquedas más potentes y no ficheros sobre todo para los datos locales, Pero se muestra el uso de y consumo de servicios web en otras partes de su funcionalidad. Pero lo importante es conocer el proceso de desarrollo y diseño de interacción de voz (frontented) ye l procesamiento de intenciones y eventos (backend) y se propondrá como ampliación otras tecnologías como las indicadas en un futuro.
+Es un ejemplo didático de cómo realizar una Skill con distintas funcionalidades. Técnicamente está orientada a su uso docente y no profesional ya que se pueden optimizar aún más las cosas pero complicaría su código, es por ello que ha primado el efoque docente para conocer el proceso de creación de una Skill de Amazón Alexa. El objetivo marcado es conocer el proceso de desarrollo y diseño de interacción de voz (frontented) y el procesamiento de intenciones y eventos (backend).
+
+Sería interesante haber usado bases de datos o servicios webs para hacer búsquedas más potentes y no ficheros sobre todo para los datos locales JSON. 
+Aún así se ha simulado como si estos ficheros nos hubiesen llegado a través de un servicio REST mostrando su procesamiento.
+El motio es que no tengas que tener de servicios web para ello y puedas hacerlo más fácilmente.
+Asún así se ha usado servicios web para acceso a las noticias del RSS del centro y consulta de lenguajes famosos desde la wikipedia.
+
+
 
 ## Tecnologías
 * Alexa Developer Doc: https://developer.amazon.com/es/documentation/
@@ -24,6 +30,8 @@ Para ello sería interesante haber usado bases de datos o servicios webs para ha
 * 20/04/2020. Chistes, función para contar un chiste aleatorio desde su repositorio de chistes.
 * 21/04/2020. Consulta de servicio Noticias del RSS del CIFP Virgen de Gracia y detección de elementos para la respuesta progresiva.
 * 21/04/2020. Interfaz de usuario de noticas en forma de lista y evento Touch.
+* 23/04/2020. Chistes en JSON simulando un servicio
+
 
 ## Acerca de
 José Luis González Sánchez: [@joseluisgonsan](https://twitter.com/joseluisgonsan). Abril de 2020. En mi cuarentena por Coronavid-19.

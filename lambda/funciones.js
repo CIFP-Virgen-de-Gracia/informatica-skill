@@ -1,15 +1,66 @@
-// MIS FUNCIONES AXIALIARES O PARTE DE LA FUNCINALIDAD O LÓGICA DE LA SKILL
+/**
+ * MODULO DE FUNCIONES
+ * Funciones o elementos de la lógia de la skill que complementan a los controladores Handlers
+ */
 
 // LIBRERÍAS A USAR
 const moment = require('moment-timezone'); // manejo de fechas con TimeZone
-const util = require('./util'); // Utilidades
 const axios = require('axios'); // servicios HTTP y REST 
 const configuracion = require('./configuracion');
 
+/**
+ * MODULOS A EXPORTAR
+ */
 module.exports = {
+
+    /**
+     * Obtiene una lista de las noticias desde un RSS existente en configuración
+     * @param {number} max Número máximo de noticias
+     * @param {*} timezone TimeZone
+     */
+    async getNoticias(max, timezone){
+        let noticias = [];
+        let url = configuracion.DATA.RSS;
+        console.log("Cargando Parseer");
+        let Parser = require('rss-parser');
+        let parser = new Parser({
+            // Renombramos los campos que nos interesa obtener del RSS
+            customFields: {
+                item: [
+                     ['content:encoded', 'contenido'],
+                ]
+            }
+        });
+        
+        // Obtenemos las noticias
+        let feed = await parser.parseURL(url);
+        console.log(feed.title);
+        
+        // Por cada item, creamos una notica y lo salvamos en nuestra lista de noticias
+        feed.items.forEach(
+            item => { 
+                let noticia = {
+                    titular: item.title,
+                    fecha: moment(item.isoDate).tz(timezone).locale('es').format('LLLL'), //moment(item.isoDate).tz(timezone),
+                    contenido: item.contentSnippet,
+                    imagen: item.contenido.substring(
+                            item.contenido.indexOf("data-orig-file=") + 16, 
+                            item.contenido.indexOf("?fit="))
+                };
+                noticias.push(noticia);
+            }
+        );
+        return noticias.slice(0,max);
+    },
+
     
-     // Convertimos las noticias en mensajes procesables
-   convertirNoticiasResponse(handlerInput, response, timezone){
+    /**
+     * Convierte una lista de noticias en un objeto de texto por voz y salida textual
+     * @param {*} handlerInput handler
+     * @param {*} response respuesta, texto de entrada en JSON
+     * @param {*} timezone TimeZone
+     */
+    convertirNoticiasResponse(handlerInput, response, timezone){
         let textoSalida = '';
         let textoEscrito = '';
         let salida;
@@ -28,7 +79,7 @@ module.exports = {
         textoEscrito += handlerInput.t('ALSO_NEWS_MSG');
         
         // Recorremos los resultados y lo almacenamos en el objeto lenguaje (lenguaje de programación)
-        // La idea es dedir, Lenguae X creado por Y en Z. (X: Nombre del lenguaje, Y: Creador, Z: año)
+        // Vamos recogiendo tanto la noticia como su indice y creamos la salida
         noticias.forEach((noticia, index) => {
             textoSalida += handlerInput.t('NEWS_TITTLE_MSG', {titular: noticia.titular});
             let fecha = noticia.fecha; //moment(noticia.fecha).tz(timezone).locale('es').format('LLLL');
@@ -41,78 +92,41 @@ module.exports = {
                 textoEscrito += handlerInput.t('CONJUNCTION_MSG');
             }
             else {
-               textoSalida += '. ';
-               textoEscrito += '. ';
+            textoSalida += '. ';
+            textoEscrito += '. ';
             }
         });
-       // Mi salida;
-       return {
+    // Mi salida;
+    return {
                 voz: textoSalida,
                 texto: textoEscrito
             };
     },
-    
-    
-    // Obtiene las noticias de manera asíncrona al llamar a aun await
-    async getNoticias(max, timezone){
-        let noticias = [];
-        let url = 'https://cifpvirgendegracia.com/feed';
-        console.log("Cargando Parseer");
-        let Parser = require('rss-parser');
-        let parser = new Parser({
-            // Renombramos los campos
-            customFields: {
-                item: [
-                     ['content:encoded', 'contenido'],
-                ]
-            }
-        });
-        
-        let feed = await parser.parseURL('https://cifpvirgendegracia.com/feed');
-        console.log(feed.title);
-        
-        feed.items.forEach(
-            item => {
-                var noticia = {
-                    titular: item.title,
-                    fecha: moment(item.isoDate).tz(timezone).locale('es').format('LLLL'), //moment(item.isoDate).tz(timezone),
-                    contenido: item.contentSnippet,
-                    imagen: item.contenido.substring(
-                            item.contenido.indexOf("data-orig-file=") + 16, 
-                            item.contenido.indexOf("?fit="))
-                };
-                noticias.push(noticia);
-                /*
-                console.log(item);
-                console.log(item.title); // Titular
-                console.log(moment(item.isoDate).tz(timezone)); // Fecha 
-                console.log(item.contentSnippet); // contenido
-                console.log(item.contenido.substring(
-                            item.contenido.indexOf("data-orig-file=") + 16, 
-                            item.contenido.indexOf("?fit="))
-                            );
-            */
-            
-            }
-        );
-        return noticias.slice(0,max);
-    },
-    
-    // Función que devuelve un chiste al azar de nuestro fichero de chistes
+
+
+    /**
+     * Devuelve un chiste aleatorio de nuesto Servicio de lamacenamiento de chistes
+     */
     getChiste(){
-        const chistes = configuracion.DATA.chistes.chistes; // Vector de chistes
-        let max = chistes.length;
-        let index = Math.floor(Math.random() * max); 
-        let salida = chistes[index].texto +'...   .';
-        return salida;
+        // Simulamos que nos conectamos a un servicio y cogemos los chistes, en nuestro caso están en un fichero estaticos, obtendríamos la lista de
+        const chistes = configuracion.DATA.chistes; // Vector de chistes
+        try { chistes = JSON.parse(chistes); } catch (e) {}
+        console.log('Objetos de chistes: ' + JSON.stringify(chistes));
+        //Devolvemos entre 0 y el máximo de vector menos 1
+        return chistes[Math.floor(Math.random() * chistes.length)];
     },
     
-    // Esto es un ejemplo de consumo de un servico web, de la misma manera que consumo esto puedo consumir cualquier cosa tipo REST/WEB con JSON y AXIOS
-    // Me traigo una lista de creadores de lenguajes de programación, con su año e imagen de ordenación aleatoria
-    // Dame el lenguajem programado por con su imagen y año de creacion :)
+    
+    /**
+     * Lista de creadores de lenguajes
+     * Esto es un ejemplo de consumo de un servico web, de la misma manera que consumo esto puedo consumir cualquier cosa tipo REST/WEB con JSON y AXIOS
+     * Me traigo una lista de creadores de lenguajes de programación, con su año e imagen de ordenación aleatoria
+     * Dame el lenguajem programado por con su imagen y año de creacion :)
+     * @param {number} limite Máximo de creadores de lenguajes de programación a obtener desde el servicio
+     */
     getCreadoresLenguajesProgramacion(limite){
-        const endpoint = 'https://query.wikidata.org/sparql';
-        // Lista de lenguajes y personas que lo han creado con su foto y año, la ordenación aleatoria
+        const endpoint = configuracion.DATA.WIKI;
+        // Consulta Lista de lenguajes y personas que lo han creado con su foto y año, la ordenación aleatoria
         const consultaSparql =
         `SELECT DISTINCT ?langLabel ?langDate ?humanLabel ?picture WHERE {
             ?lang (wdt:P31/(wdt:P279*)) wd:Q9143.
@@ -133,7 +147,7 @@ module.exports = {
         const url = endpoint + '?query=' + encodeURIComponent(consultaSparql);
         console.log(url); // por si queremos verla en el explorador
         // Configuración de acceso al servicoo y tiempos de respuesta
-        var config = {
+        let config = {
             timeout: 6500, // timeout api 8 seg timeout, se puede cambiar en  axios.defaults.timeout
             headers: {'Accept': 'application/sparql-results+json'} // Queremos JSON
         };
@@ -152,7 +166,13 @@ module.exports = {
         });
     },
     
-    // Convertimos las respuesta de famosos en texto hablado
+
+    /**
+     * Convierte la salida de la lista de noticias en mensaje de texto y voz
+     * @param {*} handlerInput handller
+     * @param {*} response respuesta a convertir con la entrada de datos JSON
+     * @param {*} timezone timezone
+     */
    convertirFamososResponse(handlerInput, response, timezone){
         let textoSalida = '';
         let textoEscrito = '';
@@ -337,9 +357,12 @@ module.exports = {
             return 'SMR';
     },
     
-    // Dado un nombre de un mes devuelve su número
+    /**
+     * Dado un mes, devuelve su número entre 1 y 12.
+     * @param {string} mesNombre Nombre del mes
+     */
     getIDMes(mesNombre) {
-       var meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]; 
-       return  meses.indexOf( mesNombre) + 1;
+       const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]; 
+       return  meses.indexOf(mesNombre) + 1;
     },
 }

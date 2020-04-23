@@ -1,11 +1,25 @@
+/**
+ * MODULO DE UTILIDADES
+ */
+
+ // LIBRERÍAS
 const AWS = require('aws-sdk');
 
+// Cliente de la hostedSkill
 const s3SigV4Client = new AWS.S3({
     signatureVersion: 'v4'
 });
 
+
+/**
+ * MODULOS A EXPORTAR
+ */
 module.exports = {
     
+    /**
+     * Obtiene la firma y el punto de acceso a nuestra skill
+     * @param {*} s3ObjectKey Objeto de configuración
+     */
     getS3PreSignedUrl(s3ObjectKey) {
         const bucketName = process.env.S3_PERSISTENCE_BUCKET;
         const s3PreSignedUrl = s3SigV4Client.getSignedUrl('getObject', {
@@ -17,7 +31,12 @@ module.exports = {
         return s3PreSignedUrl;
     
     }, 
-     // FUNCIÓN PARA CONFIGURAR LA DEPENDENCIA
+    
+
+    /**
+     * Obtiene los datos de almacenamineto y persistencia
+     * @param {*} tableName Nombre de la tabla
+     */
     getPersistenceAdapter(tableName) {
         // Esto lo ponemos porque esta almacenanda en el propio sistema de Alexa Hosted
         function isAlexaHosted() {
@@ -33,13 +52,20 @@ module.exports = {
             // IMPORTANTE: no olvides dar acceso a DynamoDB al rol que está utilizando para ejecutar este lambda (a través de la política de IAM)
             const {DynamoDbPersistenceAdapter} = require('ask-sdk-dynamodb-persistence-adapter');
             return new DynamoDbPersistenceAdapter({
-                tableName: tableName || 'feliz_cumple',
+                tableName: tableName || 'informatica_virgen',
                 createTable: true
             });
         }
     },
     
-    // FUNCION PARA CREAR UN RECORDATORIO
+    /**
+     * Crea un recordatorio siendo la API Reminders
+     * @param {*} requestMoment Momento requerido
+     * @param {*} scheduledMoment Momento planificado
+     * @param {*} timezone Timezone
+     * @param {*} locale locale
+     * @param {*} message mensaje del recordatorio
+     */
     createReminder(requestMoment, scheduledMoment, timezone, locale, message) {
         console.log('createReminder: requestMoment: ' + requestMoment);
         console.log('createReminder: scheduledMoment: ' + scheduledMoment);
@@ -64,7 +90,12 @@ module.exports = {
         }
     }, 
     
-    // FUNCION PARA CREAR UNA DIRECTIVA DE SERVICIO
+
+    /**
+     * Crea una directiva de servicio y la encola
+     * @param {*} handlerInput Handler que lo procesa
+     * @param {*} msg Mensaje
+     */
     callDirectiveService(handlerInput, msg) {
         // llama a Alexa, Directiva de servicio
         const {requestEnvelope} = handlerInput;
@@ -85,7 +116,10 @@ module.exports = {
         return directiveServiceClient.enqueue(directive, apiEndpoint, apiAccessToken);
     }, 
     
-    // FUNCION PARA INDICAR SI EL DISPOSITIVO SOPORTA APL
+    /**
+     * Indica si el dispositivo soporta APLL (interfaz gráfica)
+     * @param {*} handlerInput 
+     */
     supportsAPL(handlerInput) {
         const {supportedInterfaces} = handlerInput.requestEnvelope.context.System.device;
         return !!supportedInterfaces['Alexa.Presentation.APL'];

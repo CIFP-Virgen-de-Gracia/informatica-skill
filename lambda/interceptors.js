@@ -1,4 +1,10 @@
-// MODULO DE INTERCEPTORES
+/**
+ * MODULO DE INTERCPTORES
+ * Un interceptor es alguien que se pone en medio entre la Frontend y backend para procesar entradas y salidas,
+ */
+
+ // LIBRERÍAS
+ 
 const Alexa = require('ask-sdk-core');
 // i18n librería para usar el interceptor de localización para poder tener los mensajes en distintos idiomas.
 const i18n = require('i18next');
@@ -8,22 +14,31 @@ const languageStrings = require('./localisation');
 const configuracion = require('./configuracion');
 
 
-// Request interceptor registrará todas las solicitudes entrantes en esta lambda
+/**
+ * Request interceptor registrará todas las solicitudes entrantes en esta lambda
+ */
 const LoggingRequestInterceptor = {
         process(handlerInput) {
             console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)}`);
         }
 };
     
-// Response interceptor registrará todas las respuestas salientes de esta lambda
+
+/**
+ * Response interceptor registrará todas las respuestas salientes de esta lambda
+ */
 const LoggingResponseInterceptor = {
     process(handlerInput, response) {
         console.log(`Outgoing response: ${JSON.stringify(response)}`);
     }
 };
-    
-// Este Request interceptor enlazará una función de traducción 't' al controlador de entrada
-// Se le ha añadido un metodo que elije cadenas aleatorias si existen en el fichero de cadenas de localización
+   
+
+/**
+ * LOCALIZACIÓN
+ * Este Request interceptor enlazará una función de traducción 't' al controlador de entrada
+ * Se le ha añadido un metodo que elije cadenas aleatorias si existen en el fichero de cadenas de localización
+ */
 const LocalisationRequestInterceptor = {
     process(handlerInput) {
         const localisationClient = i18n.init({
@@ -45,9 +60,12 @@ const LocalisationRequestInterceptor = {
     }
 };
     
-// INTERCETORES PARA CARGAR Y ALMACENAR DATOS DE SESIÓN A BASE DE DATOS Y VICEVERSA
-// A continuación usamos async y await (más información: javascript.info/async-await)
-// Es una forma de salvar/cargar y esperar el resultado de una operación asíncrona externa
+
+/**
+ * CARGAR DATOS DESDE LA PERSISTENCIA
+ * A continuación usamos async y await (más información: javascript.info/async-await)
+ * Es una forma de salvar/cargar y esperar el resultado de una operación asíncrona externa
+ */
 const LoadAttributesRequestInterceptor = {
     async process(handlerInput) {
         const {attributesManager, requestEnvelope} = handlerInput;
@@ -63,8 +81,12 @@ const LoadAttributesRequestInterceptor = {
     }
 };
     
-//Si desabilitas la skill y la vuelve a habilitar, el ID de usuario podría cambiar 
-// y perderás los atributos persistentes guardados a continuación, ya que el ID de usuario es la clave principal
+
+/**
+ * SALVAR DATOS A LA PERSISTENCIA
+ * Si desabilitas la skill y la vuelve a habilitar, el ID de usuario podría cambiar 
+ * y perderás los atributos persistentes guardados a continuación, ya que el ID de usuario es la clave principal
+ */
 const SaveAttributesResponseInterceptor = {
     async process(handlerInput, response) {
         if (!response) return; // por si no tenemos respuesta o se ha caido
@@ -88,9 +110,11 @@ const SaveAttributesResponseInterceptor = {
     }
 };
 
-// INTERCEPTORES DE PERMISOS
-// Obtener nombre de usuario
-// Si deshabilitas la skill y la vuelves a habilitar, el ID de usuario podría cambiar y el usuario tendrá que otorgar el permiso para acceder al nombre nuevamente
+
+/**
+ * NTERCEPTORES DE PERMISOS: Nombre de usuario. Obtiene el nombre de usuario
+ * Si deshabilitas la skill y la vuelves a habilitar, el ID de usuario podría cambiar y el usuario tendrá que otorgar el permiso para acceder al nombre nuevamente
+ */
 const LoadNameRequestInterceptor = {
     async process(handlerInput) {
         const {attributesManager, serviceClientFactory, requestEnvelope} = handlerInput;
@@ -121,7 +145,10 @@ const LoadNameRequestInterceptor = {
     }
 };
 
-// Obtener TimeZone
+
+/**
+ * NTERCEPTORES DE PERMISOS: TimeZone. Obtiene la zona horaria del dispositivo
+ */
 const LoadTimezoneRequestInterceptor = {
     async process(handlerInput) {
         const {attributesManager, serviceClientFactory, requestEnvelope} = handlerInput;
@@ -146,7 +173,10 @@ const LoadTimezoneRequestInterceptor = {
     }
 };
 
-// Exportamos los módulos
+
+/**
+ * MODULOS A EXPORTAR
+ */
 module.exports = {
     LoggingRequestInterceptor,
     LoggingResponseInterceptor,

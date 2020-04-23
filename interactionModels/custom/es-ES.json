@@ -433,6 +433,13 @@
             "noticias",
             "las noticias"
           ]
+        },
+        {
+          "name": "PruebaIntent",
+          "slots": [],
+          "samples": [
+            "prueba"
+          ]
         }
       ],
       "types": [
@@ -1377,5 +1384,5 @@
       }
     ]
   },
-  "version": "56"
+  "version": "59"
 }
