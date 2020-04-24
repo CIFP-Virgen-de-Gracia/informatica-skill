@@ -69,9 +69,9 @@
           "slots": [],
           "samples": [
             "dime el contacto",
-            "contactar informatica",
-            "cotacto informatica",
-            "contacto de informatica",
+            "contactar informática",
+            "cotacto informática",
+            "contacto de informática",
             "contactar con departamento",
             "contacto del departamento",
             "saber más",
@@ -89,61 +89,61 @@
           "name": "DireccionIntent",
           "slots": [],
           "samples": [
-            "direccion informatica",
-            "direccion de informatica",
+            "dirección informática",
+            "dirección de informática",
             "ir a departamento",
-            "direccion departamento",
-            "direccion del departamento",
+            "dirección departamento",
+            "dirección del departamento",
             "contactar en persona",
-            "direccion de contacto",
-            "localizacion",
+            "dirección de contacto",
+            "localización",
             "ciudad",
-            "poblacion",
+            "población",
             "cómo llegar",
             "donde estáis",
-            "direccion",
-            "dame la direccion"
+            "dirección",
+            "dame la dirección"
           ]
         },
         {
           "name": "TelefonoIntent",
           "slots": [],
           "samples": [
-            "telefono de informatica",
-            "telefono informatica",
-            "telefono departamento",
-            "telefono de departamento",
-            "contactar por telefono",
-            "como hablarte",
+            "teléfono de informática",
+            "teléfono informática",
+            "teléfono departamento",
+            "teléfono de departamento",
+            "contactar por teléfono",
+            "cómo hablarte",
             "hablarte",
-            "movil",
+            "móvil",
             "el móvil",
-            "el telefono",
+            "el teléfono",
             "llamarte",
             "cómo llamar",
-            "dime el telefono",
-            "dame el telefono",
-            "telefono"
+            "dime el télefono",
+            "dame el télefono",
+            "télefono"
           ]
         },
         {
           "name": "CorreoIntent",
           "slots": [],
           "samples": [
-            "email informatica",
-            "email de informatica",
-            "dame el email de informatica",
-            "dame el correo de informatica",
-            "corre informatica",
-            "corre de informatica",
+            "email informática",
+            "email de informática",
+            "dame el email de informática",
+            "dame el correo de informática",
+            "corre informática",
+            "corre de informática",
             "correo departamento",
             "correo de departamento",
             "contactar por correo",
             "contactar por email",
             "escribirte",
-            "dame el correo electronico",
+            "dame el correo electrónico",
             "dame el correo",
-            "dime el correo electronico",
+            "dime el correo electrónico",
             "dime el correo",
             "dame el email",
             "dime el email",
@@ -187,6 +187,7 @@
             }
           ],
           "samples": [
+            "memorizar mi curso",
             "registrar lo que estudio",
             "recuerdar curso",
             "recuerda lo que estudio",
@@ -242,10 +243,10 @@
             }
           ],
           "samples": [
-            "informacion ciclo {ciclo}",
+            "información ciclo {ciclo}",
             "detalles {ciclo}",
             "info {ciclo} ",
-            "informacion de {ciclo}",
+            "información de {ciclo}",
             "datelles de {ciclo}",
             "dame detalles de un ciclo",
             "información de un ciclo",
@@ -1286,7 +1287,7 @@
           },
           {
             "type": "PlainText",
-            "value": "Vale, crearé el siguiente recordatorio con mensaje. {texto} .  Para el {fecha} a las {hora} ¿De acuerdo?"
+            "value": "Vale, crearé el siguiente recordatorio con mensaje. {texto} .  Para el {fecha} a las {hora} . ¿De acuerdo?"
           }
         ]
       },
@@ -1384,5 +1385,5 @@
       }
     ]
   },
-  "version": "59"
+  "version": "63"
 }

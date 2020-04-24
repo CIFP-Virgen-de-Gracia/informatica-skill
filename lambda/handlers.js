@@ -1,3 +1,5 @@
+'use strict';
+
 // LIBRERÍAS
 const Alexa = require('ask-sdk-core');
 const func = require('./funciones'); // Mis funciones y otras cosas usadas aqui: operaciones de fechas, crear recordatorio
@@ -22,11 +24,14 @@ const PruebaIntentHandler = {
     handle(handlerInput) {
 
         const mensajeHablado = 'Prueba ' + p.getPruebaMsg();
-        let chistes = configuracion.DATA.chistes;
         
-        // Nos tragamos el JSON??
-        try { chistes = JSON.parse(chistes); } catch (e) {}
-        console.log('Objetos de chistes: ' + JSON.stringify(chistes));
+        // Listado de todos los ciclos
+        p.getListaCiclos();
+
+        // Listado de un ciclo por id
+        let id = 'SMR'; // uppercase
+        p.getCiclo(id);
+
 
         return handlerInput.responseBuilder
             //.withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
@@ -36,245 +41,10 @@ const PruebaIntentHandler = {
     }
 };
 
-//NOTICIAS - INTENT 
-const NoticiasIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NoticiasIntent';
-    },
-    // Como vamos a acceder a una API externa lo hacemos async 
-    async handle(handlerInput) {
-         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
-        // Obtenemos los atributos de sesión que necesitamos
-        const sessionAttributes = attributesManager.getSessionAttributes();
-        // Obtenemos nombre y el timezone
-        const nombre = sessionAttributes['nombre'] || '';
-        let timezone = sessionAttributes['timezone'];
-         // Obtenemos el TimeZone
-        if (!timezone){
-           //timezone = 'Europe/Rome'; 
-            return handlerInput.responseBuilder
-                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
-                .getResponse();
-        }
-        
-        // Vamos con el servicio
-        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
-        try {
-            // llame al servicio de respuesta progresiva
-            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_NEWS_MSG', {nombre: nombre}));
-        } catch (error) {
-            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
-            console.log("Error de respuesta progresiva : " + error);
-        }
-        
-        // ahora buscaremos en la api externa 
-        console.log("Consultando Noticias");
-        const respuesta = await func.getNoticias(configuracion.MAX_NOTICIAS, timezone);
-        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
-        
-        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
-        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
-        // convertimos la respuesta API a texto que Alexa puede leer
-        console.log("llamando a la funcion");
-        const sal = func.convertirNoticiasResponse(handlerInput, respuesta, timezone);
-        console.log("respuesta de la funcione");
-        
-        let mensajeHablado = 'Noticias'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
-        let mensajeEscrito = mensajeHablado;
-        
-         // Si tenemos respuesta hacemos lo siguiente
-        if (sal.voz) {
-            mensajeHablado = sal.voz;
-            mensajeEscrito = sal.texto;
-        }else{
-            mensajeHablado += handlerInput.t('POST_NEWS_HELP_MSG');
-        }
-        // Creamos la pantalla APL// 
-       if (util.supportsAPL(handlerInput) && sal.voz) { 
-           // Vamos a covertir la respuesta por su fecha
-             mensajeHablado += handlerInput.t('POST_NEWS_APL_HELP_MSG');
-            // Para saber la resolución
-            const {Viewport} = handlerInput.requestEnvelope.context;
-            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-            handlerInput.responseBuilder.addDirective({
-                type: 'Alexa.Presentation.APL.RenderDocument',
-                version: '1.1',
-                document: configuracion.APL.listNewsIU, // Cargamos la interfaz de listas
-                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
-                datasources: {
-                    listData: {
-                        type: 'object',
-                        properties: {
-                            config: {
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                title: handlerInput.t('NEWS_HEADER_MSG'),
-                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
-                            },
-                            list: {
-                                // Le añadimos como items, el json adjunto
-                                listItems: respuesta
-                            }
-                        },
-                        transformers: [{
-                            inputPath: 'config.hintText',
-                            transformer: 'textToHint'
-                        }]
-                    }
-                }
-            });
-       }
 
-        // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('NEWS_HEADER_MSG'),
-                mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-        
-    }
-};
 
-/**
- * INTENT: CHISTE
- */
-const ChisteIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'ChisteIntent';
-    },
-    // Proceso
-    handle(handlerInput) {
-        const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
-        // Obtenemos los atributos de sesión que necesitamos
-        const sessionAttributes = attributesManager.getSessionAttributes();
-        // Obtenemos nombre y el timezone
-        const nombre = sessionAttributes['nombre'] || '';
-        
-        // Presentamos
-        let mensajeHablado= handlerInput.t('CHISTE_PRESENTATION_MSG', {nombre: nombre});
-        // obtenemos el el chiste y tomamos su texto
-        mensajeHablado += func.getChiste().texto;
-        // Post mensaje
-        mensajeHablado +=  handlerInput.t('CHISTE_SOUND') + handlerInput.t('CHISTE_END_MSG') + handlerInput.t('POST_CHISTE_HELP_MSG');
-        
-        // Devolvemos la salida
-        return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('CHISTE_HEADER_MSG:'),
-                mensajeHablado,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-        
 
-        
-    }
-};
 
-// CREADORES DE LENGUAJES FAMOSOS - INTENT 
-const FamososIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'FamososIntent';
-    },
-    // Como vamos a acceder a una API externa lo hacemos async 
-    async handle(handlerInput) {
-         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
-        // Obtenemos los atributos de sesión que necesitamos
-        const sessionAttributes = attributesManager.getSessionAttributes();
-        // Obtenemos nombre y el timezone
-        const nombre = sessionAttributes['nombre'] || '';
-        let timezone = sessionAttributes['timezone'];
-         // Obtenemos el TimeZone
-        if (!timezone){
-           //timezone = 'Europe/Rome'; 
-            return handlerInput.responseBuilder
-                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
-                .getResponse();
-        }
-        
-        // Vamos con el servicio
-        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
-        try {
-            // llame al servicio de respuesta progresiva
-            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_PROGRAMMING_MSG', {nombre: nombre}));
-        } catch (error) {
-            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
-            console.log("Error de respuesta progresiva : " + error);
-        }
-        
-        // ahora buscaremos en la api externa 
-        const respuesta = await func.getCreadoresLenguajesProgramacion(configuracion.MAX_FAMOSOS);
-        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
-        
-        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
-        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
-        // convertimos la respuesta API a texto que Alexa puede leer
-        const sal = func.convertirFamososResponse(handlerInput, respuesta, timezone);
-        
-        let mensajeHablado = 'Famosos'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
-        let mensajeEscrito = mensajeHablado;
-        
-         // Si tenemos respuesta hacemos lo siguiente
-        if (sal.voz) {
-            mensajeHablado = sal.voz;
-            mensajeEscrito = sal.texto;
-        }else{
-            mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
-        }
-        // Creamos la pantalla APL// 
-       if (util.supportsAPL(handlerInput) && sal.voz) { 
-             mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
-            // Para saber la resolución
-            const {Viewport} = handlerInput.requestEnvelope.context;
-            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-            handlerInput.responseBuilder.addDirective({
-                type: 'Alexa.Presentation.APL.RenderDocument',
-                version: '1.1',
-                document: configuracion.APL.listProgrammingIU, // Cargamos la interfaz de listas
-                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
-                datasources: {
-                    listData: {
-                        type: 'object',
-                        properties: {
-                            config: {
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
-                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
-                            },
-                            list: {
-                                // Le añadimos como items, el json adjunto
-                                listItems: respuesta.results.bindings 
-                            }
-                        },
-                        transformers: [{
-                            inputPath: 'config.hintText',
-                            transformer: 'textToHint'
-                        }]
-                    }
-                }
-            });
-       }
-        
-        // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('PROGRAMMING_HEADER_MSG'),
-                mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-        
-    }
-};
 
 
 // HANDLER DE DE EVENTO TOUCH - INTENT 
@@ -336,150 +106,7 @@ const TouchIntentHandler = {
     }
 };
 
-// RECORDATORIO  - INTENCION
-const RecordatorioIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RecordatorioIntent';
-    },
-    //Proceso
-    async handle(handlerInput) {
-      // Recogemos los la entrada entrada - handler Input
-        const {attributesManager, serviceClientFactory, requestEnvelope, responseBuilder} = handlerInput;
-        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
-        const {intent} = requestEnvelope.request;
-        const sessionAttributes = attributesManager.getSessionAttributes();
-        
-        // Obtenemos nombre
-          const nombre = sessionAttributes['nombre'] || '';
-        // Recogemos fecham hora y texto
-        const fecha = Alexa.getSlotValue(requestEnvelope, 'fecha');
-        const hora = Alexa.getSlotValue(requestEnvelope, 'hora');
-        const texto = Alexa.getSlotValue(requestEnvelope, 'texto');
-        
-        // timezone y datos de hora
-        let timezone = sessionAttributes['timezone'];
-        const locale = Alexa.getLocale(requestEnvelope); // Local para fechas
-        const momento = moment().tz(timezone)//; .format('YYYY-MM-DDTHH:mm:00.000'); // Hoy, momento actual
-        const disparador = moment.tz(fecha +' '+hora, timezone);// .format('YYYY-MM-DDTHH:mm:00.000'); // La fecha que queremos
-        
-        // Confirmamos
-        // Si NO esta confirmado
-        if (intent.confirmationStatus !== 'CONFIRMED') {
-            return handlerInput.responseBuilder
-                .speak(handlerInput.t('CANCEL_MSG') + handlerInput.t('REPROMPT_MSG'))
-                .reprompt(handlerInput.t('REPROMPT_MSG'))
-                .getResponse();
-        }
-        
-        // Obtenemos el moment-timezone
-        if (!timezone){
-            //timezone = 'Europe/Madrid'; 
-            return handlerInput.responseBuilder
-                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
-                .getResponse();
-        }
-      
-        let mensajeHablado = '';
-        let errorFlag = false; // Variable de los errores
-        // Creamos el recordatorio usando la API Remiders
-        // Hay que darle permisos en Build -> Prmissions
-        // o saltara la excepción.
-        try {
-            // Para accedera los permisos
-            const {permissions} = requestEnvelope.context.System.user;
-            
-            if (!(permissions && permissions.consentToken))
-                throw { statusCode: 401, message: 'No tienes permisos disponibles' }; // No tienes permisos o no has inicializado la API
-            
-            // Obtenemos el cliente para manejar recordatorios, por ejemplo para obtener una lista de estos 
-            const recordatorioServiceClient = serviceClientFactory.getReminderManagementServiceClient();
-            // los recordatorios antiguis se conservan durante 3 días después de que 'recuerden' al cliente antes de ser eliminados
-           // Esto es pcional y lo quitaré
-            //const recordatorioList = await recordatorioServiceClient.getReminders();
-            //console.log('Recordatorios actuales: ' + JSON.stringify(recordatorioList));
-            
-            // Creamos el recordatoro, con la fución de utils 
-            const recordatorio = util.createReminder(momento, disparador, timezone, locale, texto); 
-            const recordatorioResponse = await recordatorioServiceClient.createReminder(recordatorio); // la respuesta incluirá un "alertToken" que puede usar para consultar este recordatorio
-            console.log('Recordatorio creado con ID: ' + recordatorioResponse.alertToken);
-            // Textto de respuesta
-            mensajeHablado = handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre});
-            mensajeHablado += handlerInput.t('POST_REMINDER_HELP_MSG');
-        } catch (error) {
-            console.log(JSON.stringify(error));
-            errorFlag = true;
-            switch (error.statusCode) {
-                case 401: // el usuario debe habilitar los permisos para recordatorios, adjuntemos una tarjeta de permisos a la respuesta
-                    handlerInput.responseBuilder.withAskForPermissionsConsentCard(configuracion.PERMISO_RECORDATORIO);
-                    mensajeHablado += handlerInput.t('MISSING_PERMISSION_MSG');
-                    break;
-                case 403: // dispositivos como el simulador no admiten la gestión de recordatorios
-                    mensajeHablado += handlerInput.t('UNSUPPORTED_DEVICE_MSG');
-                    break;
-                //case 405: METHOD_NOT_ALLOWED, please contact the Alexa team
-                default:
-                    mensajeHablado += handlerInput.t('REMINDER_ERROR_MSG'); // + ' El error es: ' + error.message +'. ';
-            }
-            mensajeHablado += handlerInput.t('REPROMPT_MSG');
-        }
-           // Pintamos la pantalla si no ha habido errores
-        if(!errorFlag) {
-            if (util.supportsAPL(handlerInput)) {
-                const {Viewport} = handlerInput.requestEnvelope.context;
-                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-                handlerInput.responseBuilder.addDirective({
-                    type: 'Alexa.Presentation.APL.RenderDocument',
-                    version: '1.1',
-                    // Preparamos la pantalla a lanzar
-                    document: configuracion.APL.launchDoc,
-                    datasources: {
-                        launchData: {
-                            type: 'object',
-                            // Las propiedades que usa, las cambiamos dinamicamente
-                            properties: {
-                                headerTitle: handlerInput.t('REMINDER_HEADER_MSG'),
-                                mainText: handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
-                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                backgroundOpacity: "0.5"
-                            },
-                            transformers: [{
-                                inputPath: 'hintString',
-                                transformer: 'textToHint',
-                            }]
-                        }
-                    }
-                });
-                
-            }
-            // Agregar tarjeta de inicio a la respuesta de tipo standard
-            // Si estás usando una habilidad alojada de Alexa, las imágenes a continuación caducarán
-            // y no se pudo mostrar en la tarjeta. Debes reemplazarlos con imágenes estáticas
-            handlerInput.responseBuilder.withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                mensajeHablado,
-               util.getS3PreSignedUrl('Media/logoPrincipal.png'));
-        }else{
-            handlerInput.responseBuilder.withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'));
-        }
-            
-        // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .withStandardCard(
-                 handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-    }
-};
+
 
 // MIS ESTUDIOS  - INTENCION
 const MiMatriculaIntentHandler = {
@@ -700,68 +327,7 @@ const ListarModulosIntentHandler = {
     }
 };
 
-// INFO CICLO - INTENCION
-const InfoCicloIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InfoCicloIntent';
-    },
-    //Proceso
-    handle(handlerInput) {
-        // Recogemos los la entrada entrada - handler Input
-        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
-        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
-        const {intent} = requestEnvelope.request;
-        
-        // Obtenemos el ciclo 
-        const ciclo = Alexa.getSlotValue(requestEnvelope, 'ciclo');
-        const detalle = func.getDetallesCiclo(ciclo);
-        // Creamos mensaje
-        let mensajeHablado = detalle.tipo + detalle.nombre + detalle.horas + detalle.descripcion;
-        mensajeHablado += handlerInput.t('POST_DETALLE_CICLO_HELP_MSG');
-        
-        // Pintamos la pantalla 
-            if(util.supportsAPL(handlerInput)) {
-                const {Viewport} = handlerInput.requestEnvelope.context;
-                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-                handlerInput.responseBuilder.addDirective({
-                        type: 'Alexa.Presentation.APL.RenderDocument',
-                        version: '1.1',
-                        document: configuracion.APL.launchIU,
-                        datasources: {
-                            launchData: {
-                                type: 'object',
-                                properties: {
-                                    headerTitle: detalle.id,
-                                    mainText: detalle.nombre,
-                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/'+ detalle.imagen),
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                    cursoText: detalle.tipo +' '+ detalle.horas + ' horas.',
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                    backgroundOpacity: "0.5"
-                                },
-                                transformers: [{
-                                    inputPath: 'hintString',
-                                    transformer: 'textToHint',
-                                }]
-                            }
-                        }
-                    });
-            
-            }
-            
-        // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-    }
-};
+
 
 
 // LISTAR CICLOS - INTENCION
@@ -828,10 +394,380 @@ const ListarCiclosIntentHandler = {
 };
 
 
-//LANZAMIENTO - INTENCION
+/**
+ * IFORMACION DE CICLO INTENT
+ * Obtiene la información de un ciclo y lo muestra en pantalla
+ */
+const InfoCicloIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InfoCicloIntent';
+    },
+    //Proceso
+    handle(handlerInput) {
+        // Recogemos los la entrada entrada - handler Input
+        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        
+        // Obtenemos el ciclo del slot y lo buscamos
+        let ciclo = Alexa.getSlotValue(requestEnvelope, 'ciclo');
+        ciclo = func.getCiclo(ciclo);
+
+        // Creamos mensaje
+        let mensajeHablado = handlerInput.t('CICLO_DETALLE_MSG', {ciclo:ciclo});
+        mensajeHablado += handlerInput.t('POST_DETALLE_CICLO_HELP_MSG');
+        
+        // Pintamos la pantalla 
+            if(util.supportsAPL(handlerInput)) {
+                const {Viewport} = handlerInput.requestEnvelope.context;
+                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+                handlerInput.responseBuilder.addDirective({
+                        type: 'Alexa.Presentation.APL.RenderDocument',
+                        version: '1.1',
+                        document: configuracion.APL.launchIU,
+                        datasources: {
+                            launchData: {
+                                type: 'object',
+                                properties: {
+                                    headerTitle: ciclo.id,
+                                    mainText: ciclo.nombre,
+                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                    logoImage: util.getS3PreSignedUrl('Media/'+ ciclo.imagen),
+                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    cursoText: ciclo.tipo +' '+ ciclo.horas + ' horas.',
+                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundOpacity: "0.5"
+                                },
+                                transformers: [{
+                                    inputPath: 'hintString',
+                                    transformer: 'textToHint',
+                                }]
+                            }
+                        }
+                    });
+            
+            }
+            
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
+
+/**
+ * REGISTRAS INFORMACION INTENT
+ * Registra información del alumnado: ciclo y curso.
+ */
+const RegistrarCursoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RegistrarCursoIntent';
+    },
+    //Proceso
+    handle(handlerInput) {
+        // Recogemos los la entrada entrada - handler Input
+        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        // Atributos de sesiónconst 
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        
+        // Creamos mensaje
+        let mensajeHablado = handlerInput.t('REJECTED_MSG');
+        //Tomamos los slots y los almacenamos en variables
+        const ciclo = Alexa.getSlotValue(requestEnvelope, 'ciclo');
+        const curso = Alexa.getSlotValue(requestEnvelope, 'curso');
+        
+        // Si existen
+        if (ciclo && curso) {
+            // Almacenamos en la sesión
+            sessionAttributes['ciclo'] = func.getCicloID(ciclo);
+            sessionAttributes['curso'] = curso; 
+            
+            // Una vez tengamos los dias volvemos a inicio
+            return LaunchRequestHandler.handle(handlerInput);
+            
+        }
+    // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .speak(handlerInput.t('REJECTED_MSG'))
+            .withSimpleCard(
+                "Dpto. Informatica", 
+                handlerInput.t('REJECTED_MSG'), 
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
+
+/**
+ * CONTANCTO INTENT
+ * Nos ofrece el contacto al instituto. Este controlador responde a cuatro intenciones
+ * Contacto: ofrece todo el contacto
+ * Dirección: ofrece la dirección
+ * Telefono: ofrece el teéfono
+ * Correo: ofrece el correo
+ */
+const ContactoIntentHandler = {
+    canHandle(handlerInput) {
+         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'ContactoIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'DireccionIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'TelefonoIntent' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'CorreoIntent');
+    },
+            
+    handle(handlerInput) {
+        // Recogemos el tipo
+        const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
+        let mensajeHablado = ''
+
+        // Obtenemos el cobntacto
+        const contacto = func.getContactoCentro();
+        
+        // Según el tipo construimos el mensaje
+        switch (intentTipo) {
+            case 'ContactoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG', {contacto:contacto}) + handlerInput.t('CONTACT_TELF_MSG', {contacto:contacto}) + handlerInput.t('CONTACT_MAIL_MSG', {contacto:contacto});
+                break;
+            case 'DireccionIntent':
+                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG', {contacto:contacto});
+                break;
+            case 'TelefonoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_TELF_MSG', {contacto:contacto});
+                break;
+            case 'CorreoIntent':
+                mensajeHablado = handlerInput.t('CONTACT_MAIL_MSG', {contacto:contacto});
+                break;
+            default:
+                mensajeHablado = intentTipo;
+            break;
+        }
+
+        mensajeHablado += handlerInput.t('POST_CONTACT_HELP_MSG');
+        
+        // Pintamos la pantalla 
+        if(util.supportsAPL(handlerInput)) {
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                    type: 'Alexa.Presentation.APL.RenderDocument',
+                    version: '1.1',
+                    document: configuracion.APL.contactIU,
+                    datasources: {
+                        launchData: {
+                            type: 'object',
+                            properties: {
+                                headerTitle: handlerInput.t('CONTACT_HEADER_MSG'),
+                                mainText:handlerInput.t('CONTACT_MSG'),
+                                direCalle: handlerInput.t('CONTACT_CALLE', {contacto:contacto}),
+                                direPoblacion: handlerInput.t('CONTACT_POBLACION', {contacto:contacto}),
+                                telefono:  handlerInput.t('CONTACT_TELF', {contacto:contacto}),
+                                email:  handlerInput.t('CONTACT_EMAIL', {contacto:contacto}),
+                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundOpacity: "0.5"
+                            },
+                            transformers: [{
+                                inputPath: 'hintString',
+                                transformer: 'textToHint',
+                            }]
+                        }
+                    }
+                });
+        
+        }
+
+        // Mostramos las cosas 
+        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+            
+    }
+    
+};
+
+
+/**
+ * RECORDATORIO INTENT
+ * Crea un recordatorio para un examen o tarea en una fecha o día específico
+ * Es importante el manejo de los timeZone y de los permisos, así como el API Rimender
+ * Asegñurate que la app tiene permisos para recordatorios
+ */
+const RecordatorioIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RecordatorioIntent';
+    },
+    //Proceso
+    async handle(handlerInput) {
+      // Recogemos los la entrada entrada - handler Input
+        const {attributesManager, serviceClientFactory, requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        
+        // Obtenemos nombre
+        const nombre = sessionAttributes['nombre'] || '';
+        
+          // Recogemos fecha hora y texto, como slots del intent
+        const fecha = Alexa.getSlotValue(requestEnvelope, 'fecha');
+        const hora = Alexa.getSlotValue(requestEnvelope, 'hora');
+        const texto = Alexa.getSlotValue(requestEnvelope, 'texto');
+        
+        // timezone y datos de hora
+        // Obtenemos el moment-timezone
+        let timezone = sessionAttributes['timezone'];
+        if (!timezone){
+            //timezone = 'Europe/Madrid'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
+
+        const locale = Alexa.getLocale(requestEnvelope); // Local para fechas
+        const momento = moment().tz(timezone);//; .format('YYYY-MM-DDTHH:mm:00.000'); // Hoy, momento actual
+        const disparador = moment.tz(fecha +' '+hora, timezone);// .format('YYYY-MM-DDTHH:mm:00.000'); // La fecha que queremos
+        
+        // Confirmamos
+        // Si NO esta confirmado
+        if (intent.confirmationStatus !== 'CONFIRMED') {
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('CANCEL_MSG') + handlerInput.t('REPROMPT_MSG'))
+                .reprompt(handlerInput.t('REPROMPT_MSG'))
+                .getResponse();
+        }
+        
+        let mensajeHablado = '';
+        let errorFlag = false; // Variable de los errores
+        // Creamos el recordatorio usando la API Remiders
+        // Hay que darle permisos en Build -> Prmissions
+        // o saltara la excepción.
+        try {
+            // Para accedera los permisos
+            const {permissions} = requestEnvelope.context.System.user;
+            
+            if (!(permissions && permissions.consentToken))
+                throw { statusCode: 401, message: 'No tienes permisos disponibles' }; // No tienes permisos o no has inicializado la API
+            
+            // Obtenemos el cliente para manejar recordatorios, por ejemplo para obtener una lista de estos 
+            const recordatorioServiceClient = serviceClientFactory.getReminderManagementServiceClient();
+            // los recordatorios antiguis se conservan durante 3 días después de que 'recuerden' al cliente antes de ser eliminados
+           // Esto es pcional y lo quitaré, pero es para opbtener la lista de recordatorios que tenemos
+            //const recordatorioList = await recordatorioServiceClient.getReminders();
+            //console.log('Recordatorios actuales: ' + JSON.stringify(recordatorioList));
+            
+            // Creamos el recordatoro, con la fución de utils 
+            const recordatorio = util.createReminder(momento, disparador, timezone, locale, texto); 
+            const recordatorioResponse = await recordatorioServiceClient.createReminder(recordatorio); // la respuesta incluirá un "alertToken" que puede usar para consultar este recordatorio
+            console.log('Recordatorio creado con ID: ' + recordatorioResponse.alertToken);
+            // Texto de respuesta
+            mensajeHablado = handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre});
+            mensajeHablado += handlerInput.t('POST_REMINDER_HELP_MSG');
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            errorFlag = true;
+            switch (error.statusCode) {
+                case 401: // el usuario debe habilitar los permisos para recordatorios, adjuntemos una tarjeta de permisos a la respuesta
+                    handlerInput.responseBuilder.withAskForPermissionsConsentCard(configuracion.PERMISO_RECORDATORIO);
+                    mensajeHablado += handlerInput.t('MISSING_PERMISSION_MSG');
+                    break;
+                case 403: // dispositivos como el simulador no admiten la gestión de recordatorios
+                    mensajeHablado += handlerInput.t('UNSUPPORTED_DEVICE_MSG');
+                    break;
+                //case 405: METHOD_NOT_ALLOWED, please contact the Alexa team
+                default:
+                    mensajeHablado += handlerInput.t('REMINDER_ERROR_MSG'); // + ' El error es: ' + error.message +'. ';
+            }
+            mensajeHablado += handlerInput.t('REPROMPT_MSG');
+        }
+           // Pintamos la pantalla si no ha habido errores
+        if(!errorFlag) {
+            if (util.supportsAPL(handlerInput)) {
+                const {Viewport} = handlerInput.requestEnvelope.context;
+                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+                handlerInput.responseBuilder.addDirective({
+                    type: 'Alexa.Presentation.APL.RenderDocument',
+                    version: '1.1',
+                    // Preparamos la pantalla a lanzar
+                    document: configuracion.APL.launchDoc,
+                    datasources: {
+                        launchData: {
+                            type: 'object',
+                            // Las propiedades que usa, las cambiamos dinamicamente
+                            properties: {
+                                headerTitle: handlerInput.t('REMINDER_HEADER_MSG'),
+                                mainText: handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
+                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundOpacity: "0.5"
+                            },
+                            transformers: [{
+                                inputPath: 'hintString',
+                                transformer: 'textToHint',
+                            }]
+                        }
+                    }
+                });
+                
+            }
+            // Agregar tarjeta de inicio a la respuesta de tipo standard
+            // Si estás usando una habilidad alojada de Alexa, las imágenes a continuación caducarán
+            // y no se pudo mostrar en la tarjeta. Debes reemplazarlos con imágenes estáticas
+            handlerInput.responseBuilder.withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                mensajeHablado,
+               util.getS3PreSignedUrl('Media/logoPrincipal.png'));
+        }else{
+            handlerInput.responseBuilder.withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'));
+        }
+            
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                 handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
+
+/**
+ * LANZAMIENTO INTENT
+ * Lanzamiento de la skill
+ */
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+        return (
+            // Somos lanzamiento
+            (Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest') ||
+            // O somos el intent de tipo Inicio o volver
+            (Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InicioIntent')
+        );
     },
     // Proceso
     handle(handlerInput) {
@@ -839,6 +775,8 @@ const LaunchRequestHandler = {
         const {attributesManager, serviceClientFactory, requestEnvelope} = handlerInput;
         // Para manejar la sesion
         const sessionAttributes = attributesManager.getSessionAttributes();
+        // Para manejar el tipo de entrada
+        const tipoRequest = Alexa.getRequestType(handlerInput.requestEnvelope);
          
         // Cargamos los atrinbutos de sesion 
         const nombre = sessionAttributes['nombre'] || '';
@@ -848,11 +786,19 @@ const LaunchRequestHandler = {
         
         // Variable de mensaje
         // Si no hay sesión, damos la bienvenida, si existe le damos bienvenida de registrado
-        let mensajeHablado = !sessionCounter ? handlerInput.t('WELCOME_MSG', {nombre: nombre}) : handlerInput.t('WELCOME_BACK_MSG', {nombre: nombre});
-         
-         // Si no existe el nombre
-        mensajeHablado +=  nombre ==='' ? handlerInput.t('MISSING_NAME_MSG'):'';
-        mensajeHablado += handlerInput.t('POST_SAY_HELP_MSG');
+        let mensajeHablado='';
+        
+        // Si estamos lanzando la Skill
+        if(tipoRequest === 'LaunchRequest'){
+            mensajeHablado = !sessionCounter ? handlerInput.t('WELCOME_MSG', {nombre: nombre}) : handlerInput.t('WELCOME_BACK_MSG', {nombre: nombre});
+            // Si no existe el nombre
+            mensajeHablado +=  nombre ==='' ? handlerInput.t('MISSING_NAME_MSG'):'';
+            mensajeHablado += handlerInput.t('POST_SAY_HELP_MSG');
+        // Si venidmos de Volver
+        }else{
+            mensajeHablado = handlerInput.t('POST_START_HELP_MSG');
+        }
+
         // Pintamos la pantalla 
             if(util.supportsAPL(handlerInput)) {
                 const {Viewport} = handlerInput.requestEnvelope.context;
@@ -896,82 +842,265 @@ const LaunchRequestHandler = {
     }
 };
 
-// INICIO - INTENCION
-const InicioIntentHandler = {
+
+/**
+ * NOTICIAS INTENT
+ * Devuelve una lista de noticias obtenida desde nuestro repositorio
+ */
+const NoticiasIntentHandler = {
     canHandle(handlerInput) {
-         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InicioIntent';
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NoticiasIntent';
     },
-            
-   // Proceso
-    handle(handlerInput) {
-// Necesitamos serviceClientFactory para acceder a la API
-        const {attributesManager, serviceClientFactory, requestEnvelope} = handlerInput;
-        // Para manejar la sesion
+    // Como vamos a acceder a una API externa lo hacemos async 
+    async handle(handlerInput) {
+         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
         const sessionAttributes = attributesManager.getSessionAttributes();
-        // Cargamos los atrinbutos de sesion 
+        // Obtenemos nombre y el timezone
         const nombre = sessionAttributes['nombre'] || '';
-        const curso = sessionAttributes['curso'] || '';
-        const ciclo = sessionAttributes['ciclo'] || '';
-    
-        let mensajeHablado = handlerInput.t('POST_START_HELP_MSG');
+        let timezone = sessionAttributes['timezone'];
+         // Obtenemos el TimeZone
+        if (!timezone){
+           //timezone = 'Europe/Rome'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
         
-        // Pintamos la pantalla 
-            if(util.supportsAPL(handlerInput)) {
-                const {Viewport} = handlerInput.requestEnvelope.context;
-                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-                handlerInput.responseBuilder.addDirective({
-                        type: 'Alexa.Presentation.APL.RenderDocument',
-                        version: '1.1',
-                        document: configuracion.APL.launchIU,
-                        datasources: {
-                            launchData: {
-                                type: 'object',
-                                properties: {
-                                    headerTitle: handlerInput.t('LAUNCH_HEADER_MSG'),
-                                    mainText: handlerInput.t('START_TEXT_MSG', {nombre:nombre}),
-                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                    cursoText:curso + ' ' + ciclo,
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                    backgroundOpacity: "0.5"
-                                },
-                                transformers: [{
-                                    inputPath: 'hintString',
-                                    transformer: 'textToHint',
-                                }]
+        // Vamos con el servicio
+        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
+        try {
+            // llame al servicio de respuesta progresiva
+            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_NEWS_MSG', {nombre: nombre}));
+        } catch (error) {
+            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
+            console.log("Error de respuesta progresiva : " + error);
+        }
+        
+        // ahora buscaremos en la api externa 
+        console.log("Consultando Noticias");
+        const respuesta = await func.getNoticias(configuracion.MAX_NOTICIAS, timezone);
+        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
+        
+        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
+        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
+        // convertimos la respuesta API a texto que Alexa puede leer
+        console.log("llamando a la funcion");
+        const sal = func.convertirNoticiasResponse(handlerInput, respuesta, timezone);
+        console.log("respuesta de la funcione");
+        
+        let mensajeHablado = 'Noticias'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
+        let mensajeEscrito = mensajeHablado;
+        
+         // Si tenemos respuesta hacemos lo siguiente
+        if (sal.voz) {
+            mensajeHablado = sal.voz;
+            mensajeEscrito = sal.texto;
+        }else{
+            mensajeHablado += handlerInput.t('POST_NEWS_HELP_MSG');
+        }
+        // Creamos la pantalla APL// 
+       if (util.supportsAPL(handlerInput) && sal.voz) { 
+           // Vamos a covertir la respuesta por su fecha
+             mensajeHablado += handlerInput.t('POST_NEWS_APL_HELP_MSG');
+            // Para saber la resolución
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                type: 'Alexa.Presentation.APL.RenderDocument',
+                version: '1.1',
+                document: configuracion.APL.listNewsIU, // Cargamos la interfaz de listas
+                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
+                datasources: {
+                    listData: {
+                        type: 'object',
+                        properties: {
+                            config: {
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                title: handlerInput.t('NEWS_HEADER_MSG'),
+                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
+                            },
+                            list: {
+                                // Le añadimos como items, el json adjunto
+                                listItems: respuesta
                             }
-                        }
-                    });
-            
-            }
-        
-        return handlerInput.responseBuilder
+                        },
+                        transformers: [{
+                            inputPath: 'config.hintText',
+                            transformer: 'textToHint'
+                        }]
+                    }
+                }
+            });
+       }
+
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
             .withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
+                handlerInput.t('NEWS_HEADER_MSG'),
+                mensajeEscrito,
                 util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
-            
+        
     }
-    
 };
 
-// CREADOR - INTENCION
+
+/**
+ * FAMOSOS CREADORES LENGUAJES INTENT
+ * Devuelve una lista de famosos creadores de lenguajes obtenida de nuestro repositorio 
+ */
+const FamososIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'FamososIntent';
+    },
+    // Como vamos a acceder a una API externa lo hacemos async 
+    async handle(handlerInput) {
+         const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        // Obtenemos nombre y el timezone
+        const nombre = sessionAttributes['nombre'] || '';
+        let timezone = sessionAttributes['timezone'];
+         // Obtenemos el TimeZone
+        if (!timezone){
+           //timezone = 'Europe/Rome'; 
+            return handlerInput.responseBuilder
+                .speak(handlerInput.t('NO_TIMEZONE_MSG'))
+                .getResponse();
+        }
+        
+        // Vamos con el servicio
+        // Lo primero es constrir la respuesta progresiva, es decir, algo que responda mientras hacemos otra tarea en backgroud 
+        try {
+            // llame al servicio de respuesta progresiva
+            await util.callDirectiveService(handlerInput, handlerInput.t('PROGRESSIVE_PROGRAMMING_MSG', {nombre: nombre}));
+        } catch (error) {
+            // si falla podemos continuar, pero el usuario esperará sin una respuesta progresiva
+            console.log("Error de respuesta progresiva : " + error);
+        }
+        
+        // ahora buscaremos en la api externa 
+        const respuesta = await func.getCreadoresLenguajesProgramacion(configuracion.MAX_FAMOSOS);
+        console.log('Mi Respuesta: ' + JSON.stringify(respuesta)); // Lo imprimo por pantalla en mi log :) // Nuestro array de objetos json nos ha llegado
+        
+        // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
+        // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
+        // convertimos la respuesta API a texto que Alexa puede leer
+        const sal = func.convertirFamososResponse(handlerInput, respuesta, timezone);
+        
+        let mensajeHablado = 'Famosos'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
+        let mensajeEscrito = mensajeHablado;
+        
+         // Si tenemos respuesta hacemos lo siguiente
+        if (sal.voz) {
+            mensajeHablado = sal.voz;
+            mensajeEscrito = sal.texto;
+        }else{
+            mensajeHablado += handlerInput.t('POST_PROGRAMMING_HELP_MSG');
+        }
+        // Creamos la pantalla APL// 
+       if (util.supportsAPL(handlerInput) && sal.voz) { 
+             mensajeHablado += handlerInput.t('POST_PROGRAMMING_APL_HELP_MSG');
+            // Para saber la resolución
+            const {Viewport} = handlerInput.requestEnvelope.context;
+            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+            handlerInput.responseBuilder.addDirective({
+                type: 'Alexa.Presentation.APL.RenderDocument',
+                version: '1.1',
+                document: configuracion.APL.listProgrammingIU, // Cargamos la interfaz de listas
+                // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
+                datasources: {
+                    listData: {
+                        type: 'object',
+                        properties: {
+                            config: {
+                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                hintText: handlerInput.t('LAUNCH_HINT_MSG')
+                            },
+                            list: {
+                                // Le añadimos como items, el json adjunto
+                                listItems: respuesta.results.bindings 
+                            }
+                        },
+                        transformers: [{
+                            inputPath: 'config.hintText',
+                            transformer: 'textToHint'
+                        }]
+                    }
+                }
+            });
+       }
+        
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('PROGRAMMING_HEADER_MSG'),
+                mensajeEscrito,
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+        
+    }
+};
+
+
+/**
+ * CHISTE INTENT
+ * Cuenta un chiste obtenido de nuestro repositorio de chistes
+ */
+const ChisteIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'ChisteIntent';
+    },
+    // Proceso
+    handle(handlerInput) {
+        const {attributesManager, requestEnvelope, responseBuilder} = handlerInput;
+        // Obtenemos los atributos de sesión que necesitamos
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        // Obtenemos nombre y el timezone
+        const nombre = sessionAttributes['nombre'] || '';
+        
+        // Presentamos
+        let mensajeHablado= handlerInput.t('CHISTE_PRESENTATION_MSG', {nombre: nombre});
+        // obtenemos el el chiste y tomamos su texto
+        mensajeHablado += func.getChiste().texto;
+        // Post mensaje
+        mensajeHablado +=  handlerInput.t('CHISTE_SOUND') + handlerInput.t('CHISTE_END_MSG') + handlerInput.t('POST_CHISTE_HELP_MSG');
+        
+        // Devolvemos la salida
+        return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('CHISTE_HEADER_MSG:'),
+                mensajeHablado,
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
+
+
+/**
+ * CREADOR INTENT
+ * Devuelve una pantalla y un mensaje sobre el creador
+ */
 const CreadorIntentHandler = {
     canHandle(handlerInput) {
          return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'CreadorIntent';
     },
-            
+    // Proceso     
     handle(handlerInput) {
-       // Necesitamos serviceClientFactory para acceder a la API
-
-        // Variable de mensaje
-        // Si no hay sesión, damos la bienvenida, si existe le damos bienvenida de registrado
         let mensajeHablado = handlerInput.t('DEVELOPER_MSG');
         mensajeHablado += handlerInput.t('POST_DEVELOPER_HELP_MSG');
         
@@ -1019,135 +1148,11 @@ const CreadorIntentHandler = {
     
 };
 
-// CONTACTO - INTENCION
-const ContactoIntentHandler = {
-    canHandle(handlerInput) {
-         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'ContactoIntent' ||
-            Alexa.getIntentName(handlerInput.requestEnvelope) === 'DireccionIntent' ||
-            Alexa.getIntentName(handlerInput.requestEnvelope) === 'TelefonoIntent' ||
-            Alexa.getIntentName(handlerInput.requestEnvelope) === 'CorreoIntent');
-    },
-            
-    handle(handlerInput) {
-        // Recogemos el tipo
-        const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
-        let mensajeHablado = ''
-        
-        // Según el tipo construimos el mensaje
-        switch (intentTipo) {
-            case 'ContactoIntent':
-                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG') + handlerInput.t('CONTACT_TELF_MSG') + handlerInput.t('CONTACT_MAIL_MSG');
-                break;
-            case 'DireccionIntent':
-                mensajeHablado = handlerInput.t('CONTACT_DIRE_MSG');
-                break;
-            case 'TelefonoIntent':
-                mensajeHablado = handlerInput.t('CONTACT_TELF_MSG');
-                break;
-            case 'CorreoIntent':
-                mensajeHablado = handlerInput.t('CONTACT_MAIL_MSG');
-                break;
-            default:
-                mensajeHablado = intentTipo;
-            break;
-        }
 
-        mensajeHablado += handlerInput.t('POST_CONTACT_HELP_MSG');
-        
-        // Pintamos la pantalla 
-        if(util.supportsAPL(handlerInput)) {
-            const {Viewport} = handlerInput.requestEnvelope.context;
-            const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-            handlerInput.responseBuilder.addDirective({
-                    type: 'Alexa.Presentation.APL.RenderDocument',
-                    version: '1.1',
-                    document: configuracion.APL.contactIU,
-                    datasources: {
-                        launchData: {
-                            type: 'object',
-                            properties: {
-                                headerTitle: handlerInput.t('CONTACT_HEADER_MSG'),
-                                mainText:handlerInput.t('CONTACT_MSG'),
-                                direCalle: handlerInput.t('CONTACT_CALLE'),
-                                direPoblacion: handlerInput.t('CONTACT_POBLACION'),
-                                telefono:  handlerInput.t('CONTACT_TELF'),
-                                email:  handlerInput.t('CONTACT_EMAIL'),
-                                hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                backgroundOpacity: "0.5"
-                            },
-                            transformers: [{
-                                inputPath: 'hintString',
-                                transformer: 'textToHint',
-                            }]
-                        }
-                    }
-                });
-        
-        }
-    
-        // Mostramos las cosas 
-        return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-            
-    }
-    
-};
-
-
-// REGISTRAR CURSO - INTENCION
-const RegistrarCursoIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RegistrarCursoIntent';
-    },
-    //Proceso
-    handle(handlerInput) {
-        // Recogemos los la entrada entrada - handler Input
-        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
-        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
-        const {intent} = requestEnvelope.request;
-        // Atributos de sesiónconst 
-        const sessionAttributes = attributesManager.getSessionAttributes();
-        
-        
-        // Creamos mensaje
-        let mensajeHablado = handlerInput.t('REJECTED_MSG');
-        //Tomamos los slots y los almacenamos en variables
-        const ciclo = Alexa.getSlotValue(requestEnvelope, 'ciclo');
-        const curso = Alexa.getSlotValue(requestEnvelope, 'curso');
-        
-        // Si existen
-        if (ciclo && curso) {
-            // Almacenamos en la sesión
-            sessionAttributes['ciclo'] = func.getCicloID(ciclo);
-            sessionAttributes['curso'] = curso; 
-            
-            // Una vez tengamos los dias volvemos a inicio
-            return InicioIntentHandler.handle(handlerInput);
-            
-        }
-    // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .speak(handlerInput.t('REJECTED_MSG'))
-            .withSimpleCard(
-                "Dpto. Informatica", 
-                handlerInput.t('REJECTED_MSG'), 
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-    }
-};
-
-// AYUDA - INTENT
+/**
+ * AYUDA INTENT
+ * Reproduce un mensaje cuando se pide ayuda
+ */
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -1164,7 +1169,11 @@ const HelpIntentHandler = {
     }
 };
 
-// CANCELACIÓN Y PARADA INTENT
+
+/**
+ * CANCELACION Y PARADA INTENT
+ * Cancela o para el intent actual o skil
+ */
 const CancelAndStopIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -1194,9 +1203,12 @@ const CancelAndStopIntentHandler = {
 };
 
 
-// FallbackIntent se activa cuando un cliente dice algo que no se asigna a ninguna intención en su habilidad
-// También debe definirse en el modelo de idioma (si la configuración regional lo admite)
-//Este controlador se puede agregar de forma segura, pero se ignorará en las configuraciones regionales que aún no lo admiten
+/**
+ * FALLBACK INTENT
+ * se activa cuando un cliente dice algo que no se asigna a ninguna intención en su habilidad
+ * También debe definirse en el modelo de idioma (si la configuración regional lo admite)
+ * Este controlador se puede agregar de forma segura, pero se ignorará en las configuraciones regionales que aún no lo admiten
+ */
 const FallbackIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -1286,7 +1298,6 @@ module.exports = {
     // Handler de prueba
     PruebaIntentHandler,
     //Funcinalidad
-    InicioIntentHandler,
     CreadorIntentHandler,
     ContactoIntentHandler,
     RegistrarCursoIntentHandler,

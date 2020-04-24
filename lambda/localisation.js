@@ -61,7 +61,7 @@ module.exports = {
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
             NO_TIMEZONE_MSG: 'No he podido determinar tu zona horaria. Verifica la configuración de tu dispositivo, abre otraa vez la skill e inténtalo otra vez. ',
             MISSING_PERMISSION_MSG: 'Parece que no has autorizado el envío de recordatorios. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
-            MISSINGN_MODULOS_MSG: '$t(DOUBT_SPEECHCON). No sé ni tu ciclo ni tu modulo. Lo mejor es que me pidas que registre tu información para que te pueda hablar de ella. ', 
+            MISSINGN_MODULOS_MSG: '$t(DOUBT_SPEECHCON). No sé ni tu ciclo ni tu módulo. Lo mejor es que me pidas que registre tu información para que te pueda hablar de ella. ', 
             
             // Creador
             DEVELOPER_HEADER_MSG: 'Mi Creador',
@@ -72,13 +72,13 @@ module.exports = {
             // Contacto
             CONTACT_HEADER_MSG: 'Contacto',
             CONTACT_MSG: '¿Dónde estamos?',
-            CONTACT_DIRE_MSG: 'Puedes encontrarnos en el Paseo de San Gregorio, 82-84. 13500. Puertollano, Ciudad Real. ',
-            CONTACT_TELF_MSG: 'Nuestro teléfono es: 926 42 62 50. ', 
-            CONTACT_MAIL_MSG: 'El correo electrónico del departamento es: informatica@cifpvirgendegracia.com. ', 
-            CONTACT_CALLE: 'Paseo de San Gregorio, 82-84',
-            CONTACT_POBLACION: '13500. Puertollano (Ciudad Real)',
-            CONTACT_TELF: 'Telf.: 926 42 62 50',
-            CONTACT_EMAIL: 'informatica@cifpvirgendegracia.com',
+            CONTACT_DIRE_MSG: 'Puedes encontrarnos en el {{contacto.calle}}. {{contacto.cp}}. {{contacto.poblacion}}, {{contacto.provincia}}. ',
+            CONTACT_TELF_MSG: 'Nuestro teléfono es: {{contacto.telefono}}. ', 
+            CONTACT_MAIL_MSG: 'El correo electrónico del departamento es: {{contacto.email}}. ', 
+            CONTACT_CALLE: '{{contacto.calle}}',
+            CONTACT_POBLACION: '{{contacto.cp}}. {{contacto.poblacion}} ({{contacto.provincia}})',
+            CONTACT_TELF: 'Telf.: {{contacto.telefono}}',
+            CONTACT_EMAIL: '{{contacto.email}}',
             
             // Registrar curso
             REJECTED_MSG: 'No pasa nada. Por favor dime el ciclo y el curso y lo corregimos. ',
@@ -87,6 +87,7 @@ module.exports = {
             LISTAR_CICLO_MSG: '{{nombre}}. Nuestras titulaciones y ciclos son: ', 
             LISTAR_CICLO_HEADER_MSG: 'Titulaciones',
             LISTAR_CICLO_TEXT_MSG: 'Nuestros ciclos, ¿Te interesa alguno?',
+            CICLO_DETALLE_MSG: '{{ciclo.nombre}}. {{ciclo.tipo}}. {{ciclo.resumen}}. {{ciclo.descripcion}}. {{ciclo.salida}}. ',
             
              //Listar modulos y detalles de modulo
             LISTAR_MODULOS_MSG: '{{nombre}}. Los módulos de {{curso}} de {{ciclo}} son: ', 

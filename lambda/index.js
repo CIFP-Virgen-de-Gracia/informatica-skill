@@ -20,7 +20,6 @@ exports.handler = Alexa.SkillBuilders.custom()
         // mi prueba
         handlers.PruebaIntentHandler,
         //Intent Funcionales
-        handlers.InicioIntentHandler,
         handlers.ContactoIntentHandler,
         handlers.CreadorIntentHandler,
         handlers.RegistrarCursoIntentHandler,

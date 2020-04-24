@@ -13,6 +13,166 @@ const configuracion = require('./configuracion');
  */
 module.exports = {
 
+    
+    
+    // Obtiene los detalles de un módulo
+    getDetallesModulo(moduloNombre){
+        let salida;
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        moduloNombre = moduloNombre+'.'.toLowerCase().trim(); // Porque en el fichero tiene un espacio. Lo sé es algo cutre, pero esto lo haremos con servcios.
+        console.log("Consultando modulo: " + moduloNombre);
+        // Recorro todos los ciclos
+        for (var ciclo in ciclos) {
+            let miCiclo = ciclos[ciclo];
+            // Filtro por el mío
+                console.log(miCiclo.id);
+                 //recorro todos los cursos
+                for (var curso in miCiclo.cursos) {
+                    let miCurso = miCiclo.cursos[curso];
+                        console.log(miCurso.descripcion);
+                        //recorro los módulos
+                        for(var modulo in miCurso.modulos){
+                            let miModulo = miCurso.modulos[modulo];
+                            console.log(miModulo.nombre);
+                            if(miModulo.nombre.toLowerCase().trim() === moduloNombre) {
+                                // Si es mi modulo 
+                                console.log(miModulo.id);
+                                console.log(miModulo.nombre);
+                                salida = miModulo;
+                            }
+                        }
+
+                }
+        }
+        return salida;
+    },
+    
+    //obtiene la lista de nombres de modulos
+    getListaNombreModulos(cicloNombre, cursoNumero){
+        let listaModulos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        let idCiclo = module.exports.getCicloID(cicloNombre);
+        console.log("listando todos modulos de curso " + cursoNumero + " del ciclo " + idCiclo);
+        // Recorro todos los ciclos
+        for (var ciclo in ciclos) {
+            let miCiclo = ciclos[ciclo];
+            // Filtro por el mío
+            if(miCiclo.id === idCiclo) {
+                console.log(miCiclo.id);
+                 //recorro todos los cursos
+                for (var curso in miCiclo.cursos) {
+                    let miCurso = miCiclo.cursos[curso];
+                    // filtro el mío
+                    if(miCurso.numero === cursoNumero){
+                        console.log(miCurso.descripcion);
+                        //recorro los módulos
+                        for(var modulo in miCurso.modulos){
+                            let miModulo = miCurso.modulos[modulo];
+                            console.log(miModulo.nombre);
+                            listaModulos+= miModulo.nombre;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return listaModulos;
+    },
+    
+  
+    
+    
+    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
+    getListaNombreCiclos(){
+        let listaCiclos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        console.log("listando todos los ciclos Ciclos");
+        for (var ciclo in ciclos) {
+            console.log(ciclos[ciclo].id);
+            listaCiclos += ciclos[ciclo].nombre;
+        }
+        return listaCiclos;
+    },
+    
+    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
+    getListaIDCiclos(){
+        let listaCiclos='';
+        const ciclos = configuracion.DATA.curriculo.ciclos;
+        console.log("listando todos los ciclos Ciclos");
+        for (var ciclo in ciclos) {
+            console.log(ciclos[ciclo].id);
+            listaCiclos += ciclos[ciclo].id + ' ';
+        }
+        return listaCiclos;
+    },
+    
+    // Dado el ID de un ciclo devuelve su nombre 
+    getCicloNombre(cicloID){
+       if(cicloID ==='DAM')
+            return 'Desarrollo de Aplicaciones Multiplataforma';
+        else if(cicloID === 'DAW')
+            return 'Desarrollo de Aplicaciones Web';
+        else if(cicloID === 'ASIR')
+            return 'Administración de Sistemas Informáticos y Redes';
+        else if(cicloID === 'SMR')
+            return 'Sistemas Microinformáticos y Redes';
+    },
+
+    
+    /**
+     * 
+     * @param {string} ciclo Dato identificativo del ciclo, puede ser un id o el nombre (DAM o desarrollo de aplicaciones multiplataforma)
+     */
+    getCiclo(ciclo) {
+        // Primero quitamos los acentos y psamos a minúscula
+        // La normalización es por si me han metido los datos sin acento o han pronunciado ma
+        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
+
+        console.log('Mi ciclo a buscar es: ' +ciclo);
+
+        // Nos conectamos al repositorio y obtenemos la info
+        let ciclos = configuracion.DATA.ciclos;
+        try { ciclos = JSON.parse(ciclos); } catch (e) {}
+        console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
+        
+        //operamos, filtramos aquellos ciclos que su id o nombre coicida con el nuesro y devolvemos su id
+        return ciclos.find(c => (c.id.toLowerCase() === ciclo) || (c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === ciclo));
+    },
+
+    
+    /**
+     * Devuelve el ID del Ciclo
+     * @param {string} ciclo  Dato identificativo del ciclo, puede ser un id o el nombre (DAM o desarroloo de aplicaciones multiplataforma)
+     */
+    getCicloID(ciclo) {
+        // Primero quitamos los acentos y psamos a minúscula
+        // La normalización es por si me han metido los datos sin acento o han pronunciado ma
+        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
+
+        // Nos conectamos al repositorio y obtenemos la info
+        let ciclos = configuracion.DATA.ciclos;
+        try { ciclos = JSON.parse(ciclos); } catch (e) {}
+        console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
+        
+        //operamos, filtramos aquellos ciclos que su id o nombre coicida con el nuesro y devolvemos su id
+        return ciclos.find(c => (c.id.toLowerCase() === ciclo) || (c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === ciclo)).id;
+    },
+
+
+    /***
+     * Obtiene los datos del contacto del centro desde nuestro repositorio
+     */
+    getContactoCentro(){
+        // Nos conectamos al repositorio y obtenemos la info
+        let contacto = configuracion.DATA.contacto;
+        try { contacto = JSON.parse(contacto); } catch (e) {}
+        console.log('Contacto: ' + JSON.stringify(contacto));
+
+        //Devolvemos 
+        return contacto;
+    },
+
+
     /**
      * Obtiene una lista de las noticias desde un RSS existente en configuración
      * @param {number} max Número máximo de noticias
@@ -109,7 +269,7 @@ module.exports = {
      */
     getChiste(){
         // Simulamos que nos conectamos a un servicio y cogemos los chistes, en nuestro caso están en un fichero estaticos, obtendríamos la lista de
-        const chistes = configuracion.DATA.chistes; // Vector de chistes
+        let chistes = configuracion.DATA.chistes; // Vector de chistes
         try { chistes = JSON.parse(chistes); } catch (e) {}
         console.log('Objetos de chistes: ' + JSON.stringify(chistes));
         //Devolvemos entre 0 y el máximo de vector menos 1
@@ -124,7 +284,7 @@ module.exports = {
      * Dame el lenguajem programado por con su imagen y año de creacion :)
      * @param {number} limite Máximo de creadores de lenguajes de programación a obtener desde el servicio
      */
-    getCreadoresLenguajesProgramacion(limite){
+    async getCreadoresLenguajesProgramacion(limite){
         const endpoint = configuracion.DATA.WIKI;
         // Consulta Lista de lenguajes y personas que lo han creado con su foto y año, la ordenación aleatoria
         const consultaSparql =
@@ -159,11 +319,13 @@ module.exports = {
         }
         
         // Devolvermos la respuesta encapsulada en un JSON
-        return getJsonResponse(url, config).then((result) => {
+        try {
+            const result = await getJsonResponse(url, config);
             return result;
-        }).catch((error) => {
+        }
+        catch (error) {
             return null;
-        });
+        }
     },
     
 
@@ -173,7 +335,7 @@ module.exports = {
      * @param {*} response respuesta a convertir con la entrada de datos JSON
      * @param {*} timezone timezone
      */
-   convertirFamososResponse(handlerInput, response, timezone){
+    convertirFamososResponse(handlerInput, response, timezone){
         let textoSalida = '';
         let textoEscrito = '';
         let salida;
@@ -225,138 +387,7 @@ module.exports = {
             };
     },
     
-    // Obtiene los detalles de un módulo
-    getDetallesModulo(moduloNombre){
-        let salida;
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        moduloNombre = moduloNombre+'.'.toLowerCase().trim(); // Porque en el fichero tiene un espacio. Lo sé es algo cutre, pero esto lo haremos con servcios.
-        console.log("Consultando modulo: " + moduloNombre);
-        // Recorro todos los ciclos
-        for (var ciclo in ciclos) {
-            let miCiclo = ciclos[ciclo];
-            // Filtro por el mío
-                console.log(miCiclo.id);
-                 //recorro todos los cursos
-                for (var curso in miCiclo.cursos) {
-                    let miCurso = miCiclo.cursos[curso];
-                        console.log(miCurso.descripcion);
-                        //recorro los módulos
-                        for(var modulo in miCurso.modulos){
-                            let miModulo = miCurso.modulos[modulo];
-                            console.log(miModulo.nombre);
-                            if(miModulo.nombre.toLowerCase().trim() === moduloNombre) {
-                                // Si es mi modulo 
-                                console.log(miModulo.id);
-                                console.log(miModulo.nombre);
-                                salida = miModulo;
-                            }
-                        }
 
-                }
-        }
-        return salida;
-    },
-    
-    //obtiene la lista de nombres de modulos
-    getListaNombreModulos(cicloNombre, cursoNumero){
-        let listaModulos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        let idCiclo = module.exports.getCicloID(cicloNombre);
-        console.log("listando todos modulos de curso " + cursoNumero + " del ciclo " + idCiclo);
-        // Recorro todos los ciclos
-        for (var ciclo in ciclos) {
-            let miCiclo = ciclos[ciclo];
-            // Filtro por el mío
-            if(miCiclo.id === idCiclo) {
-                console.log(miCiclo.id);
-                 //recorro todos los cursos
-                for (var curso in miCiclo.cursos) {
-                    let miCurso = miCiclo.cursos[curso];
-                    // filtro el mío
-                    if(miCurso.numero === cursoNumero){
-                        console.log(miCurso.descripcion);
-                        //recorro los módulos
-                        for(var modulo in miCurso.modulos){
-                            let miModulo = miCurso.modulos[modulo];
-                            console.log(miModulo.nombre);
-                            listaModulos+= miModulo.nombre;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return listaModulos;
-    },
-    
-    // Obtiene los detalles de un ciclos
-    getDetallesCiclo(cicloNombre){
-        let salida;
-        let id = module.exports.getCicloID(cicloNombre);
-        salida = id;
-        console.log("Detalle ciclo id: " + id);
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        for (var ciclo in ciclos) {
-            if(ciclos[ciclo].id === id) {
-                console.log(ciclos[ciclo].id);
-                console.log(ciclos[ciclo].nombre);
-                salida = ciclos[ciclo];
-            }
-        }
-        return salida;
-    },
-    
-    
-    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
-    getListaNombreCiclos(){
-        let listaCiclos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        console.log("listando todos los ciclos Ciclos");
-        for (var ciclo in ciclos) {
-            console.log(ciclos[ciclo].id);
-            listaCiclos += ciclos[ciclo].nombre;
-        }
-        return listaCiclos;
-    },
-    
-    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
-    getListaIDCiclos(){
-        let listaCiclos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        console.log("listando todos los ciclos Ciclos");
-        for (var ciclo in ciclos) {
-            console.log(ciclos[ciclo].id);
-            listaCiclos += ciclos[ciclo].id + ' ';
-        }
-        return listaCiclos;
-    },
-    
-    // Dado el ID de un ciclo devuelve su nombre 
-    getCicloNombre(cicloID){
-       if(cicloID ==='DAM')
-            return 'Desarrollo de Aplicaciones Multiplataforma';
-        else if(cicloID === 'DAW')
-            return 'Desarrollo de Aplicaciones Web';
-        else if(cicloID === 'ASIR')
-            return 'Administración de Sistemas Informáticos y Redes';
-        else if(cicloID === 'SMR')
-            return 'Sistemas Microinformáticos y Redes';
-    },
-    
-     // Dado un ciclo devuelve sus siglas
-    getCicloID(ciclo) {
-        // Primero quitamos los acentos
-        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
-        if(ciclo === 'desarrollo de aplicaciones multiplataforma' || ciclo ==='dam')
-            return 'DAM';
-        else if(ciclo === 'desarrollo de aplicaciones web' || ciclo ==='daw')
-            return 'DAW';
-        else if(ciclo === 'administracion de sistemas informaticos y redes' || ciclo ==='asir')
-            return 'ASIR';
-        else if(ciclo === 'sistemas microinformaticos y redes' || ciclo ==='smr')
-            return 'SMR';
-    },
-    
     /**
      * Dado un mes, devuelve su número entre 1 y 12.
      * @param {string} mesNombre Nombre del mes

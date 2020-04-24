@@ -1,0 +1,42 @@
+[
+    {
+       "id": "DAM",
+       "nombre": "Desarrollo de Aplicaciones Multiplataforma",
+       "resumen": "Crearás aplicaciones multiplataforma, distribuidas, para móviles, juegos y gestión",
+       "descripcion": "Las personas con este perfil profesional ejercen su actividad en entidades públicas o privadas de cualquier tamaño, tanto por cuenta ajena como por cuenta propia, desempeñando su trabajo en el área de desarrollo de aplicaciones informáticas multiplataforma en diversos ámbitos: gestión empresarial y de negocio, relaciones con clientes, educación, ocio, dispositivos móviles y entretenimiento, entre otros; aplicaciones desarrolladas e implantadas en entornos de alcance intranet, extranet e Internet; implantación y adaptación de sistemas de planificación de recursos empresariales y de gestión de relaciones con clientes", 
+       "tipo": "Ciclo Formativo de Grado Superior",
+       "horas": "2000",
+       "salida":"Las personas con este perfil profesional ejercen su actividad en entidades públicas o privadas de cualquier tamaño, tanto por cuenta ajena como por cuenta propia, desempeñando su trabajo en el área de desarrollo de aplicaciones informáticas multiplataforma en diversos ámbitos: gestión empresarial y de negocio, relaciones con clientes, educación, ocio, dispositivos móviles y entretenimiento, entre otros; aplicaciones desarrolladas e implantadas en entornos de alcance intranet, extranet e Internet; implantación y adaptación de sistemas de planificación de recursos empresariales y de gestión de relaciones con clientes",
+       "imagen": "dam.png"
+    },
+    {
+       "id":"DAW",
+       "nombre":"Desarrollo de Aplicaciones Web",
+       "resumen":"Aprenderás a crear aplicaciones web desde el lado del cliente y el servidor",
+       "descripcion": "Desarrollar, implantar, y mantener aplicaciones web, con independencia del modelo empleado y utilizando tecnologías específicas, garantizando el acceso a los datos de forma segura y cumpliendo los criterios de accesibilidad, usabilidad y calidad exigidas en los estándares establecidos",
+       "tipo":"Ciclo Formativo de Grado Superior",
+       "horas":"2000",
+       "salida":"Este profesional ejerce su actividad en empresas o entidades públicas o privadas tanto por cuenta ajena como propia, desempeñando su trabajo en el área de desarrollo de aplicaciones informáticas relacionadas con entornos Web (intranet, extranet e internet)",
+       "imagen":"daw.png"
+    },
+    {
+       "id":"ASIR",
+       "nombre":"Administración de Sistemas Informáticos y Redes",
+       "resumen":"Configurarás y mantendrás equipos, sistemas y arquitectura de red adaptadas a las necesiades empresariales",
+       "descripcion": "Configurar, administrar y mantener sistemas informáticos, garantizando la funcionalidad, la integridad de los recursos y servicios del sistema, con la calidad exigida y cumpliendo la reglamentación vigente",
+       "tipo":"Ciclo Formativo de Grado Superior. ",
+       "horas":"2000",
+       "salida": "Este profesional ejerce su actividad en el área de informática de entidades que dispongan de sistemas para la gestión de datos e infraestructura de redes (intranet, internet y/o extranet)",
+       "imagen":"asir.png"
+    },
+    {
+       "id":"SMR",
+       "nombre":"Sistemas Microinformáticos y Redes",
+       "resumen":"Aprenderás a manejar distintos sistemas y configurar redes",
+       "descripcion": "nstalar, configurar y mantener sistemas microinformáticos, aislados o en red, así como redes locales en pequeños entornos",
+       "tipo":"Ciclo Formativo de Grado Medio",
+       "horas":"2000",
+       "salida":"Este profesional desarrolla su actividad en empresas del sector servicios que se dediquen a la comercialización, montaje y reparación de equipos, redes y servicios microinformáticos en general, como parte del soporte informático de la organización o en entidades de cualquier tamaño y sector productivo que utilizan sistemas microinformáticos y redes de datos para su gestión",
+       "imagen":"smr.png"
+    }
+ ]

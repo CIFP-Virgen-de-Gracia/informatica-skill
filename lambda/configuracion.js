@@ -29,7 +29,9 @@ module.exports = {
     // Repositorio de los datos donde vamos a trabajar, puede ser las url a donde nos conectamos de servicios propios
     // O de otros lados o ficheros internos JSON o similares
     DATA: {
+        contacto: require('./recursos/datos/contacto.json'),
         curriculo: require('./recursos/datos/curriculo'),
+        ciclos: require('./recursos/datos/ciclos.json'),
         chistes: require('./recursos/datos/chistes.json'),
         RSS: 'https://cifpvirgendegracia.com/feed',
         WIKI: 'https://query.wikidata.org/sparql'

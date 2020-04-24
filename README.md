@@ -30,7 +30,8 @@ Asún así se ha usado servicios web para acceso a las noticias del RSS del cent
 * 20/04/2020. Chistes, función para contar un chiste aleatorio desde su repositorio de chistes.
 * 21/04/2020. Consulta de servicio Noticias del RSS del CIFP Virgen de Gracia y detección de elementos para la respuesta progresiva.
 * 21/04/2020. Interfaz de usuario de noticas en forma de lista y evento Touch.
-* 23/04/2020. Chistes en JSON simulando un servicio
+* 23/04/2020. Chistes en JSON simulando un servicio.
+* 24/04/2020. Ciclos y Contacto en JSON simulando un servicio. Optimización con Contacto y información de un ciclo usando este mecanismo.
 
 
 ## Acerca de
