@@ -90,8 +90,20 @@ const TouchIntentHandler = {
             mensajeHablado = handlerInput.t('LIST_NEWS_DETAIL_MSG', {noticia: noticia});
             mensajeEscrito = mensajeHablado;
             encabezado =  handlerInput.t('NEWS_HEADER_MSG');
+            
+        //Si es un ciclo
+        }else if (tipo === 'Ciclos'){
+             console.log("Evento ciclos");
+            // Cogemos el objeto y parseamos el JSON a Objeto JS
+             let ciclo = datos;
+             try { ciclo = JSON.parse(ciclo); } catch (e) {}
+                console.log('Evento Touch argumentos: ' + JSON.stringify(ciclo));
+            // Construimos el mensaje de salida 
+            // Fijate que podemos coger sus atributos directamente del objeto aunque podríamos parametrizarlo de distinta manera pasando varios y no del tirón
+            mensajeHablado = handlerInput.t('CICLO_DETALLE_MSG', {ciclo: ciclo});
+            mensajeEscrito = mensajeHablado;
+            encabezado =  handlerInput.t('CICLO_HEADER_MSG');
         }
-        
        
         
         // Devolvermos la salida
@@ -330,7 +342,11 @@ const ListarModulosIntentHandler = {
 
 
 
-// LISTAR CICLOS - INTENCION
+/**
+ * LISTAR CICLOS INTENT
+ * Lista los ciclos que tenemos en nuestro repositorio.
+ * Opcionalmente los presenta en una interfaz en foma de lista que al pulsar da sus detalles.
+ */
 const ListarCiclosIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -344,12 +360,62 @@ const ListarCiclosIntentHandler = {
         const {intent} = requestEnvelope.request;
         // Atributos de sesiónconst 
         const sessionAttributes = attributesManager.getSessionAttributes();
-         const nombre = sessionAttributes['nombre'] || '';
+        const nombre = sessionAttributes['nombre'] || '';
+
+        // obtenemos los ciclos
+        const ciclos = func.getCiclos();
+        
+        // Construimos el mensaje
+        console.log("llamando a la conversion ciclos");
+        const sal = func.convertirCiclosResponse(handlerInput, ciclos);
+        console.log("Ciclos Respuesta: " + sal);
+
         // Creamos mensaje
         let mensajeHablado = handlerInput.t('LISTAR_CICLO_MSG', {nombre: nombre});
-        mensajeHablado += func.getListaNombreCiclos();
-        mensajeHablado += handlerInput.t('POST_LISTAR_CICLOS_HELP_MSG');
+        let mensajeEscrito = mensajeHablado;
         
+         // Si tenemos respuesta hacemos lo siguiente
+        if (sal.voz) {
+            mensajeHablado += sal.voz;
+            mensajeEscrito += sal.texto;
+        }else{
+            mensajeHablado += handlerInput.t('POST_LISTAR_CICLOS_HELP_MSG');
+        }
+       // Creamos la pantalla APL// 
+       if (util.supportsAPL(handlerInput) && sal.voz) { 
+          mensajeHablado += handlerInput.t('POST_CICLOS_APL_HELP_MSG');
+         // Para saber la resolución
+         const {Viewport} = handlerInput.requestEnvelope.context;
+         const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+         handlerInput.responseBuilder.addDirective({
+             type: 'Alexa.Presentation.APL.RenderDocument',
+             version: '1.1',
+             document: configuracion.APL.listGradesIU, // Cargamos la interfaz de listas
+             // Lo cogemos estos datos siguiendo la estructura de listSampleDataSource.json
+             datasources: {
+                 listData: {
+                     type: 'object',
+                     properties: {
+                         config: {
+                             backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                             title: handlerInput.t('CICLOS_HEADER_MSG'),
+                             skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                             hintText: handlerInput.t('LAUNCH_HINT_MSG')
+                         },
+                         list: {
+                             // Le añadimos como items, el json adjunto
+                             listItems: ciclos
+                         }
+                     },
+                     transformers: [{
+                         inputPath: 'config.hintText',
+                         transformer: 'textToHint'
+                     }]
+                 }
+             }
+         });
+    }
+        /*
         // Pintamos la pantalla 
             if(util.supportsAPL(handlerInput)) {
                 const {Viewport} = handlerInput.requestEnvelope.context;
@@ -380,12 +446,13 @@ const ListarCiclosIntentHandler = {
                     });
             
             }
+            */
 
         // Devolvemos la salida
        return handlerInput.responseBuilder
             .withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
+                handlerInput.t('CICLOS_HEADER_MSG'),
+                handlerInput.t(mensajeEscrito),
                 util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
@@ -490,7 +557,7 @@ const RegistrarCursoIntentHandler = {
         // Si existen
         if (ciclo && curso) {
             // Almacenamos en la sesión
-            sessionAttributes['ciclo'] = func.getCicloID(ciclo);
+            sessionAttributes['ciclo'] = func.getCiclo(ciclo).id; // Nos devuelve un objeto ciclo, y cogemos su id
             sessionAttributes['curso'] = curso; 
             
             // Una vez tengamos los dias volvemos a inicio
@@ -533,7 +600,7 @@ const ContactoIntentHandler = {
         let mensajeHablado = ''
 
         // Obtenemos el cobntacto
-        const contacto = func.getContactoCentro();
+        const contacto = func.getContacto();
         
         // Según el tipo construimos el mensaje
         switch (intentTipo) {
@@ -886,9 +953,9 @@ const NoticiasIntentHandler = {
         // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
         // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
         // convertimos la respuesta API a texto que Alexa puede leer
-        console.log("llamando a la funcion");
-        const sal = func.convertirNoticiasResponse(handlerInput, respuesta, timezone);
-        console.log("respuesta de la funcione");
+        console.log("llamando a la conversion noticias");
+        const sal = func.convertirNoticiasResponse(handlerInput, respuesta);
+        console.log("Noticias Respuesta: " + sal);
         
         let mensajeHablado = 'Noticias'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
         let mensajeEscrito = mensajeHablado;
@@ -992,7 +1059,9 @@ const FamososIntentHandler = {
         // Vamos a presentarlo tanto hablado como por tarjeta, pero teniendo en cuenta que la información a mostrar por cada lado debe ser distinta
         // porque debemos seleccionar qué información se dice, y qué se visualiza. Puede que no sea siempre todo igual.
         // convertimos la respuesta API a texto que Alexa puede leer
+        console.log("llamando a la conversion famosos");
         const sal = func.convertirFamososResponse(handlerInput, respuesta, timezone);
+        console.log("Famosos Respuesta: " + sal);
         
         let mensajeHablado = 'Famosos'; // handlerInput.t('API_ERROR_MSG'); // Por si hemos tenido un error al obtener el JSON
         let mensajeEscrito = mensajeHablado;
@@ -1188,7 +1257,7 @@ const CancelAndStopIntentHandler = {
         const intentTipo = String(Alexa.getIntentName(handlerInput.requestEnvelope));
         
         if(intentTipo==='AMAZON.CancelIntent')
-            return InicioIntentHandler.handle(handlerInput);
+            return LaunchRequestHandler.handle(handlerInput);
         else{
             const mensajeHablado = handlerInput.t('GOODBYE_MSG', {nombre: nombre});
     

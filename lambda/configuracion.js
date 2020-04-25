@@ -23,7 +23,8 @@ module.exports = {
         creatorIU: require('./recursos/interfaz/creatorScreen.json'),       // Mi Creador
         contactIU: require('./recursos/interfaz/contactScreen.json'),       // Contacto    
         listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json'), // Lista de lenguajes de programacion
-        listNewsIU: require('./recursos/interfaz/listNewsScreen.json') // Lista de Noticias
+        listNewsIU: require('./recursos/interfaz/listNewsScreen.json'), // Lista de Noticias
+        listGradesIU: require('./recursos/interfaz/listGradesScreen.json') // Lista de Noticias
     },
     
     // Repositorio de los datos donde vamos a trabajar, puede ser las url a donde nos conectamos de servicios propios

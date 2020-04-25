@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * MODULO DE FUNCIONES
  * Funciones o elementos de la lógia de la skill que complementan a los controladores Handlers
@@ -6,7 +8,8 @@
 // LIBRERÍAS A USAR
 const moment = require('moment-timezone'); // manejo de fechas con TimeZone
 const axios = require('axios'); // servicios HTTP y REST 
-const configuracion = require('./configuracion');
+const configuracion = require('./configuracion'); // Configuración
+const util = require('./util'); // funciones de utilidad. Aquí está la persistencia, recordatorios,  ahora y se exporta como util. Mirad en = Alexa.SkillBuilders
 
 /**
  * MODULOS A EXPORTAR
@@ -118,6 +121,67 @@ module.exports = {
             return 'Sistemas Microinformáticos y Redes';
     },
 
+    /******* Codigo Actualizado */
+
+
+    /**
+     * Obtiene la lista de ciclos desde nuestro repositorio principal
+     */
+    getCiclos() {
+        // Nos conectamos al repositorio y obtenemos la info
+        let ciclos = configuracion.DATA.ciclos;
+        try { ciclos = JSON.parse(ciclos); } catch (e) {}
+        console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
+
+        // Añadimos el path completo de la imagen
+        ciclos.forEach((ciclo)=>{
+            ciclo.imagen = util.getS3PreSignedUrl('Media/'+ciclo.imagen);
+        });
+        
+        //Devolvemos la lista de ciclos
+        return ciclos;
+    },
+
+
+    /**
+     * Convierte la salida de la lista de ciclos en mensaje de texto y voz
+     * @param {*} handlerInput handller
+     * @param {*} ciclos lista de ciclos a convertir con la entrada de datos JSON
+     */
+    convertirCiclosResponse(handlerInput, ciclos){
+        let textoSalida = '';
+        let textoEscrito = '';
+        let salida;
+        // Si la llamada API falla, simplemente no agregamos los ciclos porque no existen
+        if (!ciclos || ciclos.length === 0)
+            return {
+                voz: '',
+                texto: ''
+            };
+        
+        console.log('Ciclos: ' + JSON.stringify(ciclos));
+             
+        // Recorremos los ciclos y lo almacenamos en el objeto ciclo
+        ciclos.forEach((ciclo, index) => {
+            textoSalida += handlerInput.t('CICLO_NAME_MSG', {ciclo: ciclo});
+            textoEscrito += handlerInput.t('CICLO_NAME_MSG', {ciclo: ciclo});
+            
+            // Juntamos con Y
+            if (index === Object.keys(ciclos).length - 2){
+                textoSalida += handlerInput.t('CONJUNCTION_MSG');
+                textoEscrito += handlerInput.t('CONJUNCTION_MSG');
+            }
+            else {
+               textoSalida += '. ';
+               textoEscrito += '. ';
+            }
+        });
+       return {
+                voz: textoSalida,
+                texto: textoEscrito
+            };
+    },
+
     
     /**
      * 
@@ -140,29 +204,10 @@ module.exports = {
     },
 
     
-    /**
-     * Devuelve el ID del Ciclo
-     * @param {string} ciclo  Dato identificativo del ciclo, puede ser un id o el nombre (DAM o desarroloo de aplicaciones multiplataforma)
-     */
-    getCicloID(ciclo) {
-        // Primero quitamos los acentos y psamos a minúscula
-        // La normalización es por si me han metido los datos sin acento o han pronunciado ma
-        ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
-
-        // Nos conectamos al repositorio y obtenemos la info
-        let ciclos = configuracion.DATA.ciclos;
-        try { ciclos = JSON.parse(ciclos); } catch (e) {}
-        console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
-        
-        //operamos, filtramos aquellos ciclos que su id o nombre coicida con el nuesro y devolvemos su id
-        return ciclos.find(c => (c.id.toLowerCase() === ciclo) || (c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === ciclo)).id;
-    },
-
-
     /***
      * Obtiene los datos del contacto del centro desde nuestro repositorio
      */
-    getContactoCentro(){
+    getContacto(){
         // Nos conectamos al repositorio y obtenemos la info
         let contacto = configuracion.DATA.contacto;
         try { contacto = JSON.parse(contacto); } catch (e) {}
@@ -217,28 +262,25 @@ module.exports = {
     /**
      * Convierte una lista de noticias en un objeto de texto por voz y salida textual
      * @param {*} handlerInput handler
-     * @param {*} response respuesta, texto de entrada en JSON
-     * @param {*} timezone TimeZone
+     * @param {*} noticias respuesta de noticias, texto de entrada en JSON
      */
-    convertirNoticiasResponse(handlerInput, response, timezone){
+    convertirNoticiasResponse(handlerInput, noticias){
         let textoSalida = '';
         let textoEscrito = '';
-        let salida;
         // Si la llamada API falla, simplemente no agregamos los famosos a la respuesta
-        if (!response || response.length === 0)
+        if (!noticias || noticias.length === 0)
             return {
                 voz: '',
                 texto: ''
             };
         
-        const noticias = response; // Obtenemos el JSON segun la respuesta de Wikidata esta en result.bindigs
         console.log('Resultados: ' + JSON.stringify(noticias));
         
         //Texto de salida
         textoSalida += handlerInput.t('ALSO_NEWS_MSG');
         textoEscrito += handlerInput.t('ALSO_NEWS_MSG');
         
-        // Recorremos los resultados y lo almacenamos en el objeto lenguaje (lenguaje de programación)
+        // Recorremos los resultados y lo almacenamos en el objeto noticia
         // Vamos recogiendo tanto la noticia como su indice y creamos la salida
         noticias.forEach((noticia, index) => {
             textoSalida += handlerInput.t('NEWS_TITTLE_MSG', {titular: noticia.titular});
@@ -332,30 +374,29 @@ module.exports = {
     /**
      * Convierte la salida de la lista de noticias en mensaje de texto y voz
      * @param {*} handlerInput handller
-     * @param {*} response respuesta a convertir con la entrada de datos JSON
+     * @param {*} famosos respuesta a convertir con la entrada de datos JSON
      * @param {*} timezone timezone
      */
-    convertirFamososResponse(handlerInput, response, timezone){
+    convertirFamososResponse(handlerInput, famosos, timezone){
         let textoSalida = '';
         let textoEscrito = '';
-        let salida;
         // Si la llamada API falla, simplemente no agregamos los famosos a la respuesta
-        if (!response || !response.results || !response.results.bindings || !Object.keys(response.results.bindings).length > 0)
+        if (!famosos || !famosos.results || !famosos.results.bindings || !Object.keys(famosos.results.bindings).length > 0)
             return {
                 voz: '',
                 texto: ''
             };
         
-        const resultados = response.results.bindings; // Obtenemos el JSON segun la respuesta de Wikidata esta en result.bindigs
-        console.log('Resultados: ' + JSON.stringify(resultados));
+        famosos = famosos.results.bindings; // Obtenemos el JSON segun la respuesta de Wikidata esta en result.bindigs
+        console.log('Resultados Famosos: ' + JSON.stringify(famosos));
         
         //Texto de salida
         textoSalida += handlerInput.t('ALSO_PROGRAMMING_MSG');
         textoEscrito += handlerInput.t('ALSO_PROGRAMMING_MSG');
         
-        // Recorremos los resultados y lo almacenamos en el objeto lenguaje (lenguaje de programación)
+        // Recorremos los famosos y lo almacenamos en el objeto lenguaje (lenguaje de programación)
         // La idea es dedir, Lenguae X creado por Y en Z. (X: Nombre del lenguaje, Y: Creador, Z: año)
-        resultados.forEach((lenguaje, index) => {
+        famosos.forEach((lenguaje, index) => {
             textoSalida += handlerInput.t('PROGRAMMING_NAME_MSG', {lenguaje: lenguaje.langLabel.value});
             textoSalida += handlerInput.t('PROGRAMMING_CREATOR_MSG', {creador: lenguaje.humanLabel.value});
             textoEscrito += lenguaje.langLabel.value + ', ' + lenguaje.humanLabel.value;
@@ -372,7 +413,7 @@ module.exports = {
                 lenguaje.langDate.value = momento.year(); // Ponemos el año en la propiedad
             }
             // Juntamos más
-            if (index === Object.keys(resultados).length - 2){
+            if (index === Object.keys(famosos).length - 2){
                 textoSalida += handlerInput.t('CONJUNCTION_MSG');
                 textoEscrito += handlerInput.t('CONJUNCTION_MSG');
             }
@@ -385,15 +426,7 @@ module.exports = {
                 voz: textoSalida,
                 texto: textoEscrito
             };
-    },
-    
+    }
 
-    /**
-     * Dado un mes, devuelve su número entre 1 y 12.
-     * @param {string} mesNombre Nombre del mes
-     */
-    getIDMes(mesNombre) {
-       const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]; 
-       return  meses.indexOf(mesNombre) + 1;
-    },
+
 }

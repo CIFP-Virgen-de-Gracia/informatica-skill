@@ -56,6 +56,7 @@ module.exports = {
             POST_CHISTE_HELP_MSG: 'Si quieres otro chiste solo pídelo, si no pídeme información de nuestros estudios, o crea un recordatorio o pídeme ayuda para saber lo que puedo hacer. ¿Qué quieres hacer ahora? ', 
             POST_NEWS_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos o módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
             POST_NEWS_APL_HELP_MSG: 'Puedes intentar tocar las fotos para saber el contenido de la noticia. Si necesitas ayuda, por favor indícalo. ¿Qué otra cosa te gustaría hacer? ',
+            POST_CICLOS_APL_HELP_MSG: 'Puedes intentar tocar las fotos para saber el contenido del ciclo. Si necesitas ayuda, por favor indícalo. ¿Qué otra cosa te gustaría hacer? ',
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -85,9 +86,11 @@ module.exports = {
             
             //Listar ciclo y detalles de ciclo
             LISTAR_CICLO_MSG: '{{nombre}}. Nuestras titulaciones y ciclos son: ', 
+            CICLO_NAME_MSG: '{{ciclo.nombre}}',
             LISTAR_CICLO_HEADER_MSG: 'Titulaciones',
             LISTAR_CICLO_TEXT_MSG: 'Nuestros ciclos, ¿Te interesa alguno?',
             CICLO_DETALLE_MSG: '{{ciclo.nombre}}. {{ciclo.tipo}}. {{ciclo.resumen}}. {{ciclo.descripcion}}. {{ciclo.salida}}. ',
+            CICLOS_HEADER_MSG: 'Ciclos',
             
              //Listar modulos y detalles de modulo
             LISTAR_MODULOS_MSG: '{{nombre}}. Los módulos de {{curso}} de {{ciclo}} son: ', 
