@@ -6,6 +6,7 @@
  * Frases y entonaciones: https://developer.amazon.com/es-ES/docs/alexa/custom-skills/speechcon-reference-interjections-spanish.html
  */
 
+'use strict';
  /** *
  * MODULO A EXPORTAR
  */
@@ -97,6 +98,7 @@ module.exports = {
             LISTAR_MODULOS_MAIN_MSG: 'Módulos de {{curso}} de {{ciclo}}',
             LISTAR_MODULOS_HEADER_MSG: 'Modulos',
             LISTAR_MODULOS_TEXT_MSG: 'Nuestros módulos, ¿Te interesa alguno?',
+            MODULO_DETALLE_MSG: ' El módulo de {{modulo.nombre}}. {{modulo.horasSemanales}} horas semanales. {{modulo.resumen}}. {{modulo.descripcion}}. ',
             
             //Matricula
             MATRICULA_HEADER_MSG: 'Matricula',

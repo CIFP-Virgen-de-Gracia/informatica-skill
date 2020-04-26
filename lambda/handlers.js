@@ -26,11 +26,10 @@ const PruebaIntentHandler = {
         const mensajeHablado = 'Prueba ' + p.getPruebaMsg();
         
         // Listado de todos los ciclos
-        p.getListaCiclos();
+        console.log('Pedir lista de módulos');
+        let modulos = p.getModulos();
+        console.log('Lista de módulos recibida: ' + JSON.stringify(modulos));
 
-        // Listado de un ciclo por id
-        let id = 'SMR'; // uppercase
-        p.getCiclo(id);
 
 
         return handlerInput.responseBuilder
@@ -47,7 +46,10 @@ const PruebaIntentHandler = {
 
 
 
-// HANDLER DE DE EVENTO TOUCH - INTENT 
+/**
+ * EVENTO TOUCH INTENT
+ * evento touch de la lista. Se debe detectar de que lista nos llega a partir de los argumentos del evento
+ */
 const TouchIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'Alexa.Presentation.APL.UserEvent'; // Los datos que nos vienen del evento
@@ -139,6 +141,10 @@ const MiMatriculaIntentHandler = {
         const curso = sessionAttributes['curso'] || '';
         const ciclo = sessionAttributes['ciclo'] || '';
         
+        console.log("El ciclo:  " + ciclo);
+        console.log("El curso: " + curso);
+
+
         // Creamos mensaje
         let mensajeHablado ='';
 
@@ -207,69 +213,7 @@ const MiMatriculaIntentHandler = {
 };
 
 
-// INFO CICLO - INTENCION
-const InfoModuloIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InfoModuloIntent';
-    },
-    //Proceso
-    handle(handlerInput) {
-        // Recogemos los la entrada entrada - handler Input
-        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
-        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
-        const {intent} = requestEnvelope.request;
-        
-        // Obtenemos el modulo
-        const modulo = Alexa.getSlotValue(requestEnvelope, 'modulo');
-        const detalle = func.getDetallesModulo(modulo);
-        
-        // Creamos mensaje
-        let mensajeHablado = detalle.nombre + detalle.descripcion;
-        mensajeHablado += handlerInput.t('POST_DETALLE_MODULO_HELP_MSG');
-        
-        // Pintamos la pantalla 
-            if(util.supportsAPL(handlerInput)) {
-                const {Viewport} = handlerInput.requestEnvelope.context;
-                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-                handlerInput.responseBuilder.addDirective({
-                        type: 'Alexa.Presentation.APL.RenderDocument',
-                        version: '1.1',
-                        document: configuracion.APL.launchIU,
-                        datasources: {
-                            launchData: {
-                                type: 'object',
-                                properties: {
-                                    headerTitle: handlerInput.t('LISTAR_MODULOS_HEADER_MSG'),
-                                    mainText: detalle.nombre,
-                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/modulo.png'),
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                    cursoText: handlerInput.t('LISTAR_MODULOS_TEXT_MSG'),
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                    backgroundOpacity: "0.5"
-                                },
-                                transformers: [{
-                                    inputPath: 'hintString',
-                                    transformer: 'textToHint',
-                                }]
-                            }
-                        }
-                    });
-            
-            }
-            
-        // Devolvemos la salida
-       return handlerInput.responseBuilder
-            .withStandardCard(
-                handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
-            .speak(mensajeHablado)
-            .reprompt(handlerInput.t('REPROMPT_MSG'))
-            .getResponse();
-    }
-};
+
 
 // LISTAR MODULOS - INTENCION
 const ListarModulosIntentHandler = {
@@ -340,6 +284,74 @@ const ListarModulosIntentHandler = {
 };
 
 
+/**
+ * INFORMACION MODULO
+ * Devuelve la información de un módulo de un ciclo
+ */
+const InfoModuloIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'InfoModuloIntent';
+    },
+    //Proceso
+    handle(handlerInput) {
+        // Recogemos los la entrada entrada - handler Input
+        const {attributesManager,requestEnvelope, responseBuilder} = handlerInput;
+        // Tomamos su intención y con ello la estructura de datos donde nos llega los slots
+        const {intent} = requestEnvelope.request;
+        
+        // Obtenemos el modulo
+        let modulo = Alexa.getSlotValue(requestEnvelope, 'modulo');
+
+        // Buscamos el módulo
+        modulo = func.getModulo(modulo);
+        
+        // Creamos mensaje
+        let mensajeHablado = handlerInput.t('MODULO_DETALLE_MSG', {modulo:modulo});
+        mensajeHablado += handlerInput.t('POST_DETALLE_MODULO_HELP_MSG');
+        
+        // Pintamos la pantalla 
+            if(util.supportsAPL(handlerInput)) {
+                const {Viewport} = handlerInput.requestEnvelope.context;
+                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
+                handlerInput.responseBuilder.addDirective({
+                        type: 'Alexa.Presentation.APL.RenderDocument',
+                        version: '1.1',
+                        document: configuracion.APL.launchIU,
+                        datasources: {
+                            launchData: {
+                                type: 'object',
+                                properties: {
+                                    headerTitle: handlerInput.t('LISTAR_MODULOS_HEADER_MSG'),
+                                    mainText: modulo.nombre,
+                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
+                                    logoImage: util.getS3PreSignedUrl('Media/'+modulo.imagen),//ciclo.imagen,
+                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    cursoText: modulo.horasSemanales + ' horas a la semana. ' + modulo.horasTotales + ' horas totales',
+                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundOpacity: "0.5"
+                                },
+                                transformers: [{
+                                    inputPath: 'hintString',
+                                    transformer: 'textToHint',
+                                }]
+                            }
+                        }
+                    });
+            
+            }
+            
+        // Devolvemos la salida
+       return handlerInput.responseBuilder
+            .withStandardCard(
+                handlerInput.t('LAUNCH_HEADER_MSG'),
+                handlerInput.t(mensajeHablado),
+                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .speak(mensajeHablado)
+            .reprompt(handlerInput.t('REPROMPT_MSG'))
+            .getResponse();
+    }
+};
 
 
 /**
@@ -415,39 +427,6 @@ const ListarCiclosIntentHandler = {
              }
          });
     }
-        /*
-        // Pintamos la pantalla 
-            if(util.supportsAPL(handlerInput)) {
-                const {Viewport} = handlerInput.requestEnvelope.context;
-                const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-                handlerInput.responseBuilder.addDirective({
-                        type: 'Alexa.Presentation.APL.RenderDocument',
-                        version: '1.1',
-                        document: configuracion.APL.launchIU,
-                        datasources: {
-                            launchData: {
-                                type: 'object',
-                                properties: {
-                                    headerTitle: handlerInput.t('LISTAR_CICLO_HEADER_MSG'),
-                                    mainText: func.getListaIDCiclos(),
-                                    hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/titulaciones.png'),
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                    cursoText: handlerInput.t('LISTAR_CICLO_TEXT_MSG'),
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
-                                    backgroundOpacity: "0.5"
-                                },
-                                transformers: [{
-                                    inputPath: 'hintString',
-                                    transformer: 'textToHint',
-                                }]
-                            }
-                        }
-                    });
-            
-            }
-            */
-
         // Devolvemos la salida
        return handlerInput.responseBuilder
             .withStandardCard(
@@ -500,7 +479,7 @@ const InfoCicloIntentHandler = {
                                     headerTitle: ciclo.id,
                                     mainText: ciclo.nombre,
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/'+ ciclo.imagen),
+                                    logoImage: util.getS3PreSignedUrl('Media/'+ciclo.imagen),//ciclo.imagen,
                                     logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
                                     cursoText: ciclo.tipo +' '+ ciclo.horas + ' horas.',
                                     backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),

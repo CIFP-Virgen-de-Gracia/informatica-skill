@@ -33,6 +33,7 @@ Asún así se ha usado servicios web para acceso a las noticias del RSS del cent
 * 23/04/2020. Chistes en JSON simulando un servicio.
 * 24/04/2020. Ciclos y Contacto en JSON simulando un servicio. Optimización con Contacto y información de un ciclo usando este mecanismo.
 * 25/04/2020. Listar Ciclos ahora con IU de lista y evento táctil que indica la información o detalles de un ciclo.
+* 26/04/2020. Módulos en JSON simulando un servicio. Imágenes de módulos. consultar módulo.
 
 
 ## Acerca de

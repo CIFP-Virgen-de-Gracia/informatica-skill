@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * CONFIGURACION Y COSTANTES DE LA SKILL
  */
@@ -30,9 +32,10 @@ module.exports = {
     // Repositorio de los datos donde vamos a trabajar, puede ser las url a donde nos conectamos de servicios propios
     // O de otros lados o ficheros internos JSON o similares
     DATA: {
-        contacto: require('./recursos/datos/contacto.json'),
         curriculo: require('./recursos/datos/curriculo'),
+        contacto: require('./recursos/datos/contacto.json'),
         ciclos: require('./recursos/datos/ciclos.json'),
+        modulos: require('./recursos/datos/modulos.json'),
         chistes: require('./recursos/datos/chistes.json'),
         RSS: 'https://cifpvirgendegracia.com/feed',
         WIKI: 'https://query.wikidata.org/sparql'

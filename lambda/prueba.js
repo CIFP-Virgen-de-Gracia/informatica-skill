@@ -5,25 +5,21 @@ const configuracion = require('./configuracion');// Fichero de configuración de
 
 module.exports = {
 
-    
+  
+    getModulos(){
+        // Nos conectamos al repositorio y obtenemos la info
+        let modulos= configuracion.DATA.modulos;
+        try { modulos = JSON.parse(modulos); } catch (e) {}
+        console.log('Lista de Modulos: ' + JSON.stringify(modulos));
 
-
-
-    /**
-     * Obtiene un ciclo en base a su id (DAM, DAW, ASIR o SMR)
-     * @param {string} idCiclo 
-     */
-    getCiclo(idCiclo){
-         // Nos conectamos al repositorio y obtenemos la info
-         let ciclos = configuracion.DATA.ciclos;
-         try { ciclos = JSON.parse(ciclos); } catch (e) {}
-         console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
-         
-         //operamos, filtramos aquellos ciclos (find devuelve el primer valor, filter un array con todas las ocurrencias)
-         return ciclos.find(ciclo => ciclo.id === idCiclo);
-    },
-
-    
+        // Añadimos el path completo de la imagen
+        //modulos.forEach((modulo)=>{
+        //    ciclo.imagen = util.getS3PreSignedUrl('Media/'+ciclo.imagen);
+        //});
+        
+        //Devolvemos la lista de ciclos
+        return modulos;
+    },  
 
     /**
      * Mensaje de pruebas

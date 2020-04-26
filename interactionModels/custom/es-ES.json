@@ -311,12 +311,12 @@
           ],
           "samples": [
             "quiero saber más del módulo {modulo}",
-            "quiero saber más del modulo",
-            "infomarción del módulo ",
+            "quiero saber más del módulo",
+            "información del módulo ",
             "info de un módulo",
             "más información de un módulo",
-            "puedes indicarme más información del modúlo {modulo}",
-            "dame información del modulo {modulo}",
+            "puedes indicarme más información del módulo {modulo}",
+            "dame información del módulo {modulo}",
             "información de módulo",
             "detalle de módulo {modulo}",
             "detalles de módulo",
@@ -338,7 +338,7 @@
             "información de mis estudios",
             "hablame de mi módulos",
             "dime mis módulos",
-            "dime mis ciclo",
+            "dime mis ciclos",
             "mis módulos",
             "mi ciclo",
             "mi expediente",
@@ -552,7 +552,7 @@
             },
             {
               "name": {
-                "value": "Montaje y mantenimiento de equipo"
+                "value": "Montaje y mantenimiento de equipos informáticos"
               }
             },
             {
@@ -1385,5 +1385,5 @@
       }
     ]
   },
-  "version": "63"
+  "version": "65"
 }

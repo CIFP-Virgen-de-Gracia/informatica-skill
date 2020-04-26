@@ -123,6 +123,25 @@ module.exports = {
 
     /******* Codigo Actualizado */
 
+    /**
+     * Obtiene los detalles de un módulo en base a su indenticador o nombre
+     * @param {string} modulo Dato identificativo del modulo, puede ser un id o el nombre (PROG o Programación)
+     */
+    getModulo(modulo){
+        // Primero quitamos los acentos y psamos a minúscula
+        // La normalización es por si me han metido los datos sin acento o han pronunciado mal
+        modulo = modulo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
+        console.log('Mi modulo a buscar es: ' + modulo);
+
+        // Nos conectamos al repositorio y obtenemos la info
+        let modulos = configuracion.DATA.modulos;
+        try { modulos = JSON.parse(modulos); } catch (e) {}
+        console.log('Lista de Modulos: ' + JSON.stringify(modulos));
+        
+        //operamos, filtramos aquellos modulos que su id o nombre coicida con el nuesro y devolvemos su id. En nuestro caso solo filtramso el nombre
+        return modulos.find(m => (m.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === modulo))
+    },
+
 
     /**
      * Obtiene la lista de ciclos desde nuestro repositorio principal
@@ -184,12 +203,12 @@ module.exports = {
 
     
     /**
-     * 
+     * Obtiene los detales de un ciclo en base su indentificador o nombre
      * @param {string} ciclo Dato identificativo del ciclo, puede ser un id o el nombre (DAM o desarrollo de aplicaciones multiplataforma)
      */
     getCiclo(ciclo) {
         // Primero quitamos los acentos y psamos a minúscula
-        // La normalización es por si me han metido los datos sin acento o han pronunciado ma
+        // La normalización es por si me han metido los datos sin acento o han pronunciado mal
         ciclo = ciclo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); 
 
         console.log('Mi ciclo a buscar es: ' +ciclo);
