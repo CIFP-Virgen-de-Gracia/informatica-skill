@@ -21,18 +21,18 @@ module.exports = {
     
     // APL Interfaces, uno por cada fichero de recursos
     APL: {
-        launchIU: require('./recursos/interfaz/launchScreen.json'),         // Lanzaminrto
-        creatorIU: require('./recursos/interfaz/creatorScreen.json'),       // Mi Creador
-        contactIU: require('./recursos/interfaz/contactScreen.json'),       // Contacto    
-        listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json'), // Lista de lenguajes de programacion
-        listNewsIU: require('./recursos/interfaz/listNewsScreen.json'), // Lista de Noticias
-        listGradesIU: require('./recursos/interfaz/listGradesScreen.json') // Lista de Noticias
+        launchIU: require('./recursos/interfaz/launchScreen.json'),                     // Lanzaminrto
+        creatorIU: require('./recursos/interfaz/creatorScreen.json'),                   // Mi Creador
+        contactIU: require('./recursos/interfaz/contactScreen.json'),                   // Contacto    
+        listProgrammingIU: require('./recursos/interfaz/listProgrammingScreen.json'),   // Lista de lenguajes de programacion
+        listNewsIU: require('./recursos/interfaz/listNewsScreen.json'),                 // Lista de Noticias
+        listGradesIU: require('./recursos/interfaz/listGradesScreen.json'),             // Lista de Noticias
+        listModulesIU: require('./recursos/interfaz/listModulesScreen.json')            // Lista de Modulos
     },
     
     // Repositorio de los datos donde vamos a trabajar, puede ser las url a donde nos conectamos de servicios propios
     // O de otros lados o ficheros internos JSON o similares
     DATA: {
-        curriculo: require('./recursos/datos/curriculo'),
         contacto: require('./recursos/datos/contacto.json'),
         ciclos: require('./recursos/datos/ciclos.json'),
         modulos: require('./recursos/datos/modulos.json'),

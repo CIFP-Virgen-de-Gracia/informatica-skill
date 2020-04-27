@@ -434,13 +434,6 @@
             "noticias",
             "las noticias"
           ]
-        },
-        {
-          "name": "PruebaIntent",
-          "slots": [],
-          "samples": [
-            "prueba"
-          ]
         }
       ],
       "types": [
@@ -1190,7 +1183,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "Ok, ya sé el curso, necesito saber el ciclo."
+            "value": "Ok, necesito saber el ciclo."
           },
           {
             "type": "PlainText",
@@ -1198,7 +1191,7 @@
           },
           {
             "type": "PlainText",
-            "value": "Me has dicho que estás en {curso} . Por favor, dime el ciclo."
+            "value": "Por favor, dime el ciclo."
           },
           {
             "type": "PlainText",
@@ -1385,5 +1378,5 @@
       }
     ]
   },
-  "version": "65"
+  "version": "67"
 }

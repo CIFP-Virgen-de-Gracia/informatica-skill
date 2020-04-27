@@ -124,6 +124,73 @@ module.exports = {
     /******* Codigo Actualizado */
 
     /**
+     * Obtiene una lista de módulos asociados a un ciclo y un curso. 
+     * En un futuro podemos implementar variantes para que de todos los módulos, los de un curso o los de un ciclo
+     * @param {string} ciclo ID del Ciclo, puede ser DAM/DAW/ASIR/SMR
+     * @param {number} curso Número del curso, puede ser 1 o 2
+     */
+    getModulos(ciclo, curso){
+        // Podría pasarlo a múniscula, pero no es necesario como en otros procedimientos.
+        console.log('Módulos de:  ' + curso + ' de: ' + ciclo);
+
+        // Nos conectamos al repositorio y obtenemos la info. Todos sabemos que lo de conectarse es simbólico, pero podríamos simular el servicio
+        let modulos = configuracion.DATA.modulos;
+        try { modulos = JSON.parse(modulos); } catch (e) {}
+        console.log('Lista de Modulos: ' + JSON.stringify(modulos));
+
+        // Filtramos con la condición, como son varios a devolver se usa filter
+        modulos = modulos.filter(modulo=> (modulo.cicloID.toLowerCase() === ciclo.toLowerCase()) && (modulo.curso === curso));
+         
+        // Añadimos el path completo de la imagen porque lo vamos a sacar en una lista
+        modulos.forEach((modulo)=>{
+            modulo.imagen = util.getS3PreSignedUrl('Media/'+modulo.imagen);
+        });
+
+        // Devolvemos
+        return modulos
+    },
+
+    /**
+     * Comvierte un a lista de módulos en mensajes de voz y texto
+     * @param {} handlerInput Handler de entrada
+     * @param {*} modulos lista de módulos
+     */
+    convertirModulosResponse(handlerInput, modulos){
+        let textoSalida = '';
+        let textoEscrito = '';
+        let salida;
+        // Si la llamada API falla, simplemente no agregamos los modulos porque no existen
+        if (!modulos || modulos.length === 0)
+            return {
+                voz: '',
+                texto: ''
+            };
+        
+        console.log('Modulos: ' + JSON.stringify(modulos));
+             
+        // Recorremos los modulos y lo almacenamos en el objeto modulo
+        modulos.forEach((modulo, index) => {
+            textoSalida += handlerInput.t('MODULO_NAME_MSG', {modulo: modulo});
+            textoEscrito += handlerInput.t('MODULO_NAME_MSG', {modulo: modulo});
+            
+            // Juntamos con Y
+            if (index === Object.keys(modulos).length - 2){
+                textoSalida += handlerInput.t('CONJUNCTION_MSG');
+                textoEscrito += handlerInput.t('CONJUNCTION_MSG');
+            }
+            else {
+               textoSalida += '. ';
+               textoEscrito += '. ';
+            }
+        });
+       return {
+                voz: textoSalida,
+                texto: textoEscrito
+            };
+    },
+
+
+    /**
      * Obtiene los detalles de un módulo en base a su indenticador o nombre
      * @param {string} modulo Dato identificativo del modulo, puede ser un id o el nombre (PROG o Programación)
      */
@@ -138,8 +205,8 @@ module.exports = {
         try { modulos = JSON.parse(modulos); } catch (e) {}
         console.log('Lista de Modulos: ' + JSON.stringify(modulos));
         
-        //operamos, filtramos aquellos modulos que su id o nombre coicida con el nuesro y devolvemos su id. En nuestro caso solo filtramso el nombre
-        return modulos.find(m => (m.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === modulo))
+        //operamos, filtramos aquellos modulos que su id o nombre coicida con el nuestro y devolvemos su id. En nuestro caso solo filtramso el nombre
+        return modulos.find(m => (m.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === modulo));
     },
 
 

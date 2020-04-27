@@ -58,6 +58,7 @@ module.exports = {
             POST_NEWS_HELP_MSG: 'Quizás ahora puedes preguntar por ciclos o módulos. Y recuerda que también puedes configurar un recordatorio para no olvidarlo, o pedir ayuda. ¿Qué quieres hacer ahora? ', 
             POST_NEWS_APL_HELP_MSG: 'Puedes intentar tocar las fotos para saber el contenido de la noticia. Si necesitas ayuda, por favor indícalo. ¿Qué otra cosa te gustaría hacer? ',
             POST_CICLOS_APL_HELP_MSG: 'Puedes intentar tocar las fotos para saber el contenido del ciclo. Si necesitas ayuda, por favor indícalo. ¿Qué otra cosa te gustaría hacer? ',
+            POST_MODULOS_APL_HELP_MSG: 'Puedes intentar tocar las fotos para saber el contenido del módulo. Si necesitas ayuda, por favor indícalo. ¿Qué otra cosa te gustaría hacer? ',
             
             // Falta de datos y permisos 
             MISSING_NAME_MSG: '$t(DOUBT_SPEECHCON). Aún no sé cómo te llamas, porque no has autorizado que acceda a tu nombre. Te he enviado una tarjeta a la app Alexa para que lo habilites. ',
@@ -96,9 +97,11 @@ module.exports = {
              //Listar modulos y detalles de modulo
             LISTAR_MODULOS_MSG: '{{nombre}}. Los módulos de {{curso}} de {{ciclo}} son: ', 
             LISTAR_MODULOS_MAIN_MSG: 'Módulos de {{curso}} de {{ciclo}}',
-            LISTAR_MODULOS_HEADER_MSG: 'Modulos',
+            LISTAR_MODULOS_HEADER_MSG: 'Modulos {{curso}}{{ciclo}}',
             LISTAR_MODULOS_TEXT_MSG: 'Nuestros módulos, ¿Te interesa alguno?',
-            MODULO_DETALLE_MSG: ' El módulo de {{modulo.nombre}}. {{modulo.horasSemanales}} horas semanales. {{modulo.resumen}}. {{modulo.descripcion}}. ',
+            MODULO_DETALLE_MSG: 'Módulo de {{modulo.nombre}}. {{modulo.horasSemanales}} horas semanales. {{modulo.resumen}}. {{modulo.descripcion}}. ',
+            MODULO_NAME_MSG: '{{modulo.nombre}}',
+            MODULO_HEADER_MSG: 'Modulo',
             
             //Matricula
             MATRICULA_HEADER_MSG: 'Matricula',

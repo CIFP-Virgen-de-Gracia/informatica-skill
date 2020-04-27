@@ -17,9 +17,6 @@ const handlers = require('./handlers'); // Handelers
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         handlers.LaunchRequestHandler,
-        // mi prueba
-        handlers.PruebaIntentHandler,
-        //Intent Funcionales
         handlers.ContactoIntentHandler,
         handlers.CreadorIntentHandler,
         handlers.RegistrarCursoIntentHandler,
