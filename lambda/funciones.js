@@ -16,113 +16,6 @@ const util = require('./util'); // funciones de utilidad. Aquí está la persist
  */
 module.exports = {
 
-    
-    
-    // Obtiene los detalles de un módulo
-    getDetallesModulo(moduloNombre){
-        let salida;
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        moduloNombre = moduloNombre+'.'.toLowerCase().trim(); // Porque en el fichero tiene un espacio. Lo sé es algo cutre, pero esto lo haremos con servcios.
-        console.log("Consultando modulo: " + moduloNombre);
-        // Recorro todos los ciclos
-        for (var ciclo in ciclos) {
-            let miCiclo = ciclos[ciclo];
-            // Filtro por el mío
-                console.log(miCiclo.id);
-                 //recorro todos los cursos
-                for (var curso in miCiclo.cursos) {
-                    let miCurso = miCiclo.cursos[curso];
-                        console.log(miCurso.descripcion);
-                        //recorro los módulos
-                        for(var modulo in miCurso.modulos){
-                            let miModulo = miCurso.modulos[modulo];
-                            console.log(miModulo.nombre);
-                            if(miModulo.nombre.toLowerCase().trim() === moduloNombre) {
-                                // Si es mi modulo 
-                                console.log(miModulo.id);
-                                console.log(miModulo.nombre);
-                                salida = miModulo;
-                            }
-                        }
-
-                }
-        }
-        return salida;
-    },
-    
-    //obtiene la lista de nombres de modulos
-    getListaNombreModulos(cicloNombre, cursoNumero){
-        let listaModulos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        let idCiclo = module.exports.getCicloID(cicloNombre);
-        console.log("listando todos modulos de curso " + cursoNumero + " del ciclo " + idCiclo);
-        // Recorro todos los ciclos
-        for (var ciclo in ciclos) {
-            let miCiclo = ciclos[ciclo];
-            // Filtro por el mío
-            if(miCiclo.id === idCiclo) {
-                console.log(miCiclo.id);
-                 //recorro todos los cursos
-                for (var curso in miCiclo.cursos) {
-                    let miCurso = miCiclo.cursos[curso];
-                    // filtro el mío
-                    if(miCurso.numero === cursoNumero){
-                        console.log(miCurso.descripcion);
-                        //recorro los módulos
-                        for(var modulo in miCurso.modulos){
-                            let miModulo = miCurso.modulos[modulo];
-                            console.log(miModulo.nombre);
-                            listaModulos+= miModulo.nombre;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return listaModulos;
-    },
-    
-  
-    
-    
-    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
-    getListaNombreCiclos(){
-        let listaCiclos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        console.log("listando todos los ciclos Ciclos");
-        for (var ciclo in ciclos) {
-            console.log(ciclos[ciclo].id);
-            listaCiclos += ciclos[ciclo].nombre;
-        }
-        return listaCiclos;
-    },
-    
-    //Obtiene la lista de nombre de ciclos y devuelve una cadena con ella.
-    getListaIDCiclos(){
-        let listaCiclos='';
-        const ciclos = configuracion.DATA.curriculo.ciclos;
-        console.log("listando todos los ciclos Ciclos");
-        for (var ciclo in ciclos) {
-            console.log(ciclos[ciclo].id);
-            listaCiclos += ciclos[ciclo].id + ' ';
-        }
-        return listaCiclos;
-    },
-    
-    // Dado el ID de un ciclo devuelve su nombre 
-    getCicloNombre(cicloID){
-       if(cicloID ==='DAM')
-            return 'Desarrollo de Aplicaciones Multiplataforma';
-        else if(cicloID === 'DAW')
-            return 'Desarrollo de Aplicaciones Web';
-        else if(cicloID === 'ASIR')
-            return 'Administración de Sistemas Informáticos y Redes';
-        else if(cicloID === 'SMR')
-            return 'Sistemas Microinformáticos y Redes';
-    },
-
-    /******* Codigo Actualizado */
-
     /**
      * Obtiene una lista de módulos asociados a un ciclo y un curso. 
      * En un futuro podemos implementar variantes para que de todos los módulos, los de un curso o los de un ciclo
@@ -141,11 +34,6 @@ module.exports = {
         // Filtramos con la condición, como son varios a devolver se usa filter
         modulos = modulos.filter(modulo=> (modulo.cicloID.toLowerCase() === ciclo.toLowerCase()) && (modulo.curso === curso));
          
-        // Añadimos el path completo de la imagen porque lo vamos a sacar en una lista
-        modulos.forEach((modulo)=>{
-            modulo.imagen = util.getS3PreSignedUrl('Media/'+modulo.imagen);
-        });
-
         // Devolvemos
         return modulos
     },
@@ -218,11 +106,6 @@ module.exports = {
         let ciclos = configuracion.DATA.ciclos;
         try { ciclos = JSON.parse(ciclos); } catch (e) {}
         console.log('Lista de Ciclos: ' + JSON.stringify(ciclos));
-
-        // Añadimos el path completo de la imagen
-        ciclos.forEach((ciclo)=>{
-            ciclo.imagen = util.getS3PreSignedUrl('Media/'+ciclo.imagen);
-        });
         
         //Devolvemos la lista de ciclos
         return ciclos;

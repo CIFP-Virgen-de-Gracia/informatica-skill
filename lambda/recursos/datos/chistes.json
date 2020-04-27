@@ -1,106 +1,107 @@
 [
-    {
-       "id":"1",
-       "texto":"¿Qué es una mujer objeto?... Una instancia de una mujer con clase. "
-    },
-    {
-       "id":"2",
-       "texto":"¿Qué le menciona una IP a otra?... ¿Qué tramas?. "
-    },
-    {
-       "id":"3",
-       "texto":"¿Qué es un terapeuta?... 1024 Gigapeutas. "
-    },
-    {
-       "id":"4",
-       "texto":"¿Qué le habla un bit al otro?... Nos vemos en el bus."
-    },
-    {
-       "id":"5",
-       "texto":"¿Cuántos programadores hacen falta para cambiar una bombilla?... Ninguno, porque es un problema hardware. "
-    },
-    {
-       "id":"6",
-       "texto":"Se abre el telón, aparece un informático y dice:... ¡qué habéis tocado que no se cierra el telón!. "
-    },
-    {
-       "id":"7",
-       "texto":"¿Pero qué haces tirando esos portátiles al río?... !pero mira como beben los PCs en el rió!. "
-    },
-    {
-       "id":"8",
-       "texto":"Error 0094782: No se detecta ningún teclado... pulse una tecla para continuar. "
-    },
-    {
-       "id":"9",
-       "texto":"Están 1023 gigabytes en una fiesta y llegan 1048576 más y dicen:... ¿Nos hacemos un peta?. "
-    },
-    {
-       "id":"10",
-       "texto":"¿Qué le dice un .GIF a un .JPEG?... ¡Anímate viejo!. "
-    },
-    {
-       "id":"11",
-       "texto":"Los verdaderos programadores programan en binario. "
-    },
-    {
-       "id":"12",
-       "texto":"No te despedirán del trabajo, si nunca comentas tu código y además eres el único que sabe cómo funciona. "
-    },
-    {
-       "id":"13",
-       "texto":"Dos programadores comentando una noticia del menéame:... Uno dice: fallece una persona mientras estudiaba en la biblioteca... El otro le contesta: ¿Qué estaba estudiando?... El primero responde: El API de Windows..."
-    },
-    {
-       "id":"14",
-       "texto":"Sólo hay 10 tipos de personas en este bendito mundo, las que entienden binario y las que no. "
-    },
-    {
-       "id":"15",
-       "texto":"¿Cuál es la diferencia entre batman y Bill Gates? Que cuando batman luchó contra el pingüino ganó."
-    },
-    {
-       "id":"16",
-       "texto":"Dos programadores java charlando:... Dice el primero: la excepción confirma la regla... A lo que contesta el segundo: pues si hay una excepción, la capturamos. "
-    },
-    {
-       "id":"17",
-       "texto":"Para qué quiere un pastor un compilador? pues para tener OBEJOTAS. "
-    },
-    {
-       "id":"18",
-       "texto":"La barriga de un programador es directamente proporcional a la cantidad de información que maneja. "
-    },
-    {
-       "id":"19",
-       "texto":"Dios es real,... a no ser que lo declares como integer. "
-    },
-    {
-       "id":"20",
-       "texto":"Dos programadores dialogando sobre sus relaciones con su pareja: Dice el primero: Yo tengo un vínculo muy fuerte con mi mujer. Le responde el segundo: Entonces, ¿tienes un hipervínculo?. "
-    },
-    {
-       "id":"21",
-       "texto":"Era un ordenador tan antiguo, pero tan antiguo que mandaba los correos con sello. "
-    },
-    {
-       "id":"21",
-       "texto":"¿Cómo se refresca un informático cuando tiene calor?... Pulsando F5. "
-    },
-    {
-       "id":"22",
-       "texto":"Dos amigos por la calle. Uno le dice al otro, me han pasado un enlace con un libro de Homero, pero me da miedo descargármelo. Le contesta su amigo: ¿Por qué?... Y el primero le dice, porque esta lleno de troyanos. "
-    },
-    {
-       "id":"23",
-       "texto":"¿Qué le dice un ordenador portátil a uno de sobremesa?... ¡Ahí te quedas!."
-    },
-    {
-       "id":"24",
-       "texto":"¿Cuál es el personaje favorito de los informáticos?... JAVA."
-    },
-    {
-      "id":"25",
-      "texto":"¿Por qué los informáticos siempre llegan tan alto?... Porque trabajan en la nube."
-   }
- ]
+   {
+      "id":"1",
+      "texto":"¿Qué es una mujer objeto?... Una instancia de una mujer con clase. "
+   },
+   {
+      "id":"2",
+      "texto":"¿Qué le menciona una IP a otra?... ¿Qué tramas?. "
+   },
+   {
+      "id":"3",
+      "texto":"¿Qué es un terapeuta?... 1024 Gigapeutas. "
+   },
+   {
+      "id":"4",
+      "texto":"¿Qué le habla un bit al otro?... Nos vemos en el bus."
+   },
+   {
+      "id":"5",
+      "texto":"¿Cuántos programadores hacen falta para cambiar una bombilla?... Ninguno, porque es un problema hardware. "
+   },
+   {
+      "id":"6",
+      "texto":"Se abre el telón, aparece un informático y dice:... ¡qué habéis tocado que no se cierra el telón!. "
+   },
+   {
+      "id":"7",
+      "texto":"¿Pero qué haces tirando esos portátiles al río?... !pero mira como beben los PCs en el río!. "
+   },
+   {
+      "id":"8",
+      "texto":"Error 0094782: No se detecta ningún teclado... pulse una tecla para continuar. "
+   },
+   {
+      "id":"9",
+      "texto":"Están 1023 gigabytes en una fiesta y llegan 1048576 más y dicen:... ¿Nos hacemos un peta?. "
+   },
+   {
+      "id":"10",
+      "texto":"¿Qué le dice un .GIF a un .JPEG?... ¡Anímate viejo!. "
+   },
+   {
+      "id":"11",
+      "texto":"Los verdaderos programadores programan en binario. "
+   },
+   {
+      "id":"12",
+      "texto":"No te despedirán del trabajo, si nunca comentas tu código y además eres el único que sabe cómo funciona. "
+   },
+   {
+      "id":"13",
+      "texto":"Dos programadores comentando una noticia del menéame:... Uno dice: fallece una persona mientras estudiaba en la biblioteca... El otro le contesta: ¿Qué estaba estudiando?... El primero responde: El API de Windows..."
+   },
+   {
+      "id":"14",
+      "texto":"Sólo hay 10 tipos de personas en este bendito mundo, las que entienden binario y las que no. "
+   },
+   {
+      "id":"15",
+      "texto":"¿Cuál es la diferencia entre Batman y Bill Gates? Que cuando Batman luchó contra el pingüino ganó."
+   },
+   {
+      "id":"16",
+      "texto":"Dos programadores java charlando:... Dice el primero: la excepción confirma la regla... A lo que contesta el segundo: pues si hay una excepción, la capturamos. "
+   },
+   {
+      "id":"17",
+      "texto":"Para qué quiere un pastor un compilador? pues para tener OBEJOTAS. "
+   },
+   {
+      "id":"18",
+      "texto":"La barriga de un programador es directamente proporcional a la cantidad de información que maneja. "
+   },
+   {
+      "id":"19",
+      "texto":"Dios es real,... a no ser que lo declares como integer. "
+   },
+   {
+      "id":"20",
+      "texto":"Dos programadores dialogando sobre sus relaciones con su pareja: Dice el primero: Yo tengo un vínculo muy fuerte con mi mujer. Le responde el segundo: Entonces, ¿tienes un hipervínculo?. "
+   },
+   {
+      "id":"21",
+      "texto":"Era un ordenador tan antiguo, pero tan antiguo que mandaba los correos con sello. "
+   },
+   {
+      "id":"21",
+      "texto":"¿Cómo se refresca un informático cuando tiene calor?... Pulsando F5. "
+   },
+   {
+      "id":"22",
+      "texto":"Dos amigos por la calle. Uno le dice al otro, me han pasado un enlace con un libro de Homero, pero me da miedo descargármelo. Le contesta su amigo: ¿Por qué?... Y el primero le dice, porque esta lleno de troyanos. "
+   },
+   {
+      "id":"23",
+      "texto":"¿Qué le dice un ordenador portátil a uno de sobremesa?... ¡Ahí te quedas!."
+   },
+   {
+      "id":"24",
+      "texto":"¿Cuál es el personaje favorito de los informáticos?... JAVA."
+   },
+   {
+     "id":"25",
+     "texto":"¿Por qué los informáticos siempre llegan tan alto?... Porque trabajan en la nube."
+  }
+]
+

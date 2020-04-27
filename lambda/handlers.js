@@ -66,7 +66,7 @@ const TouchIntentHandler = {
             // Fijate que podemos coger sus atributos directamente del objeto aunque podríamos parametrizarlo de distinta manera pasando varios y no del tirón
             mensajeHablado = handlerInput.t('CICLO_DETALLE_MSG', {ciclo: ciclo});
             mensajeEscrito = mensajeHablado;
-            encabezado =  handlerInput.t('CICLO_HEADER_MSG');
+            encabezado =  handlerInput.t('CICLOS_HEADER_MSG');
         
          //Si es un módulo
         }else if (tipo === 'Modulos'){
@@ -88,7 +88,7 @@ const TouchIntentHandler = {
             .withStandardCard(
                 encabezado,
                 mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -97,7 +97,7 @@ const TouchIntentHandler = {
 
 
 /**
- * LISTADO DE MÓDULSO INTENT
+ * LISTADO DE MÓDULOS INTENT
  * Lista los módudlos daod un curso y un ciclo
  */
 const ListarModulosIntentHandler = {
@@ -159,9 +159,9 @@ const ListarModulosIntentHandler = {
                            type: 'object',
                            properties: {
                                config: {
-                                   backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                   backgroundImage: configuracion.IMAGES.fondo,
                                    title: handlerInput.t('LISTAR_MODULOS_HEADER_MSG',{curso:curso, ciclo:ciclo}),
-                                   skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                   skillIcon: configuracion.IMAGES.logoIcon,
                                    hintText: handlerInput.t('LAUNCH_HINT_MSG')
                                },
                                list: {
@@ -192,7 +192,7 @@ const ListarModulosIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LISTAR_MODULOS_HEADER_MSG',{curso:curso, ciclo:ciclo}),
                 handlerInput.t(mensajeEscrito),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -263,9 +263,9 @@ const MiMatriculaIntentHandler = {
                            type: 'object',
                            properties: {
                                config: {
-                                   backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                   backgroundImage: configuracion.IMAGES.fondo,
                                    title: handlerInput.t('LISTAR_MODULOS_HEADER_MSG',{curso:curso, ciclo:ciclo}),
-                                   skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                   skillIcon: configuracion.IMAGES.logoIcon,
                                    hintText: handlerInput.t('LAUNCH_HINT_MSG')
                                },
                                list: {
@@ -296,7 +296,7 @@ const MiMatriculaIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LISTAR_MODULOS_HEADER_MSG',{curso:curso, ciclo:ciclo}),
                 handlerInput.t(mensajeEscrito),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -346,10 +346,10 @@ const InfoModuloIntentHandler = {
                                     headerTitle: handlerInput.t('LISTAR_MODULOS_HEADER_MSG'),
                                     mainText: modulo.nombre,
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/'+modulo.imagen),//ciclo.imagen,
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    logoImage: modulo.imagen,
+                                    logoUrl: configuracion.IMAGES.logoIcon,
                                     cursoText: modulo.horasSemanales + ' horas a la semana. ' + modulo.horasTotales + ' horas totales',
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundImage: configuracion.IMAGES.fondo,
                                     backgroundOpacity: "0.5"
                                 },
                                 transformers: [{
@@ -367,7 +367,7 @@ const InfoModuloIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                modulo.imagen)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -428,9 +428,9 @@ const ListarCiclosIntentHandler = {
                      type: 'object',
                      properties: {
                          config: {
-                             backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                             backgroundImage: configuracion.IMAGES.fondo,
                              title: handlerInput.t('CICLOS_HEADER_MSG'),
-                             skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                             skillIcon: configuracion.IMAGES.logoIcon,
                              hintText: handlerInput.t('LAUNCH_HINT_MSG')
                          },
                          list: {
@@ -451,7 +451,7 @@ const ListarCiclosIntentHandler = {
             .withStandardCard(
                 handlerInput.t('CICLOS_HEADER_MSG'),
                 handlerInput.t(mensajeEscrito),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -498,10 +498,10 @@ const InfoCicloIntentHandler = {
                                     headerTitle: ciclo.id,
                                     mainText: ciclo.nombre,
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/'+ciclo.imagen),//ciclo.imagen,
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    logoImage: ciclo.imagen, //util.getS3PreSignedUrl('Media/'+ciclo.imagen),//ciclo.imagen,
+                                    logoUrl: configuracion.IMAGES.logoIcon,
                                     cursoText: ciclo.tipo +' '+ ciclo.horas + ' horas.',
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundImage: configuracion.IMAGES.fondo,
                                     backgroundOpacity: "0.5"
                                 },
                                 transformers: [{
@@ -519,7 +519,7 @@ const InfoCicloIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                ciclo.imagen)    //util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -568,7 +568,7 @@ const RegistrarCursoIntentHandler = {
             .withSimpleCard(
                 "Dpto. Informatica", 
                 handlerInput.t('REJECTED_MSG'), 
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
     }
@@ -599,6 +599,7 @@ const ContactoIntentHandler = {
 
         // Obtenemos el cobntacto
         const contacto = func.getContacto();
+        console.log("Aqui: " + JSON.stringify(contacto));
         
         // Según el tipo construimos el mensaje
         switch (intentTipo) {
@@ -640,8 +641,8 @@ const ContactoIntentHandler = {
                                 telefono:  handlerInput.t('CONTACT_TELF', {contacto:contacto}),
                                 email:  handlerInput.t('CONTACT_EMAIL', {contacto:contacto}),
                                 hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                logoUrl: configuracion.IMAGES.logoIcon,
+                                backgroundImage: configuracion.IMAGES.fondo,
                                 backgroundOpacity: "0.5"
                             },
                             transformers: [{
@@ -658,8 +659,8 @@ const ContactoIntentHandler = {
         return handlerInput.responseBuilder
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
-                handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                mensajeHablado,
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -780,9 +781,9 @@ const RecordatorioIntentHandler = {
                                 headerTitle: handlerInput.t('REMINDER_HEADER_MSG'),
                                 mainText: handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
                                 hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
-                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                logoImage: configuracion.IMAGES.logoPrincipal,
+                                logoUrl:configuracion.IMAGES.logoIcon,
+                                backgroundImage: configuracion.imagen.fondo,
                                 backgroundOpacity: "0.5"
                             },
                             transformers: [{
@@ -800,12 +801,12 @@ const RecordatorioIntentHandler = {
             handlerInput.responseBuilder.withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 mensajeHablado,
-               util.getS3PreSignedUrl('Media/logoPrincipal.png'));
+               configuracion.IMAGES.logoBlanco);
         }else{
             handlerInput.responseBuilder.withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'));
+                configuracion.IMAGES.logoBlanco);
         }
             
         // Devolvemos la salida
@@ -813,7 +814,7 @@ const RecordatorioIntentHandler = {
             .withStandardCard(
                  handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t('REMINDER_CREATED_MSG', {nombre: nombre}),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -879,10 +880,10 @@ const LaunchRequestHandler = {
                                     headerTitle: handlerInput.t('LAUNCH_HEADER_MSG'),
                                     mainText: handlerInput.t('LAUNCH_TEXT_MSG', {nombre: nombre}),
                                     hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                    logoImage: util.getS3PreSignedUrl('Media/logoPrincipal.png'),
-                                    logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                    logoImage: configuracion.IMAGES.logoPrincipal,
+                                    logoUrl: configuracion.IMAGES.logoIcon,
                                     cursoText:curso + ' ' + ciclo,
-                                    backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                    backgroundImage: configuracion.IMAGES.fondo,
                                     backgroundOpacity: "0.5"
                                 },
                                 transformers: [{
@@ -900,7 +901,7 @@ const LaunchRequestHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -982,9 +983,9 @@ const NoticiasIntentHandler = {
                         type: 'object',
                         properties: {
                             config: {
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundImage: configuracion.IMAGES.fondo,
                                 title: handlerInput.t('NEWS_HEADER_MSG'),
-                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                skillIcon: configuracion.IMAGES.logoIcon,
                                 hintText: handlerInput.t('LAUNCH_HINT_MSG')
                             },
                             list: {
@@ -1006,7 +1007,7 @@ const NoticiasIntentHandler = {
             .withStandardCard(
                 handlerInput.t('NEWS_HEADER_MSG'),
                 mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -1087,9 +1088,9 @@ const FamososIntentHandler = {
                         type: 'object',
                         properties: {
                             config: {
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundImage: configuracion.IMAGES.fondo,
                                 title: handlerInput.t('PROGRAMMING_HEADER_MSG'),
-                                skillIcon: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                skillIcon: configuracion.IMAGES.logoIcon,
                                 hintText: handlerInput.t('LAUNCH_HINT_MSG')
                             },
                             list: {
@@ -1111,7 +1112,7 @@ const FamososIntentHandler = {
             .withStandardCard(
                 handlerInput.t('PROGRAMMING_HEADER_MSG'),
                 mensajeEscrito,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -1149,7 +1150,7 @@ const ChisteIntentHandler = {
             .withStandardCard(
                 handlerInput.t('CHISTE_HEADER_MSG:'),
                 mensajeHablado,
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -1186,10 +1187,10 @@ const CreadorIntentHandler = {
                                 headerTitle: handlerInput.t('DEVELOPER_HEADER_MSG'),
                                 mainText:handlerInput.t('DEVELOPER_NAME_MSG'),
                                 hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                                logoImage: util.getS3PreSignedUrl('Media/jlgs.jpg'),
-                                logoUrl: util.getS3PreSignedUrl('Media/logoURL.png'),
+                                logoImage: configuracion.IMAGES.creador,
+                                logoUrl: configuracion.IMAGES.logoIcon,
                                 twitterUrl: handlerInput.t('DEVELOPER_TWITTER_MSG'),
-                                backgroundImage: util.getS3PreSignedUrl('Media/fondo.jpg'),
+                                backgroundImage: configuracion.IMAGES.fondo,
                                 backgroundOpacity: "0.5"
                             },
                             transformers: [{
@@ -1207,7 +1208,7 @@ const CreadorIntentHandler = {
             .withStandardCard(
                 handlerInput.t('LAUNCH_HEADER_MSG'),
                 handlerInput.t(mensajeHablado),
-                util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                configuracion.IMAGES.creador)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -1229,7 +1230,7 @@ const HelpIntentHandler = {
         const mensajeHablado = handlerInput.t('HELP_MSG');
 
         return handlerInput.responseBuilder
-            .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .withStandardCard('Dpto. Informatica',mensajeHablado, configuracion.IMAGES.logoBlanco)
             .speak(mensajeHablado)
             .reprompt(handlerInput.t('REPROMPT_MSG'))
             .getResponse();
@@ -1261,7 +1262,7 @@ const CancelAndStopIntentHandler = {
     
         // Preparamos la salida
             return handlerInput.responseBuilder
-                 .withStandardCard('Dpto. Informatica',mensajeHablado, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+                 .withStandardCard('Dpto. Informatica',mensajeHablado, configuracion.IMAGES.logoBlanco)
                 .speak(mensajeHablado)
                 //.reprompt(handlerInput.t('REPROMPT_MSG'))
                 .getResponse();
@@ -1285,7 +1286,7 @@ const FallbackIntentHandler = {
         const mensaje = handlerInput.t('FALLBACK_MSG');
 
         return handlerInput.responseBuilder
-            .withStandardCard('Dpto. Informatica',mensaje, util.getS3PreSignedUrl('Media/logoPrincipal_Blanco.png'))
+            .withStandardCard('Dpto. Informatica',mensaje, configuracion.IMAGES.logoBlanco)
             .speak(mensaje)
             .reprompt(handlerInput.t('HELP_MSG'))
             .getResponse();

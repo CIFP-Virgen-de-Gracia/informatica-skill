@@ -39,5 +39,15 @@ module.exports = {
         chistes: require('./recursos/datos/chistes.json'),
         RSS: 'https://cifpvirgendegracia.com/feed',
         WIKI: 'https://query.wikidata.org/sparql'
+    },
+
+    // Repositorio de imagenes, podríamos sacarlas de media, pero nos e verían bien en nuestras tarjetas
+    // Tambien tiene caducidad de, por eso usamos un servidor externo de imagenes
+    IMAGES: {
+        creador: 'https://i.imgur.com/cHMvdEJ.jpg',
+        fondo: 'https://i.imgur.com/dk7CqzY.jpg',
+        logoIcon: 'https://i.imgur.com/jiEIs6P.png',
+        logoPrincipal: 'https://i.imgur.com/Ncuu1es.png',
+        logoBlanco: 'https://i.imgur.com/nkWiwuv.png'
     }
 }
